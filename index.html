@@ -1105,6 +1105,395 @@ body.reduce-motion #gameApp .pc23-pulse i{transition:none}
 #gameApp #keys .isora-character.isora-placeholder{opacity:.55}
 #optionsScreen .isora-layout-option select{min-width:210px;max-width:45%;padding:12px;background:#122634;color:#f1f8fc;border:1px solid #648094;border-radius:5px;font:700 15px/1.2 inherit}
 </style>
+
+<style id="isora-readability-pass">
+/* Presentation-only corrections. Existing puzzle, upgrade and keyboard logic is unchanged. */
+#gameApp>header .brand small,#gameApp>header .brand b{display:none!important}
+#gameApp>header .brand-mark{width:37px!important;height:37px!important;font-size:19px!important}
+#gameApp .stage-col .terminal>.row #authPill{display:none!important}
+#gameApp .stage-col .terminal>.terminal-bottom,#gameApp .stage-col .terminal>.smallnote{display:none!important}
+#gameApp .stage-col .terminal>.input-controls,#gameApp #inputModeBtn{display:none!important}
+/* Give the actual hints space instead of preserving empty legacy GRID tracks. */
+#gameApp .stage-col .terminal{
+ grid-template-rows:24px 55px minmax(112px,max-content) 54px minmax(78px,max-content) 36px minmax(0,1fr) 9px 16px!important;
+ gap:0 10px!important;
+}
+#gameApp .stage-col .terminal>.term-title{margin:0!important;align-self:center!important;line-height:1.17!important;font-size:25px!important;overflow-wrap:normal!important;line-break:strict!important}
+#gameApp .stage-col .terminal>.term-hint{
+ grid-column:1!important;grid-row:3!important;height:auto!important;min-height:0!important;max-height:none!important;
+ font-size:15px!important;line-height:1.52!important;overflow:visible!important;overflow-wrap:break-word!important;word-break:normal!important;line-break:strict!important;
+}
+#gameApp .stage-col .terminal>.type-strip{
+ grid-column:1 / -1!important;grid-row:5!important;align-content:start!important;align-self:start!important;
+ display:flex!important;flex-wrap:wrap!important;gap:4px 6px!important;height:auto!important;min-height:0!important;
+ max-height:none!important;margin:2px 0!important;overflow:visible!important;
+}
+#gameApp .stage-col .terminal>.type-strip .type-pill{
+ font-size:11px!important;line-height:1.35!important;padding:3px 6px!important;
+ white-space:normal!important;overflow-wrap:normal!important;word-break:keep-all!important;
+}
+#gameApp .stage-col .terminal>.puzzle-feedback{
+ grid-column:1!important;grid-row:4!important;height:auto!important;max-height:none!important;
+ overflow:visible!important;white-space:normal!important;font-size:14px!important;line-height:1.38!important;
+}
+#gameApp .stage-col .terminal>.slots{grid-row:4!important;align-self:center!important}
+#gameApp .stage-col .terminal>.attempt-ledger{grid-column:1/-1!important;grid-row:6/8!important;align-self:start!important;overflow:hidden!important}
+#gameApp .stage-col .terminal>.target-track{grid-column:1/-1!important;grid-row:8!important}
+#gameApp .stage-col .terminal>.target-meta{grid-column:1/-1!important;grid-row:9!important}
+/* Duplicate fever art: keep only the full-height portrait in the right-hand companion panel. */
+#gameApp #pc20FeverStage{display:none!important}
+/* Compact money icon in the existing COINS stat; the separate money panel is redundant. */
+#gameApp .companion-col>.mint-panel{display:none!important}
+#gameApp .companion-col .stats{flex:0 0 63px!important}
+#gameApp #labelCoins{display:block!important;white-space:nowrap!important;line-height:1.2!important}
+#gameApp .companion-col .stat:has(#labelCoins){position:relative!important}
+#gameApp #labelCoins #mintCollection{display:flex!important;position:absolute!important;top:4px!important;right:7px!important;margin:0!important;gap:0!important;align-items:center!important;width:23px!important;height:23px!important;overflow:hidden!important}
+#gameApp #labelCoins #mintCollection .current-coin{width:22px!important;height:22px!important;max-height:22px!important;margin:0!important}
+#gameApp .companion-col .panel.card{min-height:0!important}
+#gameApp .companion-col .panel.card .upgrade-desc{line-height:1.35!important;max-height:none!important;overflow:visible!important}
+/* The AI panel must not scroll or clip the top of the message. Chat choices fit without a scrollbar. */
+#gameApp .companion-col .assistant-dock{overflow:hidden!important}
+#gameApp .companion-col .assistant-speech{min-width:0!important;overflow:hidden!important;display:flex!important;flex-direction:column!important;padding:9px 11px!important}
+#gameApp .companion-col .assistant-speech p#assistantDialogue{
+ min-height:0!important;max-height:none!important;overflow:hidden!important;flex:0 1 auto!important;
+ font-size:14px!important;line-height:1.5!important;margin:5px 0!important;
+ overflow-wrap:break-word!important;word-break:normal!important;line-break:strict!important;
+}
+#gameApp .companion-col .assistant-speech .assistant-choices{
+ flex:1 1 auto!important;min-height:0!important;max-height:none!important;overflow:hidden!important;
+ display:flex!important;flex-direction:column!important;gap:5px!important;align-items:stretch!important;
+}
+#gameApp .companion-col .assistant-speech .assistant-choices.hidden{display:none!important}
+#gameApp .companion-col .assistant-speech .assistant-choices .chat-answer{
+ flex:1 1 auto!important;min-height:0!important;margin:0!important;padding:5px 8px!important;
+ font-size:11px!important;line-height:1.3!important;text-align:left!important;
+ white-space:normal!important;word-break:normal!important;line-break:strict!important;
+}
+#gameApp .companion-col .assistant-speech:has(.assistant-choices:not(.hidden)) #assistantDialogue,
+#gameApp .companion-col .assistant-speech:has(.assistant-choices:not(.hidden)) .assistant-meta{display:none!important}
+#gameApp .companion-col .assistant-speech .assistant-choice-tools{flex:0 0 auto!important;margin-top:auto!important}
+#gameApp .companion-col .assistant-speech .assistant-heading{min-width:0!important}
+#gameApp .companion-col .assistant-speech .assistant-heading #assistantRole{white-space:normal!important;overflow:visible!important;text-overflow:clip!important}
+/* Avoid native scrollbars for essential gameplay text, including hints and dialogue. */
+#gameApp #targetHint{overflow-y:visible!important;overflow-x:visible!important}
+#gameApp #targetHint,#gameApp #intuition,#gameApp #assistantDialogue,#gameApp #assistantChoices{scrollbar-width:none!important}
+#gameApp #targetHint::-webkit-scrollbar,#gameApp #intuition::-webkit-scrollbar,#gameApp #assistantDialogue::-webkit-scrollbar,#gameApp #assistantChoices::-webkit-scrollbar{display:none!important}
+</style>
+
+<style id="isora-stable-input-position">
+/* Fixed-height semantic bands prevent hint growth from moving the input slots. */
+#gameApp .stage-col .terminal{
+ grid-template-rows:24px 48px 112px 62px 108px 25px minmax(0,1fr) 9px 16px!important;
+ gap:0 10px!important;
+}
+#gameApp .stage-col .terminal>.term-hint{
+ grid-column:1!important;grid-row:3!important;max-height:112px!important;height:112px!important;
+ overflow:hidden!important;font-size:14px!important;line-height:1.45!important;
+ overflow-wrap:break-word!important;word-break:normal!important;line-break:strict!important;
+ padding-right:9px!important;box-sizing:border-box!important;
+}
+#gameApp .stage-col .terminal>.slots{
+ grid-column:2!important;grid-row:4!important;height:56px!important;max-height:56px!important;
+ align-self:center!important;margin:0!important;
+}
+#gameApp .stage-col .terminal>.puzzle-feedback{
+ grid-column:1!important;grid-row:4!important;align-self:center!important;
+ height:auto!important;max-height:58px!important;line-height:1.4!important;overflow:hidden!important;
+}
+#gameApp .stage-col .terminal>.type-strip{
+ grid-column:1/-1!important;grid-row:5!important;min-height:0!important;height:108px!important;
+ max-height:108px!important;align-content:start!important;gap:4px!important;
+ overflow:hidden!important;
+}
+#gameApp .stage-col .terminal>.type-strip .type-pill{
+ font-size:11px!important;line-height:1.3!important;padding:3px 5px!important;
+ overflow-wrap:break-word!important;word-break:normal!important;line-break:strict!important;
+}
+#gameApp .stage-col .terminal>.attempt-ledger{grid-row:6/8!important;overflow:hidden!important}
+#gameApp .stage-col .terminal>.target-track{grid-row:8!important}
+#gameApp .stage-col .terminal>.target-meta{grid-row:9!important}
+/* Keep text-first UI compact without squeezing slots or reducing font to unreadable size. */
+</style>
+
+<style id="isora-integrated-crt-input">
+/* One password display: the functional slot DOM is housed in the CRT. */
+#gameApp .stage-col .spectacle{height:195px!important;z-index:5!important}
+#gameApp .stage-col .spectacle .crt-auth{position:absolute;inset:6px 9px 8px;display:flex;flex-direction:column;box-sizing:border-box;isolation:isolate;overflow:hidden;background:linear-gradient(157deg,#173743 0%,#071923 70%,#0b2832 100%);border:8px solid #52616d;border-bottom-width:12px;border-radius:9px 9px 16px 16px;box-shadow:inset 0 0 0 2px #8eb2b766,inset 0 0 29px #000c,0 7px 13px #0009}
+#gameApp .stage-col .spectacle .crt-auth::before{content:"";position:absolute;inset:2px;pointer-events:none;z-index:2;opacity:.30;background:repeating-linear-gradient(0deg,transparent 0 4px,#95ddd822 5px 6px)}
+#gameApp .stage-col .spectacle .crt-auth-head{flex:0 0 24px;display:flex;justify-content:space-between;align-items:center;padding:3px 11px;color:#98dfd0;font:800 12px/1 monospace;letter-spacing:.06em;border-bottom:1px solid #89d8d540}
+#gameApp .stage-col .spectacle .crt-auth-status{font-size:10px;color:#e5c787}
+#gameApp .stage-col .spectacle .crt-auth-label{padding:10px 12px 1px;color:#b6ced2;font:800 12px/1 monospace}
+#gameApp .stage-col .spectacle .crt-auth-slots{flex:1;min-height:0;display:flex;align-items:center;justify-content:center;padding:4px 8px 10px}
+#gameApp .stage-col .spectacle #slots{width:100%!important;height:auto!important;margin:0!important;display:flex!important;gap:4px!important;justify-content:center!important;align-self:center!important;min-width:0!important;position:relative!important}
+#gameApp .stage-col .spectacle #slots .slot{max-width:none!important;min-width:0!important;flex:1 1 0!important;height:57px!important;max-height:57px!important;border-radius:3px!important;background:#071722!important;font-size:clamp(15px,1.7vw,26px)!important;color:#e4f9ec!important;box-shadow:inset 0 0 12px #0008!important}
+#gameApp .stage-col .spectacle #slots .slot.filled{color:#aef5de!important;border-color:#75d4c2!important;background:#153538!important}
+#gameApp .stage-col .spectacle #slots .slot.next{box-shadow:0 0 11px #78ead899,inset 0 0 9px #0009!important}
+#gameApp .stage-col .spectacle .crt-auth-foot{flex:0 0 15px;padding:0 12px 3px;color:#74a8ac;font:800 10px/1 monospace;letter-spacing:.1em}
+body:not(.auto-phase):not(.pc21-final) #gameApp .stage-col .spectacle #spectacleCanvas,
+body:not(.auto-phase):not(.pc21-final) #gameApp .stage-col .spectacle .spectacle-caption,
+body:not(.auto-phase):not(.pc21-final) #gameApp .stage-col .spectacle .spectacle-side{visibility:hidden!important}
+body.auto-phase #gameApp .stage-col .spectacle .crt-auth,body.pc21-final #gameApp .stage-col .spectacle .crt-auth{display:none!important}
+body.auto-phase #gameApp .stage-col .spectacle #spectacleCanvas,body.pc21-final #gameApp .stage-col .spectacle #spectacleCanvas{visibility:visible!important}
+/* Password information no longer appears in the terminal a second time. */
+#gameApp .stage-col .terminal{grid-template-rows:24px 48px 112px 62px 108px 25px minmax(0,1fr) 9px 16px!important}
+#gameApp .stage-col .terminal>.puzzle-feedback{grid-column:1!important;grid-row:4!important;max-width:100%!important}
+</style>
+
+<style id="isora-lean-hud-and-input-recovery">
+/* Keep all gameplay rules, sprites and menus; reclaim space from duplicate HUD metadata. */
+#gameApp>header{justify-content:flex-start!important}
+#gameApp>header .brand{flex:0 0 auto!important}
+#gameApp>header .brand>div{display:none!important}
+#gameApp>header .top-actions{margin-left:10px!important;justify-content:flex-start!important}
+#gameApp>.game-board{grid-template-columns:minmax(0,48fr) minmax(0,52fr)!important}
+/* The target number is already in the left title. Do not spend a third stat tile on it. */
+#gameApp .companion-col .stats{display:grid!important;grid-template-columns:1fr 1fr!important;gap:6px!important;flex:0 0 51px!important;height:51px!important;min-height:51px!important}
+#gameApp .companion-col .stats>.stat:has(#statTargets){display:none!important}
+#gameApp .companion-col .stat{padding:4px 10px!important;display:flex!important;flex-direction:row!important;align-items:center!important;justify-content:space-between!important;gap:7px!important;min-width:0!important;position:relative!important}
+#gameApp .companion-col .stat small{font-size:10px!important;margin:0!important;white-space:nowrap!important}
+#gameApp .companion-col .stat .value{margin:0!important;font-size:19px!important;flex:0 0 auto!important}
+#gameApp .companion-col .stat .minor{display:none!important}
+#gameApp .companion-col .assistant-dock{min-height:0!important;height:360px!important;flex:1 1 auto!important;max-height:none!important}
+/* Avoid an artificial empty middle track in the left terminal. */
+#gameApp .stage-col .terminal{grid-template-rows:24px 45px 108px 43px auto 28px minmax(0,1fr) 9px 16px!important;align-content:start!important}
+#gameApp .stage-col .terminal>.type-strip{height:auto!important;min-height:0!important;max-height:108px!important;align-content:start!important;align-self:start!important}
+#gameApp .stage-col .terminal>.attempt-ledger{align-self:start!important;justify-content:flex-start!important;align-content:start!important;margin:4px 0!important}
+#gameApp .stage-col .terminal>.puzzle-feedback{align-self:start!important;margin:0!important}
+#gameApp .stage-col .spectacle{height:328px!important;min-height:328px!important}
+#gameApp .stage-col .spectacle .crt-auth-slots{min-height:60px!important}
+/* Preserve the original menu and required interactive targets. */
+</style>
+
+<style id="isora-crt-depth-and-wrapping">
+/* Restore the three-dimensional exhibit instead of stretching a flat rectangle. */
+#gameApp .stage-col .spectacle{
+  position:absolute!important;top:8px!important;right:10px!important;left:auto!important;
+  width:45%!important;height:205px!important;min-height:205px!important;max-height:205px!important;
+  flex:none!important;overflow:hidden!important;
+  background:radial-gradient(ellipse at 60% 30%,#36677645 0%,#071526 70%)!important;
+  perspective:880px!important;
+}
+body:not(.auto-phase):not(.pc21-final) #gameApp .stage-col .spectacle #spectacleCanvas{
+  visibility:visible!important;opacity:.38!important;filter:saturate(.78) brightness(.72)!important;
+}
+#gameApp .stage-col .spectacle .crt-auth{
+  inset:12px auto 18px 50%!important;width:min(88%,650px)!important;
+  transform:translateX(-50%) rotateY(-5deg)!important;
+  border:8px solid #536d79!important;border-bottom:13px solid #354957!important;
+  border-radius:13px 13px 22px 22px!important;
+  background:linear-gradient(145deg,#163943,#061720 70%)!important;
+  box-shadow:inset 0 0 0 3px #a5d6dd4c,inset 0 0 36px #000d,
+       3px 9px 1px #182632,9px 15px 0 #0b1824,11px 19px 25px #000d!important;
+  backface-visibility:hidden;
+}
+#gameApp .stage-col .spectacle .crt-auth-head{flex:0 0 20px!important;padding:2px 8px!important;font-size:11px!important}
+#gameApp .stage-col .spectacle .crt-auth-label{padding:3px 9px 0!important;font-size:10px!important}
+#gameApp .stage-col .spectacle .crt-auth-foot{flex:0 0 5px!important;padding:0!important}
+#gameApp .stage-col .spectacle .crt-auth-slots{
+  flex:1 1 auto!important;min-height:0!important;overflow:hidden!important;
+  padding:3px 8px 5px!important;align-items:center!important;
+}
+#gameApp .stage-col .spectacle #slots{
+  display:grid!important;grid-template-columns:repeat(var(--crt-columns,4),minmax(0,1fr))!important;
+  grid-auto-rows:minmax(0,1fr)!important;align-content:center!important;justify-content:center!important;
+  gap:3px!important;max-height:100%!important;height:auto!important;width:100%!important;
+}
+#gameApp .stage-col .spectacle #slots .slot{
+  width:100%!important;min-width:0!important;max-width:none!important;
+  height:var(--crt-slot-height,54px)!important;max-height:var(--crt-slot-height,54px)!important;
+  flex:none!important;font-size:var(--crt-font-size,23px)!important;
+  border-radius:3px!important;
+}
+#gameApp .stage-col .terminal>.term-title,
+#gameApp .stage-col .terminal>.term-hint{max-width:52%!important;}
+#gameApp .stage-col .terminal>.term-title{
+  white-space:normal!important;overflow:hidden!important;text-overflow:clip!important;
+  font-size:21px!important;line-height:1.14!important;overflow-wrap:anywhere!important;
+}
+/* Put transient messages in the empty lower portion of the hint terminal, not over password entry. */
+#gameApp .stage-col .terminal{position:relative!important}
+#gameApp .stage-col .terminal #toastStack{
+  position:absolute!important;top:auto!important;right:12px!important;left:12px!important;
+  bottom:26px!important;width:auto!important;max-width:none!important;max-height:100px!important;
+  display:flex!important;flex-direction:column!important;align-items:flex-start!important;
+  gap:3px!important;overflow:hidden!important;z-index:12!important;pointer-events:none!important;
+}
+#gameApp .stage-col .terminal #toastStack .toast{
+  max-width:100%!important;min-width:0!important;width: min(370px,100%)!important;max-height:none!important;
+  padding:5px 9px!important;font-size:11px!important;
+  border-radius:5px!important;overflow:visible!important;
+}
+#gameApp .stage-col .terminal #toastStack .toast small{
+  font-size:10px!important;display:block!important;white-space:normal!important;
+  overflow:visible!important;text-overflow:clip!important;line-height:1.35!important;
+}
+body.auto-phase #gameApp .stage-col .spectacle,
+body.pc21-final #gameApp .stage-col .spectacle{
+  height:auto!important;min-height:0!important;flex:1 1 auto!important;
+}
+</style>
+
+<style id="isora-hud-placement-correction">
+/* Header is a single horizontal bar: navigation on the left, notifications in the unused right half. */
+#gameApp>header{position:relative!important;display:flex!important;align-items:center!important;justify-content:flex-start!important;flex-wrap:nowrap!important;gap:10px!important;overflow:visible!important}
+#gameApp>header .top-actions{margin-left:0!important;margin-right:auto!important;display:flex!important;flex-wrap:nowrap!important;justify-content:flex-start!important;gap:6px!important;flex:0 0 auto!important}
+#gameApp>header .brand{flex:0 0 37px!important}
+#gameApp>header #toastStack{position:absolute!important;left:auto!important;right:8px!important;top:4px!important;bottom:auto!important;width:min(510px,calc(100% - 655px))!important;max-width:510px!important;max-height:47px!important;display:flex!important;flex-direction:row!important;align-items:stretch!important;justify-content:flex-end!important;gap:5px!important;overflow:hidden!important;z-index:20!important;pointer-events:none!important}
+#gameApp>header #toastStack .toast{flex:0 1 250px!important;min-width:0!important;width:auto!important;max-width:250px!important;max-height:47px!important;min-height:0!important;padding:3px 7px!important;box-sizing:border-box!important;border-radius:5px!important;gap:3px!important;display:flex!important;align-items:center!important;font-size:10px!important;overflow:hidden!important}
+#gameApp>header #toastStack .toast>div{min-width:0!important;max-width:100%!important}
+#gameApp>header #toastStack .toast strong{font-size:10px!important;max-width:none!important;white-space:normal!important;overflow:visible!important;text-overflow:clip!important;line-height:1.22!important;display:block!important}
+#gameApp>header #toastStack .toast small{font-size:9px!important;max-width:none!important;display:block!important;white-space:normal!important;overflow:visible!important;text-overflow:clip!important;line-height:1.16!important}
+#gameApp>header #toastStack .toast:nth-child(n+3){display:none!important}
+/* A success/upgrade announcement uses the EMPTY bottom-right part of the terminal,
+   never the password monitor. The toast uses the header's right side. */
+#gameApp .stage-col .terminal #announcement{
+ position:absolute!important;top:auto!important;left:auto!important;
+ right:14px!important;bottom:44px!important;transform:none!important;
+ width:min(250px,45%)!important;max-width:250px!important;max-height:150px!important;
+ padding:11px 12px!important;box-sizing:border-box!important;overflow:hidden!important;
+ z-index:8!important;text-align:left!important;border-radius:8px!important;
+}
+#gameApp .stage-col .terminal #announcement .spark{font-size:18px!important;float:right!important}
+#gameApp .stage-col .terminal #announcement .a-over{font-size:9px!important;line-height:1.3!important}
+#gameApp .stage-col .terminal #announcement h2{font-size:17px!important;line-height:1.25!important;margin:4px 0!important}
+#gameApp .stage-col .terminal #announcement p{font-size:11px!important;line-height:1.4!important;margin:4px 0 0!important;max-height:none!important;overflow-wrap:anywhere!important}
+#gameApp .stage-col .terminal #announcement.show{animation:none!important}
+/* Two compact stat tiles. Coin icon belongs in a real grid column, never on top of text. */
+#gameApp .companion-col .stats .stat:has(#labelCoins){display:grid!important;grid-template-columns:auto 24px minmax(0,1fr)!important;gap:8px!important;justify-content:stretch!important;align-items:center!important}
+#gameApp .companion-col .stat:has(#labelCoins)>#labelCoins{grid-column:1!important;position:static!important;width:auto!important;white-space:nowrap!important}
+#gameApp .companion-col .stat:has(#labelCoins)>#mintCollection{grid-column:2!important;position:static!important;width:23px!important;height:23px!important;max-width:23px!important;max-height:23px!important;display:flex!important;align-items:center!important;justify-content:center!important;overflow:hidden!important;margin:0!important}
+#gameApp .companion-col .stat:has(#labelCoins)>#mintCollection .current-coin{width:22px!important;height:22px!important;max-width:22px!important;max-height:22px!important;flex:none!important}
+#gameApp .companion-col .stat:has(#labelCoins)>#statCoins{grid-column:3!important;min-width:0!important;max-width:100%!important;justify-self:end!important;text-align:right!important;overflow:hidden!important;font-size:clamp(14px,1.5vw,19px)!important}
+</style>
+
+<style id="isora-compact-metrics-upgrade">
+/* Presentation only: compact redundant padding and give the reclaimed height to the companion. */
+#gameApp .companion-col .stats{flex:0 0 43px!important;height:43px!important;min-height:43px!important;gap:5px!important}
+#gameApp .companion-col .stats>.stat{min-height:0!important;padding:3px 9px!important;box-sizing:border-box!important;border-radius:9px!important}
+#gameApp .companion-col .stats>.stat small{font-size:11px!important;line-height:1.15!important;letter-spacing:0!important}
+#gameApp .companion-col .stats>.stat .value{font-size:19px!important;line-height:1.15!important;white-space:nowrap!important;overflow:hidden!important;text-overflow:ellipsis!important}
+/* The slim failure glyph fills the otherwise purposeless leading gap. */
+#gameApp #labelFails::before{content:"×";display:inline-grid;place-items:center;width:14px;height:14px;margin-right:5px;border-radius:3px;border:1px solid #6b94a8;color:#a8d5e5;font:800 12px/1 ui-monospace,monospace;vertical-align:middle}
+#gameApp .companion-col .stats .stat:has(#labelCoins){grid-template-columns:minmax(0,max-content) 23px minmax(0,1fr)!important;gap:5px!important}
+#gameApp .companion-col .stats .stat:has(#labelCoins)>#mintCollection{width:22px!important;height:22px!important}
+#gameApp .companion-col .panel.card{flex:0 0 115px!important;height:115px!important;min-height:115px!important;max-height:115px!important;padding:8px 12px!important;box-sizing:border-box!important;display:grid!important;grid-template-columns:minmax(0,1fr) auto!important;grid-template-rows:18px 23px 19px 9px 13px!important;column-gap:7px!important;row-gap:2px!important;align-content:start!important;overflow:hidden!important}
+#gameApp .companion-col .panel.card>.panel-heading{grid-column:1/-1!important;grid-row:1!important;min-height:0!important;line-height:18px!important}
+#gameApp .companion-col .panel.card>.panel-heading b{font-size:13px!important}
+#gameApp .companion-col .panel.card>.panel-heading small{font-size:10px!important}
+#gameApp .companion-col .panel.card>.upgrade-title{grid-column:1/-1!important;grid-row:2!important;margin:0!important;font-size:18px!important;line-height:23px!important;max-height:23px!important;overflow:hidden!important;white-space:nowrap!important;text-overflow:ellipsis!important}
+#gameApp .companion-col .panel.card>.upgrade-desc{grid-column:1/-1!important;grid-row:3!important;margin:0!important;font-size:11px!important;line-height:19px!important;min-height:0!important;max-height:19px!important;overflow:hidden!important;white-space:nowrap!important;text-overflow:ellipsis!important}
+#gameApp .companion-col .panel.card>.bar{grid-column:1/-1!important;grid-row:4!important;align-self:center!important;margin:0!important;height:8px!important;min-height:8px!important}
+#gameApp .companion-col .panel.card>.upgrade-detail{grid-column:1/-1!important;grid-row:5!important;margin:0!important;font-size:10px!important;line-height:13px!important;min-height:0!important}
+#gameApp .companion-col .panel.card>.chips{display:none!important}
+#gameApp .companion-col .assistant-dock{flex:1 1 auto!important;height:auto!important;min-height:0!important;max-height:none!important}
+</style>
+
+<style id="isora-compact-hud-v2">
+/* Stop reserving a blank logo/brand column at the top-left of the game HUD. */
+#gameApp>header{padding-left:8px!important;padding-right:8px!important;gap:0!important}
+#gameApp>header .brand{display:none!important;flex:0 0 0!important;width:0!important;margin:0!important}
+#gameApp>header .top-actions{margin-left:0!important;margin-right:auto!important;gap:6px!important}
+/* Two rows at fixed positions regardless of upgrade level, name and price length. */
+#gameApp .companion-col .panel.card:has(#upHeading){
+ display:grid!important;grid-template-columns:minmax(0,1fr)!important;
+ grid-template-rows:20px 22px!important;row-gap:2px!important;
+ height:58px!important;min-height:58px!important;max-height:58px!important;
+ flex:0 0 58px!important;padding:6px 9px!important;overflow:hidden!important;
+}
+#gameApp .companion-col .panel.card:has(#upHeading)>.panel-heading{
+ grid-column:1!important;grid-row:1!important;
+ display:flex!important;align-items:center!important;gap:8px!important;
+ min-width:0!important;width:100%!important;height:20px!important;
+}
+#gameApp .companion-col .panel.card:has(#upHeading) #upHeading{
+ flex:0 0 auto!important;white-space:nowrap!important;font-size:12px!important;
+}
+#gameApp .companion-col .panel.card:has(#upHeading) #upProgress{
+ order:1!important;flex:0 0 48px!important;width:48px!important;
+ text-align:right!important;white-space:nowrap!important;font-size:10px!important;
+ font-variant-numeric:tabular-nums!important;
+}
+#gameApp .companion-col .panel.card:has(#upHeading) .panel-heading>.bar{
+ order:2!important;flex:1 1 auto!important;min-width:0!important;
+ margin:0!important;height:9px!important;min-height:9px!important;
+ border-radius:4px!important;align-self:center!important;
+}
+#gameApp .companion-col .panel.card:has(#upHeading)>.upgrade-title{
+ grid-column:1!important;grid-row:2!important;align-self:center!important;
+ width:100%!important;min-width:0!important;margin:0!important;
+ font-size:15px!important;line-height:20px!important;height:20px!important;
+ max-height:20px!important;white-space:nowrap!important;overflow:hidden!important;
+ text-overflow:ellipsis!important;padding-right:122px!important;box-sizing:border-box!important;
+}
+#gameApp .companion-col .panel.card:has(#upHeading)>.upgrade-detail{
+ grid-column:1!important;grid-row:2!important;justify-self:end!important;align-self:center!important;
+ width:116px!important;max-width:116px!important;height:20px!important;
+ margin:0!important;display:flex!important;align-items:center!important;justify-content:flex-end!important;
+ overflow:hidden!important;white-space:nowrap!important;
+ font-size:10px!important;
+}
+#gameApp .companion-col .panel.card:has(#upHeading) #upgradeMoney{
+ overflow:hidden!important;text-overflow:ellipsis!important;white-space:nowrap!important;
+}
+#gameApp .companion-col .panel.card:has(#upHeading) #upgradePct{display:none!important}
+#gameApp .companion-col .panel.card:has(#upHeading)>.upgrade-desc,
+#gameApp .companion-col .panel.card:has(#upHeading)>.chips{display:none!important}
+</style>
+
+<style id="isora-lamps-and-upgrade-density">
+/* Fixed positions independent of clue length. CRT stays clear at top right. */
+#gameApp .stage-col .terminal>.term-title,#gameApp .stage-col .terminal>.term-hint,#gameApp .stage-col .terminal>.type-strip,#gameApp .stage-col .terminal>.puzzle-feedback{grid-row:auto!important;grid-column:auto!important;}
+#gameApp .stage-col .terminal{position:relative!important}
+#gameApp .stage-col .terminal>#terminalLabel{position:relative!important}
+#gameApp .stage-col .terminal>.term-title{position:absolute!important;left:15px!important;top:38px!important;width:49%!important;max-width:49%!important;margin:0!important;max-height:52px!important;line-height:1.15!important;font-size:22px!important;overflow:hidden!important;word-break:keep-all!important;overflow-wrap:normal!important}
+#gameApp .stage-col .terminal>.term-hint{position:absolute!important;top:102px!important;left:15px!important;width:48%!important;max-width:48%!important;height:86px!important;max-height:86px!important;min-height:0!important;margin:0!important;padding:0!important;font-size:13px!important;line-height:1.55!important;overflow:hidden!important;word-break:normal!important;overflow-wrap:normal!important;line-break:strict!important;display:-webkit-box!important;-webkit-box-orient:vertical!important;-webkit-line-clamp:4!important}
+#gameApp .stage-col .terminal>.type-strip{position:absolute!important;top:222px!important;left:15px!important;right:15px!important;width:auto!important;height:67px!important;max-height:67px!important;min-height:67px!important;margin:0!important;padding:0!important;display:flex!important;flex-direction:column!important;flex-wrap:nowrap!important;gap:5px!important;overflow:hidden!important}
+#gameApp .stage-col .terminal>.type-strip .isora-kind-lamps{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px;flex:0 0 29px;min-height:29px}
+#gameApp .stage-col .terminal>.type-strip .isora-kind-lamp{display:flex;align-items:center;justify-content:center;gap:4px;min-width:0;height:29px;box-sizing:border-box;border:1px solid #345061;border-radius:5px;background:#071823;color:#607985;font:700 12px/1.1 system-ui,sans-serif;white-space:nowrap;transition:background .15s}
+#gameApp .stage-col .terminal>.type-strip .isora-kind-lamp::before{content:"";width:6px;height:6px;flex:none;border-radius:50%;background:#476170}
+#gameApp .stage-col .terminal>.type-strip .isora-kind-lamp.is-lit{background:#163f40;border-color:#66c9bd;color:#c9fff1;box-shadow:inset 0 0 9px #47cfac22}
+#gameApp .stage-col .terminal>.type-strip .isora-kind-lamp.is-lit::before{background:#70f7d1;box-shadow:0 0 7px #70f7d1aa}
+#gameApp .stage-col .terminal>.type-strip .isora-kind-lamp.is-confirmed.is-lit{border-color:#e8c56f;color:#ffe6a6}
+#gameApp .stage-col .terminal>.type-strip .isora-kind-details{display:flex!important;align-items:center;gap:5px;min-height:24px;max-height:24px;overflow:hidden!important;white-space:nowrap!important}
+#gameApp .stage-col .terminal>.type-strip .isora-kind-details .type-pill{flex:0 1 auto;min-width:0;max-width:100%;overflow:hidden!important;text-overflow:ellipsis!important;white-space:nowrap!important;font-size:10px!important;line-height:15px!important;padding:3px 5px!important}
+#gameApp .stage-col .terminal>.puzzle-feedback{position:absolute!important;left:15px!important;right:15px!important;top:299px!important;max-width:calc(100% - 30px)!important;max-height:40px!important;line-height:1.4!important;font-size:13px!important;margin:0!important;overflow:hidden!important}
+/* Upgrade: title/count/bar first row, upgrade name + real description second row.
+   Currency stays inside the thicker bar instead of consuming another line. */
+#gameApp .companion-col .panel.card:has(#upHeading){position:relative!important;display:grid!important;grid-template-columns:max-content minmax(0,1fr)!important;grid-template-rows:22px 22px!important;gap:3px 7px!important;height:59px!important;min-height:59px!important;max-height:59px!important;flex:0 0 59px!important;padding:5px 9px!important;overflow:hidden!important}
+#gameApp .companion-col .panel.card:has(#upHeading)>.panel-heading{grid-column:1/-1!important;grid-row:1!important;display:flex!important;gap:6px!important;height:22px!important;min-width:0!important;position:relative!important}
+#gameApp .companion-col .panel.card:has(#upHeading) #upHeading{font:700 12px/1.2 system-ui,sans-serif!important;flex:none!important}
+#gameApp .companion-col .panel.card:has(#upHeading) #upProgress{flex:0 0 42px!important;width:42px!important;order:1!important;font:700 10px/1.2 ui-monospace,monospace!important}
+#gameApp .companion-col .panel.card:has(#upHeading) .panel-heading>.bar{order:2!important;flex:1 1 auto!important;min-width:40px!important;height:17px!important;min-height:17px!important;max-height:17px!important;margin:0!important;border-radius:5px!important;align-self:center!important}
+#gameApp .companion-col .panel.card:has(#upHeading) #upgradeFill{height:100%!important}
+#gameApp .companion-col .panel.card:has(#upHeading)>.upgrade-title{grid-column:1!important;grid-row:2!important;width:auto!important;max-width:205px!important;min-width:0!important;height:22px!important;max-height:22px!important;padding:0!important;margin:0!important;font-size:13px!important;line-height:22px!important;white-space:nowrap!important;overflow:hidden!important;text-overflow:ellipsis!important}
+#gameApp .companion-col .panel.card:has(#upHeading)>.upgrade-desc{display:block!important;grid-column:2!important;grid-row:2!important;margin:0!important;padding:0!important;min-width:0!important;width:auto!important;height:22px!important;max-height:22px!important;align-self:center!important;white-space:nowrap!important;overflow:hidden!important;text-overflow:ellipsis!important;font:500 11px/22px system-ui,sans-serif!important;color:#bad1de!important}
+#gameApp .companion-col .panel.card:has(#upHeading)>.upgrade-detail{display:flex!important;position:absolute!important;right:12px!important;top:8px!important;z-index:2!important;grid-row:auto!important;width:115px!important;max-width:115px!important;height:15px!important;margin:0!important;padding:0 3px!important;align-items:center!important;justify-content:flex-end!important;pointer-events:none!important;background:#071b26b8!important;border-radius:3px!important}
+#gameApp .companion-col .panel.card:has(#upHeading) #upgradeMoney{font:700 9px/13px ui-monospace,monospace!important;color:#ecf9ff!important;text-align:right!important;overflow:hidden!important;text-overflow:ellipsis!important;white-space:nowrap!important}
+#gameApp .companion-col .panel.card:has(#upHeading) #upgradePct,#gameApp .companion-col .panel.card:has(#upHeading)>.chips{display:none!important}
+</style>
+<style id="isora-fever-console-mini-style">
+/* Flash only at the transition into the animated source-GIF fever portrait. */
+@keyframes isoraFeverFlash {0%{opacity:0}19%{opacity:1}60%{opacity:.67}100%{opacity:0}}
+#assistantDock.isora-fever-flash .assistant-avatar:after{content:"";position:absolute;inset:0;z-index:50;pointer-events:none;background:linear-gradient(112deg,#fff,#d8fff6 30%,#fff2ff 68%,#fff);mix-blend-mode:screen;animation:isoraFeverFlash .85s ease-out both}
+/* A keyboard is displayed in the mini-interrupt on desktop and touch alike. */
+#miniModal .modal-box{width:min(1060px,calc(100% - 50px))!important;max-width:1060px!important;height:calc(100% - 54px)!important;max-height:650px!important;overflow:hidden!important;display:flex;flex-direction:column;align-items:center;gap:8px;padding:12px 25px!important}
+#miniModal #miniStart,#miniModal #miniMobile,#miniModal #patternBoard,#miniModal #miniFinish{display:none!important}
+#miniModal .modal-box h2{font-size:26px!important;margin:4px 0!important}
+#miniModal .modal-box p{margin:3px 0!important}
+#miniPC{width:100%!important;display:flex!important;flex-direction:column;align-items:center;min-height:0;flex:1;justify-content:space-evenly}
+#miniVirtualKeyboard{width:100%;min-height:0;flex:0 0 auto}
+#miniVirtualKeyboard .isora-keys{width:100%;display:flex;flex-direction:column;gap:3px}
+#miniVirtualKeyboard .isora-keyrow{min-height:0;display:flex;gap:3px}
+#miniVirtualKeyboard .key{height:43px!important;min-height:35px!important;flex:1 1 0;font-size:17px}
+#miniVirtualKeyboard .isora-shift{flex:1.5 1 0;font-size:12px!important}
+#miniVirtualKeyboard .isora-character{position:relative!important;display:grid!important;place-items:center!important}
+#miniVirtualKeyboard .isora-main-char{display:block!important;font:800 17px/1.2 ui-monospace,Consolas,monospace!important}
+#miniVirtualKeyboard .isora-shift-char{position:absolute!important;top:2px!important;right:4px!important;font:700 9px/1 ui-monospace,Consolas,monospace!important;color:#c7ebf0!important;opacity:.85!important;pointer-events:none!important}
+#miniVirtualKeyboard .isora-placeholder{opacity:.45}
+#miniModal .mini-phrase{margin:6px 0!important}
+#miniModal .mini-letter{width:clamp(25px,3.5vw,44px)!important;height:clamp(36px,4.7vw,58px)!important;font-size:clamp(17px,2.8vw,30px)!important}
+#miniModal .mini-progress{min-height:24px}
+</style>
 </head>
 <body data-era="0"><button id="pc12PortraitLaunch" type="button">⛶ 全画面・横向きで遊ぶ</button>
 <div class="ambient" aria-hidden="true"><div class="orbit"></div><div class="orbit two"></div></div><div class="fx-layer" id="fxLayer" aria-hidden="true"></div>
@@ -1369,12 +1758,23 @@ function informativeClues(c,cat){
 }
 function cluesFor(t){
  const c=t.secret,cat=t.category||inferCategory(c),base=informativeClues(c,cat),n=c.length;
- const revealA=Math.max(1,Math.min(n-1,Math.floor(n*.45))),revealB=Math.max(revealA+1,Math.min(n-1,Math.ceil(n*.78)));
- const a=c.slice(0,revealA)+'?'.repeat(n-revealA),b=c.slice(0,revealB)+'?'.repeat(n-revealB);
- return [base[0],base[1],base[2],
-  '解析記録：先頭「'+c.slice(0,Math.max(1,Math.floor(n/4)))+'」を確定入力した。残りは自分の直感を信じろ。',
-  '刻まれた文字：'+a+'。最後の方はまだ霧の中だ。',
-  'ほぼ解読：'+b+'。あと'+(n-revealB)+'文字だ。'];
+ // Direct prefixes made late-stage intuition equivalent to printing the answer.
+ // The confirmed-slot mechanic and purchased upgrades are intentionally untouched.
+ const lateByCategory={
+  history:'年表で出来事の前後関係を確認しよう。',years:'年の候補を年代で絞ろう。',
+  dates:'年月日の桁順と区切りを見直そう。',repeats:'繰り返しの単位に注目しよう。',
+  sequences:'増減と折り返しの規則を探そう。',keypad:'キーボード上で指の動きを追おう。',
+  words:'元になった名前や単語の綴りを思い出そう。',common:'よく選ばれる並びと手癖を疑おう。'
+ };
+ const context=lateByCategory[cat]||'これまでの照合結果を比べよう。';
+ const kinds=[...c].map(charKind), names={num:'数字',lower:'小文字',upper:'大文字',sym:'記号'};
+ const switches=[];for(let i=1;i<n;i++)if(kinds[i]!==kinds[i-1])switches.push(i+1);
+ const repeats=n-new Set([...c]).size;
+ return [base[0],context,
+  '使われた文字種は'+new Set(kinds).size+'種類。順序にも注目しよう。',
+  '先頭は'+names[kinds[0]]+'、末尾は'+names[kinds[n-1]]+'。',
+  '文字種が切り替わるのは'+(switches.length?switches.map(i=>i+'桁目').join('・'):'なし')+'。',
+  '同じ文字の再登場は'+(repeats?'あり':'なし')+'。確定桁と履歴から絞ろう。'];
 }
 const HINT_STEPS=[0,2,4,7,11,16];
 function hintTier(t){const trials=Math.max(0,t.tries||0)+(power.hint||0)*2;let tier=0;for(let i=1;i<HINT_STEPS.length;i++)if(trials>=HINT_STEPS[i])tier=i;return tier}
@@ -1743,14 +2143,29 @@ function renderHint(){
  $('hintRank').textContent='INSIGHT '+(level+1)+' / 6';
  const next=HINT_STEPS[level+1];const effective=(t.tries||0)+(power.hint||0)*2;
  $('hintExtra').textContent=level>=5?'直感、極まれり。判明した桁はすべて入力済み。':('次の手掛かりまで、あと '+Math.max(0,next-effective)+' 回の検証');
- const range=pinRange(t);$('targetHint').innerHTML='<strong>直感 '+(level+1)+'/6：</strong> '+escapeHtml(clues[0])+(level>0?'<br>'+escapeHtml(text):'')+'<br><span>文字数 '+t.n+' / 種類 '+allowedDesc(t.chars)+(range&&range.level?' / 数値域 <b>'+range.lo+'〜'+range.hi+'</b>':'')+'</span>';
+ const range=pinRange(t);$('targetHint').innerHTML='<strong>直感 '+(level+1)+'/6：</strong> '+escapeHtml(text);$('targetHint').title=text;
 }
 function escapeHtml(s){return s.replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
 function allowedDesc(c){let a=[];if([...NUM].some(ch=>c.includes(ch)))a.push('数字');if([...LOW].some(ch=>c.includes(ch)))a.push('小文字');if([...UP].some(ch=>c.includes(ch)))a.push('大文字');if([...SYM].some(ch=>c.includes(ch)))a.push('記号');return a.join('・')}
 function renderTypes(){
  const holder=$('typeStrip');holder.replaceChildren();const t=st.target,range=pinRange(t),fixed=fixedSlots(t);
- const chip=(str,known=true)=>{const el=document.createElement('div');el.className='type-pill'+(known?' known':'');el.textContent=str;holder.append(el)};
- if(power.usedKinds){const kinds=['数字','小文字','大文字','記号'].filter((_,i)=>[NUM,LOW,UP,SYM][i].split('').some(c=>t.secret.includes(c)));chip('使用文字種：'+kinds.join('・'))}
+ // Four fixed lamps: possible kinds are indicated without revealing unearned information.
+ // Once the used-kind upgrade is unlocked the same lamps show the actual set.
+ const kindsRow=document.createElement('div');kindsRow.className='isora-kind-lamps';
+ const allKinds=[['数字',NUM],['小文字',LOW],['大文字',UP],['記号',SYM]];
+ const actualKinds=new Set([...t.secret].map(charKind));
+ for(const [label,alphabet] of allKinds){
+  const possible=[...alphabet].some(c=>t.chars.includes(c));
+  const actual=actualKinds.has(({数字:'num',小文字:'lower',大文字:'upper',記号:'sym'})[label]);
+  const lit=possible&&(!power.usedKinds||actual);
+  const lamp=document.createElement('span');lamp.className='isora-kind-lamp'+(lit?' is-lit':'')+(power.usedKinds?' is-confirmed':'');
+  lamp.textContent=label;lamp.title=power.usedKinds?(lit?'使用する文字種':'使用しない文字種'):(possible?'使用可能な文字種（正解に含むかは未鑑定）':'この問題では使用しない');
+  lamp.setAttribute('aria-label',label+'：'+lamp.title);kindsRow.append(lamp);
+ }
+ holder.append(kindsRow);
+ const details=document.createElement('div');details.className='isora-kind-details';holder.append(details);
+ const chip=(str,known=true)=>{const el=document.createElement('span');el.className='type-pill'+(known?' known':'');el.textContent=str;el.title=str;details.append(el)};
+ 
  if(power.charReveal){const unique=[...new Set(t.secret)].sort((a,b)=>a.localeCompare(b,'en')),how=Math.min(unique.length,power.charReveal),found=unique.slice(0,how);chip('使用文字：'+found.map(c=>JSON.stringify(c)+'×'+[...t.secret].filter(x=>x===c).length).join(' / '))}
  if(range&&range.level)chip('数値範囲：'+range.lo+'〜'+range.hi);
  if(power.composition)chip('構成：'+composeBreakdown(t));
@@ -1763,14 +2178,14 @@ function renderTypes(){
 function renderAttemptLedger(){const box=$('attemptLedger');box.replaceChildren();if(st.mode!=='manual'||!st.target.history.length)return;for(const raw of st.target.history.slice(0,4)){const word=typeof raw==='string'?raw:raw.candidate||'';if(!word)continue;const item=document.createElement('div');item.className='attempt-item';const code=document.createElement('span');code.textContent=word;const score=document.createElement('em');if(power.matchCount){const correct=[...word].reduce((n,ch,i)=>n+(ch===st.target.secret[i]?1:0),0);score.textContent=correct+'/'+st.target.n+' 一致';if(!correct)score.classList.add('bad')}else score.textContent='×';item.append(code,score);box.append(item)}}
 function renderTargets(){const h=$('targets');h.replaceChildren();for(let i=0;i<TARGETS.length;i++){let e=document.createElement('div'),done=i<st.cleared,active=i===st.index&&!st.victory;e.className='target-item '+(done?'done':active?'current':'locked');let main=document.createElement('b');main.textContent=(done?'✓ ':active?'▶ ':'○ ')+String(i+1).padStart(2,'0');let sub=document.createElement('small');sub.textContent=TARGETS[i].n+'桁 '+(done?st.auto?'支援稼働':'突破':active?'解析中':'待機');e.append(main,sub);h.append(e)}}
 function renderTrophies(){const icons=['⌘','⌬','✧','✺','☼'],h=$('trophies');h.replaceChildren();icons.forEach((x,i)=>{let div=document.createElement('div');div.className='trophy'+(i<=st.era?' got':'');let b=document.createElement('i');b.textContent=x;let label=document.createElement('small');label.textContent=i>st.era?'？？？':ERAS[i].name;div.append(b,label);h.append(div)});$('trophyCount').textContent=(st.era+1)+' / 5';$('eraTag').textContent=ERAS[st.era].name;$('brandMark').textContent=ERAS[st.era].mark;$('eraDesc').textContent=ERAS[st.era].desc;document.body.dataset.era=st.era}
-function renderStats(){document.body.classList.toggle('auto-phase',st.mode==='auto');const t=st.target,cs=BigInt(st.coins),fail=BigInt(st.failures),covered=BigInt(t.cursor)+BigInt(t.sparse.length),sp=space(t),u=UPGRADES[st.upgrades];$('statFails').textContent=fmt(fail);$('statFails').title=fail.toString();$('statCoins').textContent=fmt(cs);$('statCoins').title=cs.toString();$('statTargets').textContent=st.cleared+' / '+TARGETS.length;$('statRate').textContent='+'+fmt(rate)+'/sec';$('statCoinValue').textContent=MINTS[mintLevel(st.upgrades)].name+' / ×'+fmt(power.yield)+' / 失敗';$('statBatch').textContent=st.mode==='auto'?'PARALLEL '+st.cleared+' NODES' :'×'+fmt(effectiveBatch(t))+'/INPUT';const pr=pinRange(t);$('pinRangeChip').classList.toggle('hidden',!pr);$('pRange').textContent=pr?(pr.level?pr.lo+'〜'+pr.hi:'未解析'):'—';$('pNum').textContent='+'+power.num;$('pLow').textContent='+'+power.lower;$('pUp').textContent='+'+power.upper;$('pSym').textContent='+'+power.sym;$('pBatch').textContent='×'+fmt(effectiveBatch(t));$('pProbe').textContent=power.probe?(power.probe>=99?'全桁':'最大'+power.probe+'桁'):'未解放';$('pMatch').textContent=power.matchCount?'一致数を表示':'未解放';
- const threshold=targetDistance(TARGETS[st.index]),estimated=pct(BigInt(t.cursor),threshold);$('scanFill').style.width=estimated+'%';$('scanText').textContent='候補検証 '+fmt(covered)+' 件 / '+fmt(sp)+' 通り';$('scanPercent').textContent='解析進度 '+estimated.toFixed(1)+'%';$('elapsed').textContent=timeStr();updateSceneHUD();$('upProgress').textContent=st.upgrades+' / '+UPGRADES.length;
+function renderStats(){document.body.classList.toggle('auto-phase',st.auto&&(st.mode==='auto'||st.mode==='transition'));const t=st.target,cs=BigInt(st.coins),fail=BigInt(st.failures),covered=BigInt(t.cursor)+BigInt(t.sparse.length),sp=space(t),u=UPGRADES[st.upgrades];$('statFails').textContent=fmt(fail);$('statFails').title=fail.toString();$('statCoins').textContent=fmt(cs);$('statCoins').title=cs.toString();$('statTargets').textContent=st.cleared+' / '+TARGETS.length;$('statRate').textContent='+'+fmt(rate)+'/sec';$('statCoinValue').textContent=MINTS[mintLevel(st.upgrades)].name+' / ×'+fmt(power.yield)+' / 失敗';$('statBatch').textContent=st.mode==='auto'?'PARALLEL '+st.cleared+' NODES' :'×'+fmt(effectiveBatch(t))+'/INPUT';const pr=pinRange(t);$('pinRangeChip').classList.toggle('hidden',!pr);$('pRange').textContent=pr?(pr.level?pr.lo+'〜'+pr.hi:'未解析'):'—';$('pNum').textContent='+'+power.num;$('pLow').textContent='+'+power.lower;$('pUp').textContent='+'+power.upper;$('pSym').textContent='+'+power.sym;$('pBatch').textContent='×'+fmt(effectiveBatch(t));$('pProbe').textContent=power.probe?(power.probe>=99?'全桁':'最大'+power.probe+'桁'):'未解放';$('pMatch').textContent=power.matchCount?'一致数を表示':'未解放';
+ const threshold=targetDistance(TARGETS[st.index]),estimated=st.mode==='transition'?100:pct(BigInt(t.cursor),threshold);$('scanFill').style.width=estimated+'%';$('scanText').textContent='候補検証 '+fmt(covered)+' 件 / '+fmt(sp)+' 通り';$('scanPercent').textContent='解析進度 '+estimated.toFixed(1)+'%';$('elapsed').textContent=timeStr();updateSceneHUD();$('upProgress').textContent=st.upgrades+' / '+UPGRADES.length;
  if(u){const needed=upgradeCost(st.upgrades);$('nextUpgrade').textContent=u[0];$('nextUpgradeDesc').textContent=u[1];const progress=pct(cs,needed);$('upgradeFill').style.width=progress+'%';$('upgradePct').textContent=progress.toFixed(0)+'%';$('upgradeMoney').textContent=fmt(cs)+' / '+fmt(needed)+' COINS'+(st.index<u[3]?' ・第'+(u[3]+1)+'端末から':'')}else{$('nextUpgrade').textContent='すべての強化を修めたり';$('nextUpgradeDesc').textContent='人の指を超えた演算が続いている。';$('upgradeFill').style.width='100%';$('upgradePct').textContent='MAX';$('upgradeMoney').textContent='UPGRADE COMPLETE'}
  $('terminalLabel').textContent='TARGET '+String(st.index+1).padStart(2,'0')+' // '+t.n+' DIGITS';$('targetTitle').textContent=t.name;$('phaseLabel').textContent=st.mode==='auto'?'全自動解析':st.mode==='mini'?'特殊認証':'手動解析';$('authPill').textContent=st.mode==='auto'?'AUTO RUNNING':st.mode==='transition'?'ACCESS GRANTED':st.mode==='mini'?'INTERCEPTED':'AWAITING INPUT';$('authPill').classList.add('good');$('inputModeBtn').classList.toggle('hidden',st.mode!=='manual');$('inputModeBtn').classList.toggle('on',st.inputStyle==='deduce');$('inputModeBtn').textContent=st.inputStyle==='deduce'?'✦ 推理入力':'⚡ 連打入力';$('keyboardKeys').classList.toggle('hidden',st.mode==='auto');$('mashBtn').style.display='none';$('keyboardPanel').classList.toggle('hidden',st.mode==='auto'||st.victory);
  $('statusLine').textContent=st.mode==='epilogue'?'最後の一打を待っている。どのキーでもいい。':st.victory?'すべてのパスワードを解錠した。':st.mode==='auto'?'無数の候補が高速で流れている（表示は演出）。':st.mode==='mini'?'特殊認証を突破せよ。':st.mode==='transition'?'鍵が開いた。次の端末へ移る。':st.buffer.length?(t.n-freeCount(t)+st.buffer.length)+' / '+t.n+'文字準備済み':'文字を打て。確定桁は自動入力済み。';$('inputNote').textContent=st.mode==='auto'?'入力は不要。すべての端末が自動的に解析する。':st.inputStyle==='deduce'?'推理入力：判明済みの桁は自動で埋まり、未知の桁だけ入力。桁照合・一致数を使うと早く解ける。':power.any?'連打入力：好きなキーひとつで全桁補完。推理したい時は推理入力に戻せます。':'連打入力：文字を補完し、失敗を重ねるほど検証倍率が跳ね上がる。狙い撃ちは推理入力。';
  $('eyebrow').textContent=ERAS[st.era].key+' // '+String(st.index+1).padStart(3,'0');$('headline').textContent=st.era>=3?'鍵は、もはや祈りと化した。':st.mode==='auto'?'機械よ、勝手に働け。':st.index===0?'叩け。考えろ。そして忘れろ。':'もっと叩け。演算を増やせ。';$('intro').textContent=st.mode==='auto'?'人の手から解き放たれた解析網を眺めよ。解錠するごとに演算は強くなる。':st.index===0?'最初から数字・英大小・記号が混ざる。手掛かりを読めば解ける。':'数字、英字、記号。桁数が増えても、キーを叩くほど検証が増えていく。';$('phaseDescription').textContent=st.mode==='auto'?'全 '+TARGETS.length+' 件の認証を突破すると終局。速度は端末を突破するほど上昇。':'最初の'+MANUAL_TARGETS+'端末は手動推理。4桁→5桁→6桁→8桁と進む。';
 }
-let pendingKnownTarget=null;function scheduleKnownCompletion(){const t=st.target;if(st.mode!=='manual'||freeCount(t)!==0||pendingKnownTarget===t)return;pendingKnownTarget=t;setTimeout(()=>{if(pendingKnownTarget===t)pendingKnownTarget=null;if(st.mode==='manual'&&st.target===t&&freeCount(t)===0)checkGuess(candidateFromBuffer(t,''))},350)}
+let pendingKnownTarget=null;function scheduleKnownCompletion(){const t=st.target;if(st.mode!=='manual'||freeCount(t)!==0||pendingKnownTarget===t)return;pendingKnownTarget=t;setTimeout(()=>{if(pendingKnownTarget===t)pendingKnownTarget=null;if(st.mode==='manual'&&st.target===t&&freeCount(t)===0){const candidate=candidateFromBuffer(t,'');if(candidate===t.secret)completeTarget(candidate);else checkGuess(candidate)}},350)}
 function renderAll(full=false){power=derive();renderStats();rerenderSlots();renderHint();renderTypes();renderAttemptLedger();if(full){renderTargets();renderTrophies();renderMints();renderLog();buildKeyboard();renderCompanion()}renderFinale();scheduleKnownCompletion()}
 function burstMultiplier(t){
  if(t.n<6||st.mode!=='manual')return 1n;
@@ -1792,8 +2207,8 @@ function nearbyRespectFixed(t,candidate){
  return null;
 }
 function checkGuess(candidate){
- if(st.mode!=='manual')return;const t=st.target;let x=encode(t,candidate);if(x===null||candidate.length!==t.n)return;const original=candidate;
- if(already(t,x)){let alt=nearbyRespectFixed(t,candidate);if(alt===null){toast('dup','この条件の候補は検証済み',1n,'別の組み合わせを試そう');return}x=alt;candidate=decode(t,x);if(t.tries<10)toast('quip','履歴から候補を自動補正',1n,original+' → '+candidate)}
+ if(st.mode!=='manual')return;const t=st.target;let x=encode(t,candidate);if(x===null||candidate.length!==t.n){st.buffer='';rerenderSlots();toast('input-retry','候補を再入力',1n,'入力欄をリセットしました。次のキーを入力できます。');save();return}const original=candidate;
+ if(already(t,x)){let alt=nearbyRespectFixed(t,candidate);if(alt===null){st.buffer='';rerenderSlots();toast('dup','この条件の候補は検証済み',1n,'候補を変えてもう一度入力');save();return}x=alt;candidate=decode(t,x);if(t.tries<10)toast('quip','履歴から候補を自動補正',1n,original+' → '+candidate)}
  st.buffer='';t.tries++;st.manualChecks=(st.manualChecks||0)+1;if(st.inputStyle==='mash'||t.mashed)st.mashChecks=(st.mashChecks||0)+1;else st.deduceChecks=(st.deduceChecks||0)+1;t.history.unshift(candidate);t.history.length=Math.min(12,t.history.length);const rel=relative(t,x);t.sparse.push(rel.toString());st.userChars=st.userChars||0;
  if(candidate===t.secret){st.totalGuesses=(BigInt(st.totalGuesses)+1n).toString();log('正解 '+candidate+' / '+t.name,'good');completeTarget(candidate);return}
  st.manualMistakes=(st.manualMistakes||0)+1;addFails(1n);
@@ -1815,7 +2230,7 @@ function scan(wanted){const t=st.target;let old=BigInt(t.cursor),max=space(t);if
  const passed=end-old-skipped-(hit?1n:0n);t.cursor=end.toString();addFails(passed);
  if(hit){st.totalGuesses=(BigInt(st.totalGuesses)+1n).toString();log('総当たり成功：'+t.secret,'good');completeTarget(t.secret)}
 }
-function completeTarget(secret){if(st.mode==='transition'||st.victory)return;const quickManual=st.mode==='manual'&&st.target.tries>0&&st.target.history?.[0]===secret;const checks=st.target.tries;const baseBonus=st.upgrades<UPGRADES.length?upgradeCost(st.upgrades):0n;const bonus=quickManual&&checks<=7?(checks<=3?2n:1n)*baseBonus:0n;if(bonus>0n){st.coins=(BigInt(st.coins)+bonus).toString();toast('smart','推理成功ボーナス',bonus,'少ない試行で突破：次の強化に還元');log('推理報酬 '+fmt(bonus)+' COINS','good')}st.lastWinner=secret;st.lastTarget=st.target.name;st.solved.push({number:st.index+1,name:st.target.name,secret,characters:st.target.n,manual:!st.auto,checks:st.target.tries});st.mode='transition';st.buffer='';st.cleared++;if(st.cleared===MANUAL_TARGETS&&!st.manualEndedAt)st.manualEndedAt=Date.now();nextUpgradeAt=Math.max(nextUpgradeAt,Date.now()+(st.auto?1400:1950));const isLast=st.cleared===TARGETS.length;log('ACCESS GRANTED / '+st.lastTarget,'good');if(!st.auto)companionSay(classifyCrack(st.target),'',true);setTimeout(maybeInviteChat,1050);toast('success'+st.cleared,st.era>=3?'封印、解けにけり':'ACCESS GRANTED',1n,'TARGET '+String(st.cleared).padStart(2,'0')+' — '+secret);audio.fanfare(isLast?'victory':'target');sparks(isLast?55:32);$('slots').closest('.terminal').classList.remove('terminal-cracked');void $('slots').offsetWidth;$('slots').closest('.terminal').classList.add('terminal-cracked');announce(isLast?'FINAL AUTHORIZATION':'ACCESS GRANTED',st.lastTarget+' 突破！','正解：'+secret+(isLast?'':'　次の端末を解放'),st.cleared<=MANUAL_TARGETS?1750:1150,'✺','crack');if(eraFor(st.cleared)>st.era)setTimeout(()=>updateEra(),1100);if(st.auto&&[20,32,44].includes(st.cleared))setTimeout(()=>{if(st.mode==='auto')companionSay('analysis',feverReflection(st.cleared),true)},1450);renderAll(true);save(true);setTimeout(()=>{if(st.mode!=='transition')return;if(isLast){startFinale();save(true);return}st.index=st.cleared;st.target=makeTarget(st.index,secret);st.buffer='';st.inputStyle=st.cleared<MANUAL_TARGETS?'deduce':'mash';$('quip').classList.add('hidden');if(st.cleared===MANUAL_TARGETS&&!st.auto){st.mode='mini';prepareMini()}else{st.mode=st.auto?'auto':'manual';log('TARGET '+(st.index+1)+' INITIALIZED.','')};buildKeyboard();renderAll(true);save(true)},isLast?2600:st.cleared<=MANUAL_TARGETS?1650:1050)}
+function completeTarget(secret){if(st.mode==='transition'||st.victory)return;const quickManual=st.mode==='manual'&&st.target.tries>0&&st.target.history?.[0]===secret;const checks=st.target.tries;const baseBonus=st.upgrades<UPGRADES.length?upgradeCost(st.upgrades):0n;const bonus=quickManual&&checks<=7?(checks<=3?2n:1n)*baseBonus:0n;if(bonus>0n){st.coins=(BigInt(st.coins)+bonus).toString();toast('smart','推理成功ボーナス',bonus,'少ない試行で突破：次の強化に還元');log('推理報酬 '+fmt(bonus)+' COINS','good')}st.lastWinner=secret;st.lastTarget=st.target.name;st.solved.push({number:st.index+1,name:st.target.name,secret,characters:st.target.n,manual:!st.auto,checks:st.target.tries});st.mode='transition';st.buffer='';st.cleared++;if(st.cleared===MANUAL_TARGETS&&!st.manualEndedAt)st.manualEndedAt=Date.now();nextUpgradeAt=Math.max(nextUpgradeAt,Date.now()+(st.auto?1400:1950));const isLast=st.cleared===TARGETS.length;log('ACCESS GRANTED / '+st.lastTarget,'good');if(!st.auto)companionSay(classifyCrack(st.target),'',true);setTimeout(maybeInviteChat,1050);toast('success'+st.cleared,st.era>=3?'封印、解けにけり':'ACCESS GRANTED',1n,'TARGET '+String(st.cleared).padStart(2,'0')+' — '+secret);audio.fanfare(isLast?'victory':'target');sparks(isLast?55:32);document.querySelector('#gameApp .stage-col .terminal').classList.remove('terminal-cracked');void $('slots').offsetWidth;document.querySelector('#gameApp .stage-col .terminal').classList.add('terminal-cracked');announce(isLast?'FINAL AUTHORIZATION':'ACCESS GRANTED',st.lastTarget+' 突破！','正解：'+secret+(isLast?'':'　次の端末を解放'),st.cleared<=MANUAL_TARGETS?1750:1150,'✺','crack');if(eraFor(st.cleared)>st.era)setTimeout(()=>updateEra(),1100);if(st.auto&&[20,32,44].includes(st.cleared))setTimeout(()=>{if(st.mode==='auto')companionSay('analysis',feverReflection(st.cleared),true)},1450);renderAll(true);save(true);setTimeout(()=>{if(st.mode!=='transition')return;if(isLast){startFinale();save(true);return}st.index=st.cleared;st.target=makeTarget(st.index,secret);st.buffer='';st.inputStyle=st.cleared<MANUAL_TARGETS?'deduce':'mash';$('quip').classList.add('hidden');if(st.cleared===MANUAL_TARGETS&&!st.auto){st.mode='mini';prepareMini()}else{st.mode=st.auto?'auto':'manual';log('TARGET '+(st.index+1)+' INITIALIZED.','')};buildKeyboard();renderAll(true);save(true)},isLast?2600:st.cleared<=MANUAL_TARGETS?1650:1050)}
 // Never reject a tap when the available character types are known. A disallowed
 // physical key is remapped to the closest eligible key in the fixed keyboard.
 // Unknown types remain unknown: use the target's publicly available charset,
@@ -1871,7 +2286,7 @@ function inputChar(ch){
  if(!isAllowed(mapped))return;
  audio.unlock();pc13HighlightKey(mapped);st.userChars++;st.actions=(st.actions||0)+1;audio.key();
  ch=mapped;
- const t=st.target,free=freeCount(t);t.sameKey=ch===t.lastKey?(t.sameKey||0)+1:1;t.lastKey=ch;if(t.sameKey>=11&&!t.mashed){t.mashed=true;companionSay('mash','',true)}if(!free){checkGuess(candidateFromBuffer(t,''));return}
+ const t=st.target,free=freeCount(t);t.sameKey=ch===t.lastKey?(t.sameKey||0)+1:1;t.lastKey=ch;if(t.sameKey>=11&&!t.mashed){t.mashed=true;companionSay('mash','',true)}if(!free){const complete=candidateFromBuffer(t,'');if(complete===t.secret){completeTarget(complete)}else{checkGuess(complete)}return}
  if(st.buffer.length>=free)st.buffer='';let next=st.buffer+ch;
  if(st.inputStyle==='mash'){
   if(power.any){while(next.length<free)next+=t.chars[rand(t.chars.length)]}
@@ -1892,7 +2307,47 @@ function buyUpgrades(){
 }
 function autoRate(){if(!st.auto)return 0n;const dist=targetDistance(TARGETS[st.index]),phase=Math.max(0,st.index-MANUAL_TARGETS);const targetSeconds=BigInt(Math.max(2,6-Math.floor(phase/3)));const boost=st.upgrades>=25?2n:1n;return (dist/targetSeconds+1n)*boost}
 function autoTick(ms){if(st.mode!=='auto'||st.victory)return;const ratePer=autoRate();const scale=BigInt(Math.max(0,Math.min(280,Math.floor(ms))));autofrac+=ratePer*scale;let trials=autofrac/1000n;autofrac%=1000n;if(trials>0n)scan(trials)}
-function prepareMini(){companionSay('mini','',true);mini={active:false,round:0,input:'',gesture:false,chosen:[],need:3,phrases:randomLoveWords()};$('miniModal').classList.add('show');$('miniStart').classList.remove('hidden');$('miniFinish').classList.add('hidden');$('miniProgress').textContent='成功すれば完全自動化。失敗してもペナルティなし。';$('miniFill').style.width='0%';const mobile=window.matchMedia('(pointer:coarse)').matches||window.innerWidth<650;$('miniPC').classList.toggle('hidden',mobile);$('miniMobile').classList.toggle('hidden',!mobile);$('miniTitle').textContent=mobile?'秘儀：相棒への想いを結べ':'秘儀：相棒に返事を届けよ';$('miniIntro').textContent=mobile?'黄色い結び目を順番になぞって、相棒へ想いを届けよう。':'大好き、ありがとう。相棒へのローマ字の返事を3回入力しよう。';drawMini();$('miniStart').focus()}
+function prepareMini(){
+ companionSay('mini','',true);
+ mini={active:true,round:0,input:'',gesture:false,chosen:[],need:3,phrases:randomLoveWords()};
+ $('miniModal').classList.add('show');$('miniStart').classList.add('hidden');$('miniFinish').classList.add('hidden');
+ $('miniMobile').classList.add('hidden');$('miniPC').classList.remove('hidden');
+ $('miniTitle').textContent='秘儀：相棒に返事を届けよ';
+ $('miniIntro').textContent='相棒へのローマ字の返事を3回入力しよう。画面キーボードでも入力できます。';
+ installMiniKeyboard();drawMini();
+}
+function miniTyped(key){
+ if(st.mode!=='mini'||!mini.active||key.length!==1)return;
+ const seq=loveMessage(Math.min(2,mini.round)),ch=key.toUpperCase();
+ if(ch===seq[mini.input.length]){
+  mini.input+=ch;st.actions=(st.actions||0)+1;audio.key();drawMini();
+  $('miniProgress').textContent='入力 '+mini.input.length+' / '+seq.length+'文字 ・ '+(mini.round+1)+' / 3';
+  if(mini.input.length===seq.length)miniRound();
+ }else{audio.quip();$('miniProgress').textContent='違うキーだ。次は '+seq[mini.input.length]+' 。';}
+}
+function installMiniKeyboard(){
+ let host=$('miniVirtualKeyboard');
+ if(!host){host=document.createElement('div');host.id='miniVirtualKeyboard';$('miniPC').append(host)}
+ host.replaceChildren();
+ // Use the same source keyboard DOM, key ordering and JIS/US physical layout.
+ const source=$('keys');if(!source)return;
+ const cloned=source.cloneNode(true);cloned.removeAttribute('id');
+ cloned.querySelectorAll('[id]').forEach(e=>e.removeAttribute('id'));
+ cloned.querySelectorAll('button').forEach(b=>{
+  b.removeAttribute('tabindex');
+  if(b.classList.contains('isora-shift')){
+   b.addEventListener('click',()=>{miniShift=!miniShift;miniPaintShift(cloned)});
+  }else if(b.dataset.base){b.addEventListener('pointerdown',()=>audio.unlock(),{passive:true});b.addEventListener('click',()=>miniTyped(b.dataset.base));}
+ });
+ host.append(cloned);miniShift=false;miniPaintShift(cloned);
+}
+let miniShift=false;
+function miniPaintShift(host){
+ host.querySelectorAll('.isora-shift').forEach(b=>{b.classList.toggle('isora-active',miniShift);b.textContent=miniShift?'⇧ ON':'⇧ SHIFT'});
+ // Mini passwords are Roman-letter uppercase even when their keyboard face is lower.
+ host.querySelectorAll('.isora-character').forEach(b=>b.classList.toggle('isora-face-shifted',miniShift));
+}
+
 const LOVE_WORDS={rin:['RINLOVE','RINSUKI','RINARIGATO','RINSAIKOU','RINANGEL','RINFOREVER','RINSMILE','RINMERCI','RINBRAVO','RINHERO','RINPARTNER','RINMAGICAL'],noa:['NOALOVE','NOASUKI','NOAARIGATO','NOASAIKOU','NOAANGEL','NOAFOREVER','NOASWEET','NOAMERCI','NOABRAVO','NOAHERO','NOAPARTNER','NOAORACLE'],sui:['SUILOVE','SUISUKI','SUIARIGATO','SUISAIKOU','SUIANGEL','SUIFOREVER','SUISMILE','SUIMERCI','SUIBRAVO','SUIHERO','SUIPARTNER','SUIBLOSSOM']};
 const LOVE_PATTERNS=[[0,1,4],[2,4,6,7],[0,3,4,5,8]];
 function loveMessage(round){return mini.phrases?.[round]||LOVE_WORDS[st.companion][round]}
@@ -2137,10 +2592,10 @@ class Sound{
 }
 const audio=new Sound();
 document.addEventListener('click',e=>{const btn=e.target&&e.target.closest?e.target.closest('button,[role="button"]'):null;if(!btn)return;if(btn.classList?.contains('key')||btn.id==='mashBtn')return;audio.unlock();audio.click(btn.classList?.contains('icon-btn')?'nav':'button')},true);
-function onKey(e){if(shellOpen){if(e.key==='Escape'&&shellOpen!=='title'){closeShellSubscreen()}return}if($('companionModal').classList.contains('show')||$('passwordLibraryModal').classList.contains('show')){if(e.key==='Escape'){$('companionModal').classList.remove('show');$('passwordLibraryModal').classList.remove('show')}return}if(e.ctrlKey||e.metaKey||e.altKey||e.isComposing)return;if(e.key==='Backspace'||e.key==='Delete'){e.preventDefault();return}if(st.mode==='mini'&&mini.active){if(!$('miniPC').classList.contains('hidden')&&e.key.length===1){e.preventDefault();const seq=loveMessage(Math.min(2,mini.round));if(e.key.toUpperCase()===seq[mini.input.length]){mini.input+=e.key.toUpperCase();st.actions=(st.actions||0)+1;audio.key();drawMini();$('miniProgress').textContent='入力 '+mini.input.length+' / '+seq.length+'文字 ・ '+mini.round+' / 3';if(mini.input.length===seq.length)miniRound()}else{audio.quip();$('miniProgress').textContent='違うキーだ。次は '+seq[mini.input.length]+' 。';}}return}
+function onKey(e){if(shellOpen){if(e.key==='Escape'&&shellOpen!=='title'){closeShellSubscreen()}return}if($('companionModal').classList.contains('show')||$('passwordLibraryModal').classList.contains('show')){if(e.key==='Escape'){$('companionModal').classList.remove('show');$('passwordLibraryModal').classList.remove('show')}return}if(e.ctrlKey||e.metaKey||e.altKey||e.isComposing)return;if(e.key==='Backspace'||e.key==='Delete'){e.preventDefault();return}if(st.mode==='mini'&&mini.active){if(e.key.length===1){e.preventDefault();miniTyped(e.key)}return}
  if(st.mode==='epilogue'&&!e.repeat&&e.key==='Enter'){e.preventDefault();finaleKey('↵');return}if(st.mode==='epilogue'&&!e.repeat&&e.key.length===1&&e.key.charCodeAt(0)>=33&&e.key.charCodeAt(0)<=126){e.preventDefault();finaleKey(e.key);return}if(st.mode!=='manual'||e.repeat)return;if(e.key==='Enter'){e.preventDefault();if(st.buffer.length===freeCount(st.target))checkGuess(candidateFromBuffer(st.target));return}if(e.key.length===1&&e.key.charCodeAt(0)>=33&&e.key.charCodeAt(0)<=126){if(e.target&&e.target.closest&&e.target.closest('input,textarea,[contenteditable]'))return;e.preventDefault();inputChar(e.key)}}
 document.addEventListener('keydown',onKey);document.querySelectorAll('.kb-tab').forEach(t=>t.addEventListener('click',()=>{keyGroup=t.dataset.group;audio.unlock();buildKeyboard()}));$('inputModeBtn').addEventListener('click',()=>{if(st.mode!=='manual')return;audio.unlock();st.inputStyle=st.inputStyle==='deduce'?'mash':'deduce';st.buffer='';renderAll(true);save(true)});$('enterBtn').addEventListener('click',()=>{audio.unlock();if(st.buffer.length===freeCount(st.target))checkGuess(candidateFromBuffer(st.target))});$('mashBtn').addEventListener('pointerdown',()=>audio.unlock(),{passive:true});$('mashBtn').addEventListener('click',()=>inputChar('1'));$('soundBtn').addEventListener('click',()=>audio.toggle());$('companionBookBtn').addEventListener('click',openCompanionBook);$('assistantChatBtn').addEventListener('click',()=>{audio.unlock();$('assistantChoices').classList.contains('hidden')?renderChatChoices('click'):hideChatChoices()});$('passwordLibraryBtn').addEventListener('click',openPasswordLibrary);$('libraryStage').addEventListener('change',()=>{libraryShown=70;renderPasswordLibrary()});$('libraryQuery').addEventListener('input',()=>{libraryShown=70;renderPasswordLibrary()});$('libraryMore').addEventListener('click',()=>{libraryShown+=70;renderPasswordLibrary()});$('closeLibrary').addEventListener('click',()=>{$('passwordLibraryModal').classList.remove('show');openCompanionBook()});$('closeCompanionBook').addEventListener('click',()=>$('companionModal').classList.remove('show'));$('motionBtn').addEventListener('click',()=>{st.reduce=!st.reduce;document.body.classList.toggle('reduce-motion',st.reduce);$('motionBtn').textContent=st.reduce?'光量 通常':'光量 軽減';save(true)});$('restartBtn').addEventListener('click',()=>{if(window.confirm('進行状況を消去して、初めから遊びますか？'))restart()});$('playAgain').addEventListener('click',()=>{$('victoryModal').classList.remove('show');setShell('title')});$('copyPasswords').addEventListener('click',async()=>{const val=st.solved.map(t=>String(t.number).padStart(2,'0')+' '+t.name+'：'+t.secret).join('\n');try{await navigator.clipboard.writeText(val);$('copyPasswords').textContent='コピーしました'}catch{$('copyPasswords').textContent='コピー不可：一覧を選択してください'}});
-$('miniStart').addEventListener('click',()=>{audio.unlock();mini.active=true;mini.round=0;mini.input='';mini.chosen=[];mini.need=expectedPattern().length;mini.phrases=randomLoveWords();$('miniStart').classList.add('hidden');$('miniFinish').classList.add('hidden');drawMini();if(!$('miniPC').classList.contains('hidden'))$('miniProgress').textContent='表示された英字を順番に！';else $('miniProgress').textContent='黄色い見本に沿って、順番になぞろう！'});
+$('miniStart').addEventListener('click',()=>{audio.unlock();mini.active=true;mini.round=0;mini.input='';mini.chosen=[];mini.need=expectedPattern().length;/* Preserve the phrases already shown on the preparation screen. */$('miniStart').classList.add('hidden');$('miniFinish').classList.add('hidden');drawMini();if(!$('miniPC').classList.contains('hidden'))$('miniProgress').textContent='表示された英字を順番に！';else $('miniProgress').textContent='黄色い見本に沿って、順番になぞろう！'});
 const board=$('patternBoard');function pointerCheck(e){if(!mini.active)return;const rect=board.getBoundingClientRect();const posX=e.clientX,posY=e.clientY;let nearest=-1,min=Infinity;for(let i=0;i<$('dots').children.length;i++){const r=$('dots').children[i].getBoundingClientRect(),x=r.left+r.width/2,y=r.top+r.height/2,d=Math.hypot(x-posX,y-posY);if(d<min){min=d;nearest=i}}if(nearest>=0&&min<Math.min(rect.width/3.2,60))addPatternPoint(nearest)}
 board.addEventListener('pointerdown',e=>{if(!mini.active)return;e.preventDefault();audio.unlock();mini.gesture=true;try{board.setPointerCapture(e.pointerId)}catch{}pointerCheck(e)});board.addEventListener('pointermove',e=>{if(!mini.gesture)return;e.preventDefault();pointerCheck(e)});board.addEventListener('pointerup',e=>{if(!mini.gesture)return;mini.gesture=false;pointerCheck(e);if(mini.chosen.length>=mini.need)miniRound()});board.addEventListener('pointercancel',()=>{mini.gesture=false});$('miniFinish').addEventListener('click',()=>{if(mini.chosen.length>=mini.need){miniRound()}else $('miniProgress').textContent='あと '+(mini.need-mini.chosen.length)+' 点なぞれ'});
 function loop(now){pixelSpeechTick();pixelUpdate(now);renderMachine(now);autoKeyboardPulse(now);const dt=Math.min(220,Math.max(0,now-lastTick));lastTick=now;if(st.mode==='auto')autoTick(dt);if(st.mode==='auto'&&Date.now()-pc17LastFever>10300){pc17LastFever=Date.now();companionSay('fever','',true)}if(st.mode==='manual'&&Date.now()-lastAiTalk>17500){companionSay(st.mode==='auto'?'fever':st.mode==='manual'&&st.target.tries>8?'smalltalk':'idle','',true);if(st.mode==='manual'&&st.target.tries>8&&rand(2)===0)renderChatChoices('smalltalk')}buyUpgrades();if(now-lastRender>130){lastRender=now;renderStats();if(st.mode==='epilogue')renderFinale();if(st.mode==='auto')rerenderSlots();gcToasts();if(now-rateStamp>=980){rate=(BigInt(st.failures)-rateSnapshot)*1000n/BigInt(Math.max(1,Math.floor(now-rateStamp)));rateSnapshot=BigInt(st.failures);rateStamp=now}save()}requestAnimationFrame(loop)}
@@ -2289,9 +2744,39 @@ function coinBurst(amount,force=false){const now=performance.now();if(!force&&no
  const n=mintLevel(st.upgrades),r=$('statCoins').getBoundingClientRect(),from=$('slots').getBoundingClientRect();const ox=from.left+from.width*.55,oy=from.top+from.height*.5,dx=r.left+r.width*.5-ox,dy=r.top+r.height*.55-oy;
  const limit=st.reduce?0:Math.min(12,4+String(amount).length);for(let i=0;i<limit&&liveCoins<40;i++){liveCoins++;const d=document.createElement('div');d.className='coin-piece';d.dataset.tier=n;const art=document.createElement('canvas');pixelCoin(art,n);d.append(art);d.style.left=(ox+(Math.random()-.5)*30)+'px';d.style.top=(oy+(Math.random()-.5)*20)+'px';d.style.setProperty('--dx1',(dx*.2+(Math.random()-.5)*110)+'px');d.style.setProperty('--dy1',(dy*.2-60-Math.random()*60)+'px');d.style.setProperty('--dx2',(dx*.6+(Math.random()-.5)*60)+'px');d.style.setProperty('--dy2',(dy*.6-40-Math.random()*35)+'px');d.style.setProperty('--dx3',(dx+(Math.random()-.5)*20)+'px');d.style.setProperty('--dy3',dy+'px');d.style.setProperty('--dur',(.55+Math.random()*.35)+'s');document.body.append(d);setTimeout(()=>{d.remove();liveCoins=Math.max(0,liveCoins-1)},1150)}
 }
-function drawMonitorFarm(ctx,W,H,now){const era=st.era||0,landscape=W>=H*1.14,cols=landscape?5:3,rows=4;const padX=10,padY=12,gapX=9,gapY=9,cw=(W-padX*2-gapX*(cols-1))/cols,ch=Math.min((H-padY*2-gapY*(rows-1))/rows,cw*.72);const total=cols*rows;const activeN=Math.min(total,Math.max(12,6+Math.floor((st.cleared||0)*.55))),shown=total;const hue=['#75e9d7','#a6b5ff','#e2b2f2','#ffc989','#ffe29f'][era];ctx.fillStyle='#040c16';ctx.fillRect(0,0,W,H);for(let i=0;i<shown;i++){const col=i%cols,row=Math.floor(i/cols),x=padX+col*(cw+gapX)+(row%2?6:0),y=padY+row*(ch+gapY)+Math.sin(now*.0015+i)*2,mod=Math.sin(now*.003+(i*1.83));ctx.save();ctx.translate(x,y);ctx.fillStyle='rgba(0,0,0,.28)';ctx.fillRect(8,8,cw,ch);ctx.fillStyle='#3f5568';ctx.beginPath();ctx.moveTo(8,0);ctx.lineTo(cw-10,0);ctx.lineTo(cw,10);ctx.lineTo(cw-2,ch-10);ctx.lineTo(10,ch);ctx.lineTo(0,ch-10);ctx.lineTo(0,10);ctx.closePath();ctx.fill();ctx.fillStyle='#081724';ctx.fillRect(10,8,cw-20,ch-28);ctx.strokeStyle='rgba(220,245,255,.13)';ctx.strokeRect(10.5,8.5,cw-21,ch-29);ctx.fillStyle=hue;ctx.font='bold '+Math.max(7,Math.min(10,cw*.08))+'px monospace';ctx.fillText('NODE '+String(i+1).padStart(2,'0'),14,19);for(let j=0;j<5;j++){ctx.fillStyle=j%2?'#2a5d59':hue;ctx.globalAlpha=j%2?.4:.88;ctx.fillRect(14,25+j*4,Math.max(8,(cw-34)*(0.18+((i+j*5+Math.sin(now*.0015+i*2)*3+4)%17)/20)),2)}ctx.globalAlpha=1;const rainLines=3+(i===shown-1?3:0);ctx.font='bold '+Math.max(6,Math.min(8,cw*.06))+'px monospace';for(let r=0;r<rainLines;r++){const token=(i===shown-1&&st.cleared>MANUAL_TARGETS)?(''+(TARGETS[(st.index+r)%TARGETS.length]?.code?.[0]?.[0]||'ACCESS')).slice(0,Math.max(4,Math.min(14,Math.floor(cw*.1)))):'P'+String((i*17+r*29)%99999).padStart(5,'0');ctx.fillStyle=r%2? '#d0c39a':'#89f3c0';ctx.globalAlpha=r%2?.2:.34;ctx.fillText(token,14,48+r*10+((now*.05+r*7)%9));}ctx.globalAlpha=1;ctx.fillStyle='#132834';ctx.fillRect(cw*.42,ch-17,cw*.16,10);ctx.fillStyle='#5c7a86';ctx.fillRect(cw*.31,ch-7,cw*.38,4);ctx.fillStyle=mod>.34?'#8df5b0':'#f5cc74';ctx.fillRect(cw-16,ch-14,4,4);if(i>=activeN){ctx.fillStyle='rgba(2,12,21,.74)';ctx.fillRect(0,0,cw,ch);ctx.fillStyle='#567b8a';ctx.font='bold 9px monospace';ctx.fillText('STANDBY',14,23)}ctx.restore()}ctx.fillStyle='rgba(255,232,165,.35)';ctx.font='bold 12px monospace';ctx.fillText('PARALLEL FARM '+activeN+'/'+total+' NODES',14,H-12)}
+function drawMonitorFarm(ctx,W,H,now){
+ const t=now*.001,phase=Math.max(0,st.index-MANUAL_TARGETS),total=48;
+ ctx.fillStyle='#030a12';ctx.fillRect(0,0,W,H);
+ // Stagger thin Windows-style console panes: overlapping depth, not a grid of CRTs.
+ const columns=8,rows=6,ww=Math.min(W*.34,170),hh=Math.min(H*.29,95);
+ const spanX=Math.max(0,W-ww-16),spanY=Math.max(0,H-hh-18);
+ for(let i=0;i<total;i++){
+  const col=i%columns,row=Math.floor(i/columns);
+  const x=8+(col/Math.max(1,columns-1))*spanX+Math.sin(i*2.1)*3;
+  const y=8+(row/Math.max(1,rows-1))*spanY+Math.cos(i*1.37)*3;
+  const live=(i+Math.floor(t*4))%7!==0;
+  ctx.save();ctx.translate(x,y);
+  ctx.fillStyle='rgba(1,12,20,.83)';ctx.fillRect(0,0,ww,hh);
+  ctx.strokeStyle=live?'rgba(88,199,197,.68)':'rgba(120,143,155,.44)';ctx.lineWidth=1;ctx.strokeRect(.5,.5,ww-1,hh-1);
+  ctx.fillStyle='rgba(12,39,51,.94)';ctx.fillRect(1,1,ww-2,12);
+  ctx.fillStyle=live?'#9fe6db':'#8ba2b2';ctx.font='bold 8px monospace';ctx.textBaseline='middle';
+  ctx.fillText('C:\\CRACK\\NODE'+String(i+1).padStart(2,'0')+'.EXE',5,7.5);
+  ctx.fillStyle='#c8d5de';ctx.fillRect(ww-11,4,6,1);ctx.strokeRect(ww-11,2,6,6);
+  ctx.font='8px monospace';
+  for(let line=0;line<5;line++){
+   const token=(((i+1)*179+Math.floor(t*22)+line*671+phase*9)%0xffff).toString(16).toUpperCase().padStart(4,'0');
+   ctx.globalAlpha=.52+Math.sin(t*3+i+line)*.18;
+   ctx.fillStyle=line===4?'#f8d78b':'#9bf5bf';
+   ctx.fillText((line===4?'AUTH>':'SCAN>')+token+' '+((i*13+line*17+Math.floor(t*33))%100).toString().padStart(2,'0')+'%',6,23+line*11);
+  }
+  ctx.globalAlpha=1;ctx.restore();
+ }
+ // A single progress label belongs to the network, not forty-eight extra HUDs.
+ ctx.fillStyle='#d7fbe9';ctx.font='bold 11px monospace';ctx.textBaseline='alphabetic';
+ ctx.fillText('PARALLEL ANALYSIS // '+total+' CONSOLES',10,H-5);
+}
 // Existing projected CRT remains the first phases, the network physically grows into multiple monitors.
-function renderMachine(now){if(st.mode!=='auto'){renderMachineBase(now);return}
+function renderMachine(now){if(!(st.auto&&(st.mode==='auto'||st.mode==='transition'))){renderMachineBase(now);return}
  const canvas=$('spectacleCanvas'),rect=canvas.getBoundingClientRect();if(rect.width<3||rect.height<3)return;const scale=Math.min(2,devicePixelRatio||1),W=rect.width,H=rect.height;canvas.width=Math.round(W*scale);canvas.height=Math.round(H*scale);const c=canvas.getContext('2d');c.setTransform(scale,0,0,scale,0,0);drawMonitorFarm(c,W,H,now);
 }
 // No spoilers in Help/Title; completed progression stays a discovery.
@@ -2564,19 +3049,24 @@ function pixelUpdate(now){
 
 function coinBurst(amount,force=false){
  const now=performance.now();if(!force&&now-lastCoinBurst<190)return;lastCoinBurst=now;
- const view=$('spectacle'),area=view.getBoundingClientRect();if(area.width<50||area.height<50)return;
- const tier=mintLevel(st.upgrades),count=st.reduce?0:Math.min(6,3+String(amount).length/6|0);
- const sx=area.width*.57,sy=area.height*.56,tx=area.width*.86,ty=area.height*.20;
- for(let i=0;i<count&&liveCoins<18;i++){
+ const source=$('spectacle').getBoundingClientRect();
+ const coinIcon=document.querySelector('#statCoins')?.closest('.stat')?.querySelector('#mintCollection canvas, .current-coin');
+ const target=(coinIcon||$('statCoins')).getBoundingClientRect();
+ if(source.width<30||target.width<2)return;
+ const sx=source.left+source.width*.52,sy=source.top+source.height*.57;
+ const tx=target.left+target.width*.5,ty=target.top+target.height*.5;
+ const tier=mintLevel(st.upgrades),count=st.reduce?0:Math.min(8,3+Math.floor(String(amount).length/4));
+ for(let i=0;i<count&&liveCoins<24;i++){
   liveCoins++;const d=document.createElement('div');d.className='coin-piece';d.dataset.tier=tier;
   const cn=document.createElement('canvas');pixelCoin(cn,tier);d.append(cn);
-  const spread=(i-(count-1)/2)*17;
-  d.style.left=(sx+spread)+'px';d.style.top=(sy+(i%3-1)*12)+'px';
-  d.style.setProperty('--dx1',(spread*.45+(Math.random()-.5)*30)+'px');d.style.setProperty('--dy1',(-32-Math.random()*23)+'px');
-  d.style.setProperty('--dx2',((tx-sx)*.68+spread*.25)+'px');d.style.setProperty('--dy2',((ty-sy)*.7-Math.random()*14)+'px');
-  d.style.setProperty('--dx3',(tx-sx+spread*.15)+'px');d.style.setProperty('--dy3',(ty-sy)+'px');
-  d.style.setProperty('--dur',(.5+Math.random()*.24)+'s');view.append(d);
-  setTimeout(()=>{d.remove();liveCoins=Math.max(0,liveCoins-1)},950);
+  const ox=(i-(count-1)/2)*12,oy=(i%3-1)*8;
+  d.style.left=(sx+ox)+'px';d.style.top=(sy+oy)+'px';
+  const dx=tx-(sx+ox),dy=ty-(sy+oy);
+  d.style.setProperty('--dx1',(dx*.2+(Math.random()-.5)*50)+'px');d.style.setProperty('--dy1',(dy*.2-42-Math.random()*28)+'px');
+  d.style.setProperty('--dx2',(dx*.7+(Math.random()-.5)*18)+'px');d.style.setProperty('--dy2',(dy*.7-20)+'px');
+  d.style.setProperty('--dx3',dx+'px');d.style.setProperty('--dy3',dy+'px');
+  d.style.setProperty('--dur',(.55+i*.035)+'s');document.body.append(d);
+  setTimeout(()=>{d.remove();liveCoins=Math.max(0,liveCoins-1)},1100);
  }
 }
 // Correct the original v7 portrait atlas labels: noa/sui were transposed.
@@ -2630,7 +3120,9 @@ function pc12Install(){if(pc12ControlsInstalled)return;pc12ControlsInstalled=tru
 /* v16: removed accidentally cropped faux-animation atlas */
 function syncFeverArt(){
  const dock=$('assistantDock'),fever=!!st?.auto&&!st.victory,id=pc10ArtKey(st?.companion);
- dock.classList.toggle('fever-on',fever);dock.dataset.feverCharacter=fever?id:'';
+ const firstFever=fever&&!dock.classList.contains('fever-on');
+ dock.classList.toggle('fever-on',fever);
+ if(firstFever){dock.classList.remove('isora-fever-flash');void dock.offsetWidth;dock.classList.add('isora-fever-flash');setTimeout(()=>dock.classList.remove('isora-fever-flash'),920)}dock.dataset.feverCharacter=fever?id:'';
  let frame=$('feverHeroCanvas'),fx=$('feverEnergyCanvas');
  if(!frame){frame=document.createElement('canvas');frame.id='feverHeroCanvas';frame.className='fever-pixel';dock.querySelector('.assistant-avatar').append(frame)}
  if(!fx){fx=document.createElement('canvas');fx.id='feverEnergyCanvas';dock.querySelector('.assistant-avatar').append(fx)}
@@ -2719,7 +3211,7 @@ addPool(5,'secret coffee flower orange banana monkey dragon rabbit summer winter
 
 function init(){installShell();pc13PrepareBoard();pc12Install();installV9();if(st.victory)st.mode='victory';if(st.mode==='mini'){st.mode='mini';prepareMini()}power=derive();document.body.classList.toggle('reduce-motion',!!st.reduce);$('soundBtn').textContent=st.sound?'♪ BGM ON':'♪ BGM OFF';$('motionBtn').textContent=st.reduce?'光量 通常':'光量 軽減';renderAll(true);if(!$('assistantDialogue').dataset.ready){$('assistantDialogue').dataset.ready='1';companionSay('intro','',true)}if(!st.eventHistory.length)log('SYSTEM ONLINE. 4-DIGIT PIN.','');if(st.victory)showVictory();if(st.mode==='epilogue'&&!st.finale)startFinale();if(st.mode==='epilogue'&&st.finale?.key)startFinaleReveal(true);window.addEventListener('pagehide',()=>save(true));document.addEventListener('visibilitychange',()=>{if(document.hidden)save(true)});requestAnimationFrame(loop)}
 // 限定QAフック。通常プレイでは存在しない。
-if(new URLSearchParams(location.search).get('qa')==='1'){window.__PC_QA_VERSION='23';window.__PC_QA={music:()=>window.__PC20_MUSIC?.(),resolveKey:(ch)=>nearestAllowedKey(ch,st.target),typedKinds:()=>[...inputTargetKinds(st.target)],setTestClass:(chars,secret)=>{st.target.chars=chars||ALL;st.target.secret=secret;st.buffer='';renderAll(true)},setTestFinale:()=>{st.mode='auto';st.auto=true;st.index=TARGETS.length-1;st.cleared=TARGETS.length;startFinale()},getFinale:()=>st.finale&&({...st.finale}),finaleKey:(ch)=>finaleKey(ch),getReview:()=>({stats:reviewStats(),line:finalReviewLine(),detail:reviewDetails()}),setTestAuto:(id)=>{st.mode='auto';st.auto=true;st.companion=id;st.index=12;st.target=makeTarget(12,'');renderAll(true);document.querySelector('.assistant-dock').classList.add('fever-on')},setTestVictory:()=>{st.victory=true;st.mode='victory';st.cleared=TARGETS.length;st.solved=TARGETS.map((t,i)=>({number:i+1,name:t.name,secret:t.code[0][0],characters:t.n,manual:i<9,checks:2}));st.finishedAt=Date.now();renderAll(true);showVictory()},snapshot:()=>JSON.parse(JSON.stringify(st)),companion:()=>({active:st.companion,collection:JSON.parse(JSON.stringify(aiCollection))}),pixel:(id,part)=>{const layer=pixelLayer(id,part);return {width:layer.width,height:layer.height,data:layer.getContext('2d').getImageData(60,65,1,1).data[3]}},choices:()=>FLIRT_CHOICES.length,chat:(id)=>chooseChat(id),library:()=>({clears:totalClears(),available:totalClears()>=3,count:TARGETS.reduce((s,t)=>s+t.code.length,0)}),talk:(kind,text)=>companionSay(kind,text,true),setCompanion:(id)=>{if(!AI_BY_ID[id])throw Error('not found');st.companion=id;renderCompanion();companionSay('intro','',true)},guess:(s)=>{for(const c of s)inputChar(c)},scan:(n)=>scan(BigInt(n)),finishTarget:()=>completeTarget(st.target.secret),finishMini:()=>miniComplete(),getPower:()=>({...power,batch:power.batch.toString(),yield:power.yield.toString()}),fixed:()=>fixedSlots(st.target),candidate:()=>candidateFromBuffer(st.target),targetPoolSizes:()=>TARGETS.map(x=>x.code.length),targets:()=>TARGETS.map(x=>({name:x.name,n:x.n,spots:x.code.filter(v=>v.length===1).length})),invalid:()=>TARGETS.flatMap((t,i)=>t.code.filter(x=>x[0].length!==t.n||[...x[0]].some(c=>!t.chars.includes(c))).map(x=>({i,name:t.name,code:x[0],n:t.n}))),solved:()=>st.solved,clues:()=>cluesFor(st.target),setTries:(n)=>{st.target.tries=n;st.buffer='';renderAll(true)},setUpgrade:(n)=>{st.upgrades=n;power=derive();renderAll(true)},forceSecret:(secret)=>{if(secret.length!==st.target.n||[...secret].some(c=>!st.target.chars.includes(c)))throw Error('invalid test secret');st.target.secret=secret;const max=space(st.target),dist=targetDistance(TARGETS[st.index]),i=encode(st.target,secret);st.target.origin=String((i-dist+max)%max);st.target.cursor='0';st.target.sparse=[];st.target.history=[];st.target.tries=0;st.target.confirmed=Array(st.target.n).fill(null);st.target.lastMatch=null;st.buffer='';renderAll(true)}}}
+if(new URLSearchParams(location.search).get('qa')==='1'){window.__PC_QA_VERSION='ISORA-FEVER';window.__PC_QA={music:()=>window.__PC20_MUSIC?.(),resolveKey:(ch)=>nearestAllowedKey(ch,st.target),typedKinds:()=>[...inputTargetKinds(st.target)],setTestClass:(chars,secret)=>{st.target.chars=chars||ALL;st.target.secret=secret;st.buffer='';renderAll(true)},setTestFinale:()=>{st.mode='auto';st.auto=true;st.index=TARGETS.length-1;st.cleared=TARGETS.length;startFinale()},getFinale:()=>st.finale&&({...st.finale}),finaleKey:(ch)=>finaleKey(ch),getReview:()=>({stats:reviewStats(),line:finalReviewLine(),detail:reviewDetails()}),setTestAuto:(id)=>{st.mode='auto';st.auto=true;st.companion=id;st.index=12;st.target=makeTarget(12,'');renderAll(true);document.querySelector('.assistant-dock').classList.add('fever-on')},setTestVictory:()=>{st.victory=true;st.mode='victory';st.cleared=TARGETS.length;st.solved=TARGETS.map((t,i)=>({number:i+1,name:t.name,secret:t.code[0][0],characters:t.n,manual:i<9,checks:2}));st.finishedAt=Date.now();renderAll(true);showVictory()},snapshot:()=>JSON.parse(JSON.stringify(st)),companion:()=>({active:st.companion,collection:JSON.parse(JSON.stringify(aiCollection))}),pixel:(id,part)=>{const layer=pixelLayer(id,part);return {width:layer.width,height:layer.height,data:layer.getContext('2d').getImageData(60,65,1,1).data[3]}},choices:()=>FLIRT_CHOICES.length,chat:(id)=>chooseChat(id),library:()=>({clears:totalClears(),available:totalClears()>=3,count:TARGETS.reduce((s,t)=>s+t.code.length,0)}),talk:(kind,text)=>companionSay(kind,text,true),setCompanion:(id)=>{if(!AI_BY_ID[id])throw Error('not found');st.companion=id;renderCompanion();companionSay('intro','',true)},guess:(s)=>{for(const c of s)inputChar(c)},scan:(n)=>scan(BigInt(n)),finishTarget:()=>completeTarget(st.target.secret),finishMini:()=>miniComplete(),getPower:()=>({...power,batch:power.batch.toString(),yield:power.yield.toString()}),fixed:()=>fixedSlots(st.target),candidate:()=>candidateFromBuffer(st.target),targetPoolSizes:()=>TARGETS.map(x=>x.code.length),targets:()=>TARGETS.map(x=>({name:x.name,n:x.n,spots:x.code.filter(v=>v.length===1).length})),invalid:()=>TARGETS.flatMap((t,i)=>t.code.filter(x=>x[0].length!==t.n||[...x[0]].some(c=>!t.chars.includes(c))).map(x=>({i,name:t.name,code:x[0],n:t.n}))),solved:()=>st.solved,clues:()=>cluesFor(st.target),setTries:(n)=>{st.target.tries=n;st.buffer='';renderAll(true)},setUpgrade:(n)=>{st.upgrades=n;power=derive();renderAll(true)},forceSecret:(secret)=>{if(secret.length!==st.target.n||[...secret].some(c=>!st.target.chars.includes(c)))throw Error('invalid test secret');st.target.secret=secret;const max=space(st.target),dist=targetDistance(TARGETS[st.index]),i=encode(st.target,secret);st.target.origin=String((i-dist+max)%max);st.target.cursor='0';st.target.sparse=[];st.target.history=[];st.target.tries=0;st.target.confirmed=Array(st.target.n).fill(null);st.target.lastMatch=null;st.buffer='';renderAll(true)}}}
 /* v15 polish: denser layout, slider-based audio control, richer chatter, stronger fever writing. */
 (function v15Polish(){
  const style=document.createElement('style');
@@ -3348,7 +3840,7 @@ function tick(now){
  if(fever)render(fever,fever.dataset.character||document.body.dataset.companion||'rin',index);
  const stage=document.getElementById('spectacle');
  if(stage){let cut=document.getElementById('pc20FeverStage');
- if(fever&&document.body.classList.contains('auto-phase')){if(!cut){cut=document.createElement('canvas');cut.id='pc20FeverStage';stage.append(cut)}cut.style.display='block';render(cut,fever.dataset.character||document.body.dataset.companion||'rin',index)} else if(cut){cut.style.display='none';}}
+ if(cut)cut.style.display='none';}
  if(document.getElementById('victoryModal')?.classList.contains('show'))render(document.getElementById('victoryPortrait'),'victory',index);
  requestAnimationFrame(tick);
 }
@@ -3357,5 +3849,102 @@ window.__PC20_REFERENCES={frames:6,size:SIZE,source:'original-gif-effects-over-s
 })();
 </script>
 
+
+<script id="isora-readability-init">
+(() => {
+  'use strict';
+  const coinLabel=document.getElementById('labelCoins');
+  const coinGraphic=document.getElementById('mintCollection');
+  if(coinLabel&&coinGraphic){
+    coinLabel.textContent='COINS / 銭';
+    coinLabel.append(coinGraphic);
+  }
+  // AI lines are typed letter by letter; keep the visible panel at its start.
+  const dialogue=document.getElementById('assistantDialogue');
+  if(dialogue){
+    const observer=new MutationObserver(()=>{
+      const speech=dialogue.closest('.assistant-speech');
+      if(speech)speech.scrollTop=0;
+      dialogue.scrollTop=0;
+    });
+    observer.observe(dialogue,{childList:true,characterData:true,subtree:true});
+  }
+})();
+</script>
+
+<script id="isora-integrated-crt-init">
+(()=>{
+ 'use strict';
+ const stage=document.getElementById('spectacle');
+ const slots=document.getElementById('slots');
+ if(!stage||!slots)return;
+ const crt=document.createElement('div');crt.className='crt-auth';crt.setAttribute('aria-label','実際のパスワード入力モニター');
+ const head=document.createElement('div');head.className='crt-auth-head';
+ const title=document.createElement('span');title.textContent='PASSWORD';
+ const status=document.createElement('span');status.className='crt-auth-status';status.textContent='●';head.append(title,status);
+ const label=document.createElement('div');label.className='crt-auth-label';label.textContent='INPUT';
+ const area=document.createElement('div');area.className='crt-auth-slots';area.append(slots);
+ const foot=document.createElement('div');foot.className='crt-auth-foot';foot.textContent='';
+ crt.append(head,label,area,foot);stage.append(crt);
+ // Slot rendering remains owned by the original game. Only its visual parent changes.
+ const observer=new MutationObserver(()=>{
+  const a=document.getElementById('authPill');
+  if(a)status.textContent=a.textContent.includes('GRANTED')?'● UNLOCKED':'●';
+ });
+ observer.observe(document.getElementById('authPill'),{childList:true,characterData:true,subtree:true});
+})();
+</script>
+
+<script id="isora-crt-depth-init">
+(() => {
+ const slots=document.getElementById('slots');
+ const stack=document.getElementById('toastStack');
+ const terminal=document.querySelector('#gameApp .stage-col .terminal');
+ if(stack&&terminal)terminal.append(stack);
+ if(!slots)return;
+ const layout=()=>{
+   const n=slots.children.length;
+   const cols=n<=8?Math.max(1,n):n<=16?8:Math.min(10,Math.ceil(n/3));
+   const rows=Math.ceil(n/cols);
+   const height=rows>=3?37:rows===2?44:56;
+   slots.style.setProperty('--crt-columns',cols);
+   slots.style.setProperty('--crt-slot-height',height+'px');
+   slots.style.setProperty('--crt-font-size',(rows>=3?16:rows===2?20:23)+'px');
+ };
+ new MutationObserver(layout).observe(slots,{childList:true});
+ layout();
+})();
+</script>
+
+<script id="isora-hud-placement-init">
+(()=>{
+  const header=document.querySelector('#gameApp>header');
+  const stack=document.getElementById('toastStack');
+  if(header&&stack)header.append(stack);
+  const terminal=document.querySelector('#gameApp .stage-col .terminal');
+  const announcement=document.getElementById('announcement');
+  if(terminal&&announcement)terminal.append(announcement);
+  const label=document.getElementById('labelCoins');
+  const coin=document.getElementById('mintCollection');
+  if(label&&coin&&label.parentElement)label.after(coin);
+})();
+</script>
+
+<script id="isora-compact-hud-v2-init">
+(()=>{
+ const head=document.querySelector('#gameApp .companion-col .panel.card .panel-heading');
+ const bar=document.querySelector('#gameApp .companion-col .panel.card>.bar');
+ const title=document.getElementById('nextUpgrade');
+ const desc=document.getElementById('nextUpgradeDesc');
+ if(head&&bar)head.append(bar);
+ // Keep the existing description and its updates; expose it on hover/focus without another HUD row.
+ if(title&&desc){
+  const sync=()=>{title.title=title.textContent+' — '+desc.textContent};
+  new MutationObserver(sync).observe(desc,{childList:true,characterData:true,subtree:true});
+  new MutationObserver(sync).observe(title,{childList:true,characterData:true,subtree:true});
+  sync();
+ }
+})();
+</script>
 </body>
 </html>
