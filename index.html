@@ -1096,6 +1096,15 @@ body.reduce-motion #gameApp .pc23-pulse i{transition:none}
 #gameApp .stage-col .terminal>.term-hint{height:auto!important;min-height:0!important;max-height:none!important;overflow:visible!important;line-height:1.45!important;overflow-wrap:anywhere!important}
 #gameApp .stage-col .terminal>.puzzle-feedback{height:auto!important;max-height:none!important;overflow:visible!important;line-height:1.4!important}
 </style>
+<style id="isora-jis-us-display">
+/* Dual legends stay visible on both Shift faces, without increasing keyboard height. */
+#gameApp #keys .isora-character .isora-main-char{display:block;pointer-events:none}
+#gameApp #keys .isora-character .isora-shift-char{position:absolute!important;top:2px!important;right:3px!important;font:700 10px/1 ui-monospace,Consolas,monospace!important;color:#b8e6eb!important;opacity:.9!important;pointer-events:none}
+#gameApp #keys .isora-character.isora-face-shifted .isora-shift-char{color:#fff1b5!important;opacity:1!important;text-shadow:0 0 6px #e8c66b}
+#gameApp #keys .isora-character.isora-face-shifted{box-shadow:inset 0 0 0 1px #cab57977!important}
+#gameApp #keys .isora-character.isora-placeholder{opacity:.55}
+#optionsScreen .isora-layout-option select{min-width:210px;max-width:45%;padding:12px;background:#122634;color:#f1f8fc;border:1px solid #648094;border-radius:5px;font:700 15px/1.2 inherit}
+</style>
 </head>
 <body data-era="0"><button id="pc12PortraitLaunch" type="button">⛶ 全画面・横向きで遊ぶ</button>
 <div class="ambient" aria-hidden="true"><div class="orbit"></div><div class="orbit two"></div></div><div class="fx-layer" id="fxLayer" aria-hidden="true"></div>
@@ -3178,26 +3187,41 @@ if(new URLSearchParams(location.search).get('qa')==='1'){
 }
 
 
-// Isora keyboard: a layout-only replacement. All game data and input upgrades remain v25.
+// Isora keyboard layouts: UI/geometry only. Upgrade and character-set rules stay untouched.
+// Unused punctuation is not added to the game's permitted character set.
+const ISORA_LAYOUTS={
+ jis:[
+  [['1','!'],['2',''],['3','#'],['4','$'],['5','%'],['6','&'],['7',''],['8',''],['9',''],['0',''],['-','']],
+  [['q','Q'],['w','W'],['e','E'],['r','R'],['t','T'],['y','Y'],['u','U'],['i','I'],['o','O'],['p','P'],['@','']],
+  [['a','A'],['s','S'],['d','D'],['f','F'],['g','G'],['h','H'],['j','J'],['k','K'],['l','L'],['*','']],
+  [['z','Z'],['x','X'],['c','C'],['v','V'],['b','B'],['n','N'],['m','M'],['?',''],['_','']]
+ ],
+ us:[
+  [['1','!'],['2','@'],['3','#'],['4','$'],['5','%'],['6',''],['7','&'],['8','*'],['9',''],['0',''],['-','_']],
+  [['q','Q'],['w','W'],['e','E'],['r','R'],['t','T'],['y','Y'],['u','U'],['i','I'],['o','O'],['p','P']],
+  [['a','A'],['s','S'],['d','D'],['f','F'],['g','G'],['h','H'],['j','J'],['k','K'],['l','L']],
+  [['z','Z'],['x','X'],['c','C'],['v','V'],['b','B'],['n','N'],['m','M'],['/','?']]
+ ]
+};
+// '/' is a visual position holder on US keyboards, not a permitted game symbol.
+// Unlike the old layout, unsupported faces never become additional password characters.
 let isoraShiftHeld=false,isoraShiftOneShot=false,isoraShiftLocked=false;
-const ISORA_SHIFT_DIGITS={'1':'!','2':'@','3':'#','4':'$','5':'%','7':'&','8':'*','9':'_','0':'?'};
+let isoraKeyboardLayout='jis';
+try{isoraKeyboardLayout=localStorage.getItem('physical_cracker_keyboard_layout')==='us'?'us':'jis'}catch{}
 function isoraShiftActive(){return isoraShiftHeld||isoraShiftOneShot||isoraShiftLocked}
 function isoraKeyOutput(base){
- if(/[a-z]/.test(base))return isoraShiftActive()?base.toUpperCase():base;
- if(isoraShiftActive()&&ISORA_SHIFT_DIGITS[base])return ISORA_SHIFT_DIGITS[base];
- // Shift+6/9/0 are deliberately not extra symbols: their unshifted digits remain usable.
- return base;
+ const selected=ISORA_LAYOUTS[isoraKeyboardLayout].flat().find(pair=>pair[0]===base);
+ return isoraShiftActive()&&selected?.[1]?selected[1]:base;
 }
 function isoraPaintKeys(){
  const shifted=isoraShiftActive();
  for(const button of document.querySelectorAll('#keys .isora-character')){
-   const base=button.dataset.base,display=shifted?isoraKeyOutput(base):base;
-   button.textContent=display;
-   button.dataset.key=display;
-   button.setAttribute('aria-label','文字 '+button.dataset.key);
-   const hint=document.createElement('small');
-   const secondary=ISORA_SHIFT_DIGITS[base]||(base.length===1&&/[a-z]/.test(base)?base.toUpperCase():'');
-   if(!shifted&&secondary){hint.textContent=secondary;button.append(hint)}
+   const base=button.dataset.base,alternate=button.dataset.shift||'';
+   const output=shifted&&alternate?alternate:base;
+   // A key with a non-game face is simply a physical-layout placeholder.
+   button.dataset.key=output;
+   button.setAttribute('aria-label','文字 '+base+(alternate?'、Shiftで'+alternate:''));
+   button.classList.toggle('isora-face-shifted',shifted&&!!alternate);
  }
  for(const button of document.querySelectorAll('#keys .isora-shift')){
   button.classList.toggle('isora-active',shifted);button.classList.toggle('isora-locked',isoraShiftLocked);
@@ -3207,9 +3231,7 @@ function isoraPaintKeys(){
 }
 function isoraUseBase(base){
  const value=isoraKeyOutput(base);
- // '/' is only a physical placeholder for Shift+?; its unshifted face is the existing '-'.
- const ch=value;
- inputChar(ch);
+ if(ALL.includes(value))inputChar(value);
  if(!isoraShiftLocked&&!isoraShiftHeld)isoraShiftOneShot=false;
  isoraPaintKeys();
 }
@@ -3224,12 +3246,15 @@ function isoraShiftButton(){
 function buildKeyboard(){
  keyCenters=null;
  const host=$('keys');host.replaceChildren();host.className='isora-keys pc13-keys';
- const rows=['1234567890-','qwertyuiop','asdfghjkl','zxcvbnm'];
- rows.forEach((line,index)=>{
+ ISORA_LAYOUTS[isoraKeyboardLayout].forEach((line,index)=>{
   const row=document.createElement('div');row.className='pc13-keyrow isora-keyrow';row.dataset.row=String(index+1);
   if(index===3)row.append(isoraShiftButton());
-  for(const base of line){
-   const b=document.createElement('button');b.type='button';b.className='key isora-character';b.dataset.base=base;
+  for(const [base,shift] of line){
+   const b=document.createElement('button');b.type='button';b.className='key isora-character';
+   b.dataset.base=base;b.dataset.shift=shift;b.dataset.key=base;
+   const main=document.createElement('span');main.className='isora-main-char';main.textContent=base;b.append(main);
+   if(shift){const sub=document.createElement('small');sub.className='isora-shift-char';sub.textContent=shift;b.append(sub)}
+   if(!ALL.includes(base)&&!ALL.includes(shift))b.classList.add('isora-placeholder');
    b.addEventListener('pointerdown',()=>audio.unlock(),{passive:true});
    b.addEventListener('click',()=>isoraUseBase(base));row.append(b);
   }
@@ -3239,20 +3264,17 @@ function buildKeyboard(){
  isoraPaintKeys();
  $('keyboardCaption').textContent=st.mode==='epilogue'?'64桁 / 全強化':'⇧ 長押し：大文字・記号　／　ダブルクリック：ロック';
 }
-// Geometry now uses each physical key's position for both Shift faces.
+// These centers are rebuilt for the selected physical layout, covering both faces.
 measuredKeyboardCenters=function(){
  if(keyCenters)return keyCenters;
  keyCenters=new Map();
  for(const b of document.querySelectorAll('#keys .isora-character')){
   const r=b.getBoundingClientRect(),pos={x:r.left+r.width/2,y:r.top+r.height/2};
-  const base=b.dataset.base,secondary=ISORA_SHIFT_DIGITS[base];
-  keyCenters.set(base,pos);
-  if(/[a-z]/.test(base))keyCenters.set(base.toUpperCase(),pos);
-  if(secondary)keyCenters.set(secondary,pos);
+  keyCenters.set(b.dataset.base,pos);
+  if(b.dataset.shift)keyCenters.set(b.dataset.shift,pos);
  }
  return keyCenters;
 };
-// Include Shift faces when mapping mistypes, without changing the upgrade's eligible sets.
 nearestAllowedKey=function(requested,target){
  const kinds=inputTargetKinds(target);
  const eligible=[...target.chars].filter(c=>kinds.has(charKind(c)));
@@ -3260,6 +3282,26 @@ nearestAllowedKey=function(requested,target){
  if(eligible.includes(requested))return requested;
  return nearestKeyByGeometry(requested,eligible,measuredKeyboardCenters());
 };
+// UI setting deliberately lives outside saved runs: changing layout doesn't alter progress.
+(function installIsoraKeyboardOption(){
+ const screen=$('optionsScreen'),footnote=screen.querySelector('.settings-footnote');
+ const row=document.createElement('div');row.className='setting-row isora-layout-option';
+ const info=document.createElement('div'),heading=document.createElement('b'),help=document.createElement('p');
+ heading.textContent='画面キーボード配列';help.textContent='日本語（JIS）／英字（US）のキー配置と近傍変換の基準を切り替えます。';
+ info.append(heading,help);
+ const select=document.createElement('select');select.id='isoraKeyboardLayout';
+ select.setAttribute('aria-label','画面キーボード配列');
+ for(const [value,label] of [['jis','日本語（JIS）'],['us','英字（US）']]){
+  const option=document.createElement('option');option.value=value;option.textContent=label;select.append(option);
+ }
+ select.value=isoraKeyboardLayout;
+ select.addEventListener('change',()=>{
+  isoraKeyboardLayout=select.value==='us'?'us':'jis';
+  try{localStorage.setItem('physical_cracker_keyboard_layout',isoraKeyboardLayout)}catch{}
+  buildKeyboard();
+ });
+ row.append(info,select);footnote.before(row);
+})();
 
 init();
 })();
