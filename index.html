@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
 <meta name="theme-color" content="#081119">
-<title>PHYSICAL CRACKER 26</title>
+<title>PHYSICAL CRACKER 23</title>
 <style>
 :root{color-scheme:dark;font-family:Inter,"Noto Sans JP","Hiragino Kaku Gothic ProN","Yu Gothic",Meiryo,sans-serif;--bg:#080f18;--bg2:#111f2b;--panel:#0e1926;--edge:#294050;--ink:#edf6f8;--muted:#91a9b9;--accent:#57e7d6;--accent-rgb:87,231,214;--gold:#f5c879;--danger:#fa778c;--ok:#79e9ae}
 *{box-sizing:border-box}html{min-height:100%;background:#081018}body{min-height:100vh;margin:0;color:var(--ink);background:radial-gradient(ellipse at 11% 0%,rgba(var(--accent-rgb),.13),transparent 35%),radial-gradient(ellipse at 100% 90%,#6e297729,transparent 52%),repeating-linear-gradient(0deg,#ffffff04 0 1px,transparent 1px 42px),repeating-linear-gradient(90deg,#ffffff04 0 1px,transparent 1px 42px),var(--bg);transition:background 1.5s,color .5s;overflow-x:hidden}
@@ -1069,73 +1069,12 @@ body.reduce-motion #gameApp .pc23-pulse i{transition:none}
 #victoryModal .victory-overview #victoryStats{font-size:17px!important;line-height:1.2!important;margin:3px 0!important;max-height:2.5em!important;overflow:hidden}
 #victoryModal .victory-overview #victoryReflection{font-size:17px!important;line-height:1.25!important;margin:3px 0!important;max-height:3.8em!important;overflow:auto;white-space:normal!important}
 </style>
-
-<style id="pc26-display-fixes">
-/* Legible prose: fixed HUD frame, scroll inside content only; never squeeze line boxes. */
-#gameApp .companion-col .assistant-dock{min-height:0!important;overflow:hidden!important;}
-#gameApp .companion-col .assistant-speech{display:flex!important;flex-direction:column!important;min-width:0!important;min-height:0!important;overflow:hidden!important;gap:4px!important;padding:9px 12px 8px!important;}
-#gameApp .companion-col .assistant-heading{flex:0 0 auto!important;min-height:24px!important;max-height:none!important;overflow:visible!important;display:flex!important;gap:6px!important;align-items:center!important;padding-right:0!important;}
-#gameApp .companion-col .assistant-heading strong{font-size:18px!important;line-height:1.35!important;}
-#gameApp .companion-col .assistant-heading small{font-size:10px!important;min-width:0!important;}
-#gameApp .companion-col .assistant-heading #assistantMood{font-size:10px!important;white-space:nowrap!important;margin-left:auto!important;flex-shrink:0!important;}
-#gameApp .companion-col .assistant-speech #assistantDialogue{display:block!important;flex:1 1 auto!important;height:auto!important;min-height:0!important;max-height:none!important;margin:0!important;padding:3px 7px!important;overflow-y:auto!important;overflow-x:hidden!important;font-size:17px!important;line-height:1.55!important;white-space:normal!important;word-break:normal!important;overflow-wrap:break-word!important;line-break:strict!important;letter-spacing:0!important;}
-#gameApp .companion-col .assistant-speech .assistant-meta{flex:0 0 auto!important;min-height:13px!important;line-height:1.3!important;}
-#gameApp .companion-col .assistant-speech .assistant-choice-tools{flex:0 0 auto!important;min-height:32px!important;margin-top:0!important;}
-#gameApp .companion-col .assistant-speech .assistant-choices:not(.hidden){flex:0 1 38%!important;min-height:0!important;overflow-y:auto!important;}
-#gameApp .pc22-status{position:static!important;display:block!important;order:4!important;max-width:100%!important;flex:0 0 auto!important;white-space:normal!important;overflow:visible!important;text-overflow:clip!important;line-height:1.35!important;font-size:10px!important;margin-left:auto!important;align-self:center!important;text-align:right!important;}
-#gameApp .companion-col .assistant-heading #assistantRole{display:none!important;}
-#gameApp .stage-col .terminal{overflow:hidden!important;}
-#gameApp .stage-col .terminal>.term-hint{box-sizing:border-box!important;grid-row:3!important;width:100%!important;height:105px!important;max-height:105px!important;overflow-y:auto!important;overflow-x:hidden!important;padding:1px 13px 2px 0!important;margin:0!important;font-size:15px!important;line-height:1.52!important;white-space:normal!important;word-break:normal!important;overflow-wrap:break-word!important;line-break:strict!important;scrollbar-gutter:stable!important;}
-#gameApp #targetHint strong,#gameApp #targetHint span{line-height:inherit!important;}
-#gameApp .stage-col .terminal{grid-template-rows:22px 30px 105px 32px 43px 37px minmax(15px,1fr) 8px 14px!important;}
-#gameApp .stage-col .terminal>.puzzle-feedback{font-size:14px!important;line-height:1.45!important;overflow-y:auto!important;white-space:normal!important;word-break:normal!important;line-break:strict!important;padding-right:9px!important;scrollbar-gutter:stable!important;}
-#gameApp .stage-col .terminal>.terminal-bottom .statusline{line-height:1.45!important;white-space:normal!important;overflow-y:auto!important;}
-#gameApp .stage-col .terminal>.term-title{position:relative!important;z-index:0!important;}
-#gameApp .stage-col .terminal>.row{z-index:1!important;}
-#gameApp .stage-col .spectacle{z-index:2!important;}
-body.auto-phase #gameApp .stage-col .terminal{position:relative!important;z-index:5!important;min-height:0!important;overflow:hidden!important;flex:1 1 30%!important;height:30%!important;}
-body.auto-phase #gameApp .stage-col .terminal>.row{min-height:24px!important;}
-body.auto-phase #gameApp .stage-col .terminal>.term-hint{display:none!important;}
-body.auto-phase #gameApp .stage-col .terminal>.terminal-bottom{flex:0 0 auto!important;}
-body.auto-phase #gameApp .stage-col .terminal>.term-title{min-height:26px!important;}
-body.auto-phase #gameApp .stage-col .terminal>.term-hint{max-height:65px!important;height:auto!important;}
-body.auto-phase #gameApp .stage-col .spectacle{z-index:0!important;overflow:hidden!important;flex:0 0 70%!important;height:70%!important;}
-#gameApp #enterBtn{display:none!important;}
-#gameApp #keyboardPanel .pc13-keyrow>.pc26-backspace{flex:0 0 55px!important;max-width:65px!important;background:linear-gradient(#4d3940,#372a34)!important;border-color:#bf8f9a!important;color:#fff5eb!important;font-size:24px!important;}
-#gameApp .stage-col .terminal #pc26HintRemaining{grid-column:1!important;grid-row:6!important;align-self:start!important;z-index:1!important;font-size:12px!important;line-height:1.35!important;color:#ffda9a!important;white-space:nowrap!important;overflow:hidden!important;text-overflow:ellipsis!important;pointer-events:none!important;}
-#gameApp .stage-col .terminal>.attempt-ledger{grid-row:7!important;min-height:0!important;}
-#gameApp .stage-col .terminal>.terminal-bottom{grid-row:6/8!important;}
-body.auto-phase #gameApp .stage-col .terminal #pc26HintRemaining{display:none!important;}
-/* Keep independent notices in independent lanes; both retain full text. */
-#gameApp .spectacle .toast-stack{position:absolute!important;left:5px!important;right:auto!important;top:5px!important;bottom:auto!important;width:min(45%,260px)!important;max-height:calc(100% - 10px)!important;overflow-y:auto!important;overflow-x:hidden!important;}
-#gameApp .spectacle .toast-stack .toast{padding:4px 6px!important;font-size:10px!important;line-height:1.35!important;white-space:normal!important;overflow-wrap:break-word!important;max-width:100%!important;}
-#gameApp .spectacle .toast-stack .toast strong{white-space:normal!important;overflow:visible!important;text-overflow:clip!important;}
-#gameApp .spectacle .announcement{left:auto!important;right:5px!important;top:5px!important;bottom:auto!important;width:min(52%,285px)!important;max-width:52%!important;max-height:calc(100% - 10px)!important;box-sizing:border-box!important;overflow:auto!important;padding:6px 8px!important;}
-#gameApp .spectacle .announcement h2{font-size:13px!important;line-height:1.4!important;white-space:normal!important;word-break:keep-all!important;overflow-wrap:break-word!important;}
-#gameApp .spectacle .announcement p{font-size:10px!important;line-height:1.45!important;max-height:none!important;overflow:visible!important;}
-/* Display complete final password on the victory record without changing the sequence. */
-#victoryModal .pc26-victory-secret{font:700 12px/1.4 ui-monospace,Consolas,monospace;color:#ffe5b4;letter-spacing:0;word-break:break-all;overflow-wrap:anywhere;white-space:normal;max-height:64px;overflow:auto;border:1px solid #7b7780;padding:5px 8px;}
-/* Final 64 chars: complete text, no CSS ellipsis or hidden ending. */
-body.pc21-final #gameApp .stage-col .terminal>.pc21-finale{min-height:0!important;max-height:100%!important;overflow-y:auto!important;}
-body.pc21-final #gameApp .stage-col .terminal>.pc21-finale .pc21-pass{font-size:15px!important;line-height:1.35!important;max-height:none!important;height:auto!important;overflow:visible!important;overflow-wrap:anywhere!important;word-break:break-all!important;}
-#gameApp .pc26-full-secret{color:#fff0bb!important;font:700 13px/1.4 ui-monospace,Consolas,monospace!important;overflow-wrap:anywhere!important;word-break:break-all!important;padding:3px 0!important;}
-#gameApp .pc26-explain{font-size:11px!important;line-height:1.5!important;margin:4px 0!important;color:#c5dfec!important;max-width:540px!important;}
-#gameApp #pc26ContinueNote{grid-column:1/-1!important;}
-#gameApp #pc26PartnerInfo{margin-top:9px!important;}
-#companionModal[data-book="passwords"] #companionCards,#companionModal[data-book="passwords"] #companionReactions,#companionModal[data-book="passwords"] #passwordLibraryBtn{display:none!important;}
-#companionModal:not([data-book="passwords"]) #pc26PasswordTab{display:none!important;}
-#pc26PasswordTab{color:#e1edf1;font-size:15px;line-height:1.5;padding:14px;border:1px solid #537485;border-radius:7px;}
-#optionsScreen .settings-scroll{scrollbar-width:auto!important;scrollbar-color:#8acdde #142638!important;}
-#optionsScreen .settings-scroll:after{content:'以上で設定項目はすべてです';display:block;color:#c6d9e2;font-size:13px;text-align:center;padding:6px 0;}
-#optionsScreen .sub-screen::after{content:'▼ 下へスクロールして「画面演出」も設定できます';flex:0 0 18px;order:0;text-align:center;color:#f3d4a1;font-size:12px;}
-#optionsScreen .sub-screen>.close-shell{order:1!important;}
-</style>
 </head>
 <body data-era="0"><button id="pc12PortraitLaunch" type="button">⛶ 全画面・横向きで遊ぶ</button>
 <div class="ambient" aria-hidden="true"><div class="orbit"></div><div class="orbit two"></div></div><div class="fx-layer" id="fxLayer" aria-hidden="true"></div>
 <div class="app" id="gameApp">
 <nav class="mobile-tabs" id="mobileTabs" aria-label="ゲーム内ページ" hidden><button class="page-tab current" type="button" data-page="0">⌨ 解析</button><button class="page-tab" type="button" data-page="1">⚡ 成長</button><button class="page-tab" type="button" data-page="2">▤ 設備</button></nav>
-<header><div class="brand"><div class="brand-mark" id="brandMark">⌘</div><div><small>ONE KEY, A MILLION ERRORS</small><b>PHYSICAL CRACKER 26</b></div></div><div class="top-actions"><span class="tag" id="eraTag">電子計算機</span><button class="icon-btn" id="titleReturn" type="button">⌂ TITLE</button><button class="icon-btn" id="hudDetailsButton" type="button" aria-expanded="false">▦ 詳細</button><button class="icon-btn" id="gameFullscreen" type="button">⛶ 全画面</button><button class="icon-btn" id="soundBtn" type="button" title="音声を切替">♪ BGM ON</button><button class="icon-btn" id="motionBtn" type="button" title="激しい演出を軽減">光量 軽減</button><button class="icon-btn" id="companionBookBtn" type="button">相棒図鑑</button><button class="icon-btn" id="restartBtn" type="button">最初から</button></div></header>
+<header><div class="brand"><div class="brand-mark" id="brandMark">⌘</div><div><small>ONE KEY, A MILLION ERRORS</small><b>PHYSICAL CRACKER 25</b></div></div><div class="top-actions"><span class="tag" id="eraTag">電子計算機</span><button class="icon-btn" id="titleReturn" type="button">⌂ TITLE</button><button class="icon-btn" id="hudDetailsButton" type="button" aria-expanded="false">▦ 詳細</button><button class="icon-btn" id="gameFullscreen" type="button">⛶ 全画面</button><button class="icon-btn" id="soundBtn" type="button" title="音声を切替">♪ BGM ON</button><button class="icon-btn" id="motionBtn" type="button" title="激しい演出を軽減">光量 軽減</button><button class="icon-btn" id="companionBookBtn" type="button">相棒図鑑</button><button class="icon-btn" id="restartBtn" type="button">最初から</button></div></header>
 <section class="hero"><div><div class="eyebrow" id="eyebrow">BOOT SEQUENCE / 001</div><h1 id="headline">叩け。考えろ。そして忘れろ。</h1><p id="intro">まずは短い文字列を推理しよう。外れたら連打で解析を進めればいい。</p></div><div class="right-note mono" id="elapsed">00:00</div></section>
 <section class="spectacle" id="spectacle" aria-label="演算文明の立体モデル">
   <canvas id="spectacleCanvas" aria-hidden="true"></canvas>
@@ -1563,7 +1502,7 @@ function drawVictoryPortrait(canvas,id,now){if(!canvas)return;const w=384,h=340;
 }
 function pixelSpeechStart(text,kind){const chars=Array.from(text);const speed=kind==='quip'?29:kind==='idle'||kind==='smalltalk'?36:23;speechState={chars,pos:0,displayed:-1,endsAt:Date.now()+chars.length*speed+600,start:Date.now(),speed,id:st.companion};$('assistantDialogue').textContent='';pixelSetMood(PIXEL_EMOTIONS[kind]||'calm',Math.max(4500,chars.length*speed+1200))}
 function pixelSpeechTick(){if(!speechState)return;const a=speechState,elapsed=Date.now()-a.start,pos=Math.min(a.chars.length,Math.floor(elapsed/a.speed));if(pos===a.displayed)return;
- $('assistantDialogue').textContent=a.chars.slice(0,pos).join('');$('assistantDialogue').scrollTop=$('assistantDialogue').scrollHeight;if(pos>a.displayed&&pos<a.chars.length&&pos%2===0&&a.id===st.companion)audio.textBeep(a.id,pos);a.displayed=pos;
+ $('assistantDialogue').textContent=a.chars.slice(0,pos).join('');if(pos>a.displayed&&pos<a.chars.length&&pos%2===0&&a.id===st.companion)audio.textBeep(a.id,pos);a.displayed=pos;
 }
 
 const AI_PROFILES=[
@@ -1768,7 +1707,6 @@ function renderHint(){
  $('hintRank').textContent='INSIGHT '+(level+1)+' / 6';
  const next=HINT_STEPS[level+1];const effective=(t.tries||0)+(power.hint||0)*2;
  $('hintExtra').textContent=level>=5?'直感、極まれり。判明した桁はすべて入力済み。':('次の手掛かりまで、あと '+Math.max(0,next-effective)+' 回の検証');
- const liveHint=$('pc26HintRemaining');if(liveHint)liveHint.textContent=level>=5?'直感：全段階解放':('次の直感まで あと'+Math.max(0,next-effective)+'回の検証');
  const range=pinRange(t);$('targetHint').innerHTML='<strong>直感 '+(level+1)+'/6：</strong> '+escapeHtml(clues[0])+(level>0?'<br>'+escapeHtml(text):'')+'<br><span>文字数 '+t.n+' / 種類 '+allowedDesc(t.chars)+(range&&range.level?' / 数値域 <b>'+range.lo+'〜'+range.hi+'</b>':'')+'</span>';
 }
 function escapeHtml(s){return s.replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
@@ -1891,12 +1829,8 @@ function nearestAllowedKey(ch,t){
  return nearestKeyByGeometry(ch,eligible,measuredKeyboardCenters());
 }
 function isAllowed(ch){return st.target.chars.includes(ch)}
-function pc26DeleteLast(){
- if(st.mode!=='manual'||!st.buffer.length)return;
- st.buffer=st.buffer.slice(0,-1);rerenderSlots();renderStats();save(true);
-}
 function inputChar(ch){
- if(st.mode==='epilogue'){finaleKey(ch);return}if(st.mode==='transition'&&pc26MayQueueTransition()&&ch.length===1){pc26QueuedKeys.push(ch);return}if(st.mode!=='manual'||st.victory||ch.length!==1)return;
+ if(st.mode==='epilogue'){finaleKey(ch);return}if(st.mode!=='manual'||st.victory||ch.length!==1)return;
  const mapped=nearestAllowedKey(ch,st.target);
  if(!isAllowed(mapped))return;
  audio.unlock();pc13HighlightKey(mapped);st.userChars++;st.actions=(st.actions||0)+1;audio.key();
@@ -1913,10 +1847,10 @@ function inputChar(ch){
 }
 function buyUpgrades(){
  if(st.victory||st.mode==='transition'||st.mode==='mini')return;const u=UPGRADES[st.upgrades];if(!u)return;if(st.index<u[3]||BigInt(st.coins)<upgradeCost(st.upgrades))return;const now=Date.now();if(now<nextUpgradeAt)return;
- const oldFixed=fixedSlots(st.target),prevMint=mintLevel(st.upgrades),paid=upgradeCost(st.upgrades),coinName=MINTS[prevMint].name;st.coins=(BigInt(st.coins)-paid).toString();st.upgrades++;power=derive();resetPendingIfFactsChanged(oldFixed,st.target);
+ const oldFixed=fixedSlots(st.target),prevMint=mintLevel(st.upgrades);st.coins=(BigInt(st.coins)-upgradeCost(st.upgrades)).toString();st.upgrades++;power=derive();resetPendingIfFactsChanged(oldFixed,st.target);
  if(mintLevel(st.upgrades)>prevMint){audio.fanfare('era');sparks(25);toast('mint','新貨幣 '+MINTS[mintLevel(st.upgrades)].name+' 鋳造！',1n,'失敗1回の価値が100倍');announce('COIN EVOLUTION',MINTS[mintLevel(st.upgrades)].name+'、鋳造せり！','貨幣の価値が100倍。失敗の報酬も指数的に上昇！',1700,'◉')}
  let delay=Math.max(100,1450-Math.floor(st.upgrades*54));nextUpgradeAt=now+delay;
- const msg=st.era>=3?'新たなる術、成れり':'UPGRADE COMPLETE';toast('up',msg,1n,u[0]+' / 自動購入 -'+fmt(paid)+' '+coinName);if(mintLevel(st.upgrades)===prevMint)announce(msg,u[0],u[1],Math.max(220,Math.min(1200,delay-70)),'⚙','upgrade');audio.upgrade();sparks(st.upgrades<=12?5:9);log('自動購入 '+u[0]+' / -'+fmt(paid)+' '+coinName+' / '+u[1],'up');if(st.upgrades===1||st.upgrades%7===0)companionSay('upgrade','',true);
+ const msg=st.era>=3?'新たなる術、成れり':'UPGRADE COMPLETE';toast('up',msg,1n,u[0]);if(mintLevel(st.upgrades)===prevMint)announce(msg,u[0],u[1],Math.max(220,Math.min(1200,delay-70)),'⚙','upgrade');audio.upgrade();sparks(st.upgrades<=12?5:9);log('強化 '+u[0]+' / '+u[1],'up');if(st.upgrades===1||st.upgrades%7===0)companionSay('upgrade','',true);
  if(u[4]==='any'){buildKeyboard();announce('INPUT EVOLUTION','物理入力、極限へ！','スマホは巨大な連打ボタンに。PCは好きなキーで全桁補完。',1150,'✶')}
  renderAll(true);save(true)
 }
@@ -2038,7 +1972,6 @@ function renderFinale(){
  const revealed=f.key?Math.min(total,Math.floor((Date.now()-f.clickedAt)/25)):Math.min(5,total);
  const visible=f.secret.slice(0,revealed)+'·'.repeat(Math.max(0,total-revealed));
  $('finaleText').textContent=visible;
- $('finaleText').setAttribute('aria-label',f.key&&revealed===total?'最終64文字：'+f.secret:'最終パスワードを補完中');
 }
 function finaleKey(ch){
  if(st.mode!=='epilogue'||!st.finale||st.finale.key||typeof ch!=='string'||ch.length!==1||!(ALL.includes(ch)||ch==='↵'))return;
@@ -2115,7 +2048,7 @@ function renderMachineBase(now){
  // transform is in device pixels because setTransform resets previous ctx.scale
  const screen=ctx.createLinearGradient(0,0,280,158);screen.addColorStop(0,era>=3?'#201b19':'#061f2c');screen.addColorStop(1,era>=3?'#281b18':'#07151c');ctx.fillStyle=screen;ctx.fillRect(0,0,280,158);
  ctx.strokeStyle=accent;ctx.lineWidth=1;ctx.globalAlpha=.34;for(let j=8;j<158;j+=7){ctx.beginPath();ctx.moveTo(0,j);ctx.lineTo(280,j);ctx.stroke()}ctx.globalAlpha=1;
- ctx.fillStyle=accent;ctx.font='bold 12px monospace';ctx.fillText(era>=3?'☼ ORACLE TERMINAL':':: PHYSICAL CRACKER 26',13,22);
+ ctx.fillStyle=accent;ctx.font='bold 12px monospace';ctx.fillText(era>=3?'☼ ORACLE TERMINAL':':: PHYSICAL CRACKER 23',13,22);
  ctx.fillStyle='#b8d4d2';ctx.font='10px monospace';ctx.fillText('TARGET '+String((st.index||0)+1).padStart(2,'0')+' // '+(st.target?.n||4)+' DIGITS',13,43);
  ctx.fillStyle='#e4f8ec';ctx.font='bold 18px monospace';let r='';const fixed=st.mode==='manual'&&power&&st.target?fixedSlots(st.target):[];for(let i=0;i<Math.min(12,st.target?.n||4);i++)r+=fixed[i]||((Math.floor(tick*3+i*13)%5)===0?'*':'_');ctx.fillText(r.slice(0,18),13,76);
  ctx.fillStyle=era>=3?'#f7c17e':'#eb7580';ctx.font='bold 12px monospace';ctx.fillText(st.mode==='victory'?'ACCESS GRANTED':st.auto?'AUTO / DECRYPTING':'ACCESS DENIED  ×'+fmt(BigInt(st.failures||0)),13,103);
@@ -2168,13 +2101,13 @@ class Sound{
 }
 const audio=new Sound();
 document.addEventListener('click',e=>{const btn=e.target&&e.target.closest?e.target.closest('button,[role="button"]'):null;if(!btn)return;if(btn.classList?.contains('key')||btn.id==='mashBtn')return;audio.unlock();audio.click(btn.classList?.contains('icon-btn')?'nav':'button')},true);
-function onKey(e){if(shellOpen){if(e.key==='Escape'&&shellOpen!=='title'){closeShellSubscreen()}return}if($('companionModal').classList.contains('show')||$('passwordLibraryModal').classList.contains('show')){if(e.key==='Escape'){$('companionModal').classList.remove('show');$('passwordLibraryModal').classList.remove('show')}return}if(e.ctrlKey||e.metaKey||e.altKey||e.isComposing)return;if(e.key==='Backspace'||e.key==='Delete'){if(st.mode==='manual'){e.preventDefault();pc26DeleteLast()}return}if(st.mode==='mini'&&mini.active){if(!$('miniPC').classList.contains('hidden')&&e.key.length===1){e.preventDefault();const seq=loveMessage(Math.min(2,mini.round));if(e.key.toUpperCase()===seq[mini.input.length]){mini.input+=e.key.toUpperCase();st.actions=(st.actions||0)+1;audio.key();drawMini();$('miniProgress').textContent='入力 '+mini.input.length+' / '+seq.length+'文字 ・ '+mini.round+' / 3';if(mini.input.length===seq.length)miniRound()}else{audio.quip();$('miniProgress').textContent='違うキーだ。次は '+seq[mini.input.length]+' 。';}}return}
- if(st.mode==='epilogue'&&!e.repeat&&e.key==='Enter'){e.preventDefault();finaleKey('↵');return}if(st.mode==='epilogue'&&!e.repeat&&e.key.length===1&&e.key.charCodeAt(0)>=33&&e.key.charCodeAt(0)<=126){e.preventDefault();finaleKey(e.key);return}if(st.mode!=='manual'&&st.mode!=='transition'||e.repeat)return;if(e.key==='Enter'){e.preventDefault();if(st.buffer.length===freeCount(st.target))checkGuess(candidateFromBuffer(st.target));return}if(e.key.length===1&&e.key.charCodeAt(0)>=33&&e.key.charCodeAt(0)<=126){if(e.target&&e.target.closest&&e.target.closest('input,textarea,[contenteditable]'))return;e.preventDefault();inputChar(e.key)}}
-document.addEventListener('keydown',onKey);document.querySelectorAll('.kb-tab').forEach(t=>t.addEventListener('click',()=>{keyGroup=t.dataset.group;audio.unlock();buildKeyboard()}));$('inputModeBtn').addEventListener('click',()=>{if(st.mode!=='manual')return;audio.unlock();st.inputStyle=st.inputStyle==='deduce'?'mash':'deduce';renderAll(true);save(true)});$('enterBtn').addEventListener('click',()=>{audio.unlock();if(st.buffer.length===freeCount(st.target))checkGuess(candidateFromBuffer(st.target))});$('mashBtn').addEventListener('pointerdown',()=>audio.unlock(),{passive:true});$('mashBtn').addEventListener('click',()=>inputChar('1'));$('soundBtn').addEventListener('click',()=>audio.toggle());$('companionBookBtn').addEventListener('click',openCompanionBook);$('assistantChatBtn').addEventListener('click',()=>{audio.unlock();$('assistantChoices').classList.contains('hidden')?renderChatChoices('click'):hideChatChoices()});$('passwordLibraryBtn').addEventListener('click',openPasswordLibrary);$('libraryStage').addEventListener('change',()=>{libraryShown=70;renderPasswordLibrary()});$('libraryQuery').addEventListener('input',()=>{libraryShown=70;renderPasswordLibrary()});$('libraryMore').addEventListener('click',()=>{libraryShown+=70;renderPasswordLibrary()});$('closeLibrary').addEventListener('click',()=>{$('passwordLibraryModal').classList.remove('show');openCompanionBook()});$('closeCompanionBook').addEventListener('click',()=>$('companionModal').classList.remove('show'));$('motionBtn').addEventListener('click',()=>{st.reduce=!st.reduce;document.body.classList.toggle('reduce-motion',st.reduce);$('motionBtn').textContent=st.reduce?'光量 通常':'光量 軽減';save(true)});$('restartBtn').addEventListener('click',()=>{if(window.confirm('進行状況を消去して、初めから遊びますか？'))restart()});$('playAgain').addEventListener('click',()=>{$('victoryModal').classList.remove('show');setShell('title')});$('copyPasswords').addEventListener('click',async()=>{const val=st.solved.map(t=>String(t.number).padStart(2,'0')+' '+t.name+'：'+t.secret).join('\n');try{await navigator.clipboard.writeText(val);$('copyPasswords').textContent='コピーしました'}catch{$('copyPasswords').textContent='コピー不可：一覧を選択してください'}});
+function onKey(e){if(shellOpen){if(e.key==='Escape'&&shellOpen!=='title'){closeShellSubscreen()}return}if($('companionModal').classList.contains('show')||$('passwordLibraryModal').classList.contains('show')){if(e.key==='Escape'){$('companionModal').classList.remove('show');$('passwordLibraryModal').classList.remove('show')}return}if(e.ctrlKey||e.metaKey||e.altKey||e.isComposing)return;if(e.key==='Backspace'||e.key==='Delete'){e.preventDefault();return}if(st.mode==='mini'&&mini.active){if(!$('miniPC').classList.contains('hidden')&&e.key.length===1){e.preventDefault();const seq=loveMessage(Math.min(2,mini.round));if(e.key.toUpperCase()===seq[mini.input.length]){mini.input+=e.key.toUpperCase();st.actions=(st.actions||0)+1;audio.key();drawMini();$('miniProgress').textContent='入力 '+mini.input.length+' / '+seq.length+'文字 ・ '+mini.round+' / 3';if(mini.input.length===seq.length)miniRound()}else{audio.quip();$('miniProgress').textContent='違うキーだ。次は '+seq[mini.input.length]+' 。';}}return}
+ if(st.mode==='epilogue'&&!e.repeat&&e.key==='Enter'){e.preventDefault();finaleKey('↵');return}if(st.mode==='epilogue'&&!e.repeat&&e.key.length===1&&e.key.charCodeAt(0)>=33&&e.key.charCodeAt(0)<=126){e.preventDefault();finaleKey(e.key);return}if(st.mode!=='manual'||e.repeat)return;if(e.key==='Enter'){e.preventDefault();if(st.buffer.length===freeCount(st.target))checkGuess(candidateFromBuffer(st.target));return}if(e.key.length===1&&e.key.charCodeAt(0)>=33&&e.key.charCodeAt(0)<=126){if(e.target&&e.target.closest&&e.target.closest('input,textarea,[contenteditable]'))return;e.preventDefault();inputChar(e.key)}}
+document.addEventListener('keydown',onKey);document.querySelectorAll('.kb-tab').forEach(t=>t.addEventListener('click',()=>{keyGroup=t.dataset.group;audio.unlock();buildKeyboard()}));$('inputModeBtn').addEventListener('click',()=>{if(st.mode!=='manual')return;audio.unlock();st.inputStyle=st.inputStyle==='deduce'?'mash':'deduce';st.buffer='';renderAll(true);save(true)});$('enterBtn').addEventListener('click',()=>{audio.unlock();if(st.buffer.length===freeCount(st.target))checkGuess(candidateFromBuffer(st.target))});$('mashBtn').addEventListener('pointerdown',()=>audio.unlock(),{passive:true});$('mashBtn').addEventListener('click',()=>inputChar('1'));$('soundBtn').addEventListener('click',()=>audio.toggle());$('companionBookBtn').addEventListener('click',openCompanionBook);$('assistantChatBtn').addEventListener('click',()=>{audio.unlock();$('assistantChoices').classList.contains('hidden')?renderChatChoices('click'):hideChatChoices()});$('passwordLibraryBtn').addEventListener('click',openPasswordLibrary);$('libraryStage').addEventListener('change',()=>{libraryShown=70;renderPasswordLibrary()});$('libraryQuery').addEventListener('input',()=>{libraryShown=70;renderPasswordLibrary()});$('libraryMore').addEventListener('click',()=>{libraryShown+=70;renderPasswordLibrary()});$('closeLibrary').addEventListener('click',()=>{$('passwordLibraryModal').classList.remove('show');openCompanionBook()});$('closeCompanionBook').addEventListener('click',()=>$('companionModal').classList.remove('show'));$('motionBtn').addEventListener('click',()=>{st.reduce=!st.reduce;document.body.classList.toggle('reduce-motion',st.reduce);$('motionBtn').textContent=st.reduce?'光量 通常':'光量 軽減';save(true)});$('restartBtn').addEventListener('click',()=>{if(window.confirm('進行状況を消去して、初めから遊びますか？'))restart()});$('playAgain').addEventListener('click',()=>{$('victoryModal').classList.remove('show');setShell('title')});$('copyPasswords').addEventListener('click',async()=>{const val=st.solved.map(t=>String(t.number).padStart(2,'0')+' '+t.name+'：'+t.secret).join('\n');try{await navigator.clipboard.writeText(val);$('copyPasswords').textContent='コピーしました'}catch{$('copyPasswords').textContent='コピー不可：一覧を選択してください'}});
 $('miniStart').addEventListener('click',()=>{audio.unlock();mini.active=true;mini.round=0;mini.input='';mini.chosen=[];mini.need=expectedPattern().length;mini.phrases=randomLoveWords();$('miniStart').classList.add('hidden');$('miniFinish').classList.add('hidden');drawMini();if(!$('miniPC').classList.contains('hidden'))$('miniProgress').textContent='表示された英字を順番に！';else $('miniProgress').textContent='黄色い見本に沿って、順番になぞろう！'});
 const board=$('patternBoard');function pointerCheck(e){if(!mini.active)return;const rect=board.getBoundingClientRect();const posX=e.clientX,posY=e.clientY;let nearest=-1,min=Infinity;for(let i=0;i<$('dots').children.length;i++){const r=$('dots').children[i].getBoundingClientRect(),x=r.left+r.width/2,y=r.top+r.height/2,d=Math.hypot(x-posX,y-posY);if(d<min){min=d;nearest=i}}if(nearest>=0&&min<Math.min(rect.width/3.2,60))addPatternPoint(nearest)}
 board.addEventListener('pointerdown',e=>{if(!mini.active)return;e.preventDefault();audio.unlock();mini.gesture=true;try{board.setPointerCapture(e.pointerId)}catch{}pointerCheck(e)});board.addEventListener('pointermove',e=>{if(!mini.gesture)return;e.preventDefault();pointerCheck(e)});board.addEventListener('pointerup',e=>{if(!mini.gesture)return;mini.gesture=false;pointerCheck(e);if(mini.chosen.length>=mini.need)miniRound()});board.addEventListener('pointercancel',()=>{mini.gesture=false});$('miniFinish').addEventListener('click',()=>{if(mini.chosen.length>=mini.need){miniRound()}else $('miniProgress').textContent='あと '+(mini.need-mini.chosen.length)+' 点なぞれ'});
-function loop(now){pc26FlushQueuedKeys();pixelSpeechTick();pixelUpdate(now);renderMachine(now);autoKeyboardPulse(now);const dt=Math.min(220,Math.max(0,now-lastTick));lastTick=now;if(st.mode==='auto')autoTick(dt);if(st.mode==='auto'&&Date.now()-pc17LastFever>10300){pc17LastFever=Date.now();companionSay('fever','',true)}if(st.mode==='manual'&&Date.now()-lastAiTalk>17500){companionSay(st.mode==='auto'?'fever':st.mode==='manual'&&st.target.tries>8?'smalltalk':'idle','',true);if(st.mode==='manual'&&st.target.tries>8&&rand(2)===0)renderChatChoices('smalltalk')}buyUpgrades();if(now-lastRender>130){lastRender=now;renderStats();if(st.mode==='epilogue')renderFinale();if(st.mode==='auto')rerenderSlots();gcToasts();if(now-rateStamp>=980){rate=(BigInt(st.failures)-rateSnapshot)*1000n/BigInt(Math.max(1,Math.floor(now-rateStamp)));rateSnapshot=BigInt(st.failures);rateStamp=now}save()}requestAnimationFrame(loop)}
+function loop(now){pixelSpeechTick();pixelUpdate(now);renderMachine(now);autoKeyboardPulse(now);const dt=Math.min(220,Math.max(0,now-lastTick));lastTick=now;if(st.mode==='auto')autoTick(dt);if(st.mode==='auto'&&Date.now()-pc17LastFever>10300){pc17LastFever=Date.now();companionSay('fever','',true)}if(st.mode==='manual'&&Date.now()-lastAiTalk>17500){companionSay(st.mode==='auto'?'fever':st.mode==='manual'&&st.target.tries>8?'smalltalk':'idle','',true);if(st.mode==='manual'&&st.target.tries>8&&rand(2)===0)renderChatChoices('smalltalk')}buyUpgrades();if(now-lastRender>130){lastRender=now;renderStats();if(st.mode==='epilogue')renderFinale();if(st.mode==='auto')rerenderSlots();gcToasts();if(now-rateStamp>=980){rate=(BigInt(st.failures)-rateSnapshot)*1000n/BigInt(Math.max(1,Math.floor(now-rateStamp)));rateSnapshot=BigInt(st.failures);rateStamp=now}save()}requestAnimationFrame(loop)}
 const PC25_RECORDS='physical_cracker_v25_partner_records';
 function pc25ReadRecords(){try{const x=JSON.parse(localStorage.getItem(PC25_RECORDS));return Array.isArray(x)?x:[]}catch{return []}}
 function pc25SaveRecord(seconds,actions){
@@ -2199,7 +2132,7 @@ function pc25RenderRecords(){
 let gameOpenedThisSession=false;
 function hasSavedRun(){if(st.victory)return false;if(gameOpenedThisSession)return true;try{return !!localStorage.getItem(STORAGE)}catch{return false}}
 let shellOpen='title',shellReturn='title',lastShellPause=null,installedShell=false;
-function setShell(id){if(id==='title')pc26UpdateContinue();const types=['title','help','options','records'];for(const t of types)$({title:'titleScreen',help:'helpScreen',options:'optionsScreen',records:'recordsScreen'}[t]).classList.toggle('show',t===id);shellOpen=id;document.body.classList.toggle('in-title',!!id);if(id&&lastShellPause===null)lastShellPause=Date.now();if(!id&&lastShellPause!==null){const spent=Date.now()-lastShellPause;if(st?.started)st.started+=spent;if(st?.target?.started)st.target.started+=spent;lastShellPause=null;save(true)}if(id==='title'){const hasSave=hasSavedRun();$('startContinue').disabled=!hasSave;$('startContinue').textContent=st.victory?'✓ クリア済み':hasSave?'↺ 続きから':'↺ 続きから（記録なし）'}if(id==='options')refreshOptions();if(id==='records')pc25RenderRecords()}
+function setShell(id){const types=['title','help','options','records'];for(const t of types)$({title:'titleScreen',help:'helpScreen',options:'optionsScreen',records:'recordsScreen'}[t]).classList.toggle('show',t===id);shellOpen=id;document.body.classList.toggle('in-title',!!id);if(id&&lastShellPause===null)lastShellPause=Date.now();if(!id&&lastShellPause!==null){const spent=Date.now()-lastShellPause;if(st?.started)st.started+=spent;if(st?.target?.started)st.target.started+=spent;lastShellPause=null;save(true)}if(id==='title'){const hasSave=hasSavedRun();$('startContinue').disabled=!hasSave;$('startContinue').textContent=st.victory?'✓ クリア済み':hasSave?'↺ 続きから':'↺ 続きから（記録なし）'}if(id==='options')refreshOptions();if(id==='records')pc25RenderRecords()}
 function closeShellSubscreen(){setShell(shellReturn==='game'?null:'title')}
 function refreshOptions(){$('optionsSound').textContent=st.sound?'ON':'OFF';$('optionsMotion').textContent=st.reduce?'軽減中':'通常'}
 function placeCompanionForViewport(){const assistant=$('assistantDock'),friend=document.querySelector('.companion-col');if(assistant&&friend&&assistant.parentNode!==friend)friend.insertBefore(assistant,friend.firstChild)}
@@ -2372,7 +2305,7 @@ function installV9(){
  v9RemoveSpoilers();copyCodedArt($('titlePixelArt'),'title');
  const scene=$('spectacle');scene.append($('toastStack'),$('announcement'));
  document.querySelectorAll('#libraryCategoryTabs button').forEach(btn=>btn.addEventListener('click',()=>{libraryCategory=btn.dataset.cat;document.querySelectorAll('#libraryCategoryTabs button').forEach(x=>x.classList.toggle('active',x===btn));libraryShown=80;renderPasswordLibrary()}));
- document.querySelectorAll('#companionTabs button').forEach(btn=>btn.addEventListener('click',()=>{document.querySelectorAll('#companionTabs button').forEach(x=>x.classList.toggle('active',x===btn));$('companionModal').dataset.book=btn.dataset.book;if(btn.dataset.book==='passwords')pc26PasswordTab()}));
+ document.querySelectorAll('#companionTabs button').forEach(btn=>btn.addEventListener('click',()=>{document.querySelectorAll('#companionTabs button').forEach(x=>x.classList.toggle('active',x===btn));if(btn.dataset.book==='passwords'){$('companionModal').dataset.book='partners';$('passwordLibraryBtn')?.click()}else $('companionModal').dataset.book=btn.dataset.book}));
  const title=$('startTitle');title.style.cursor='pointer';title.addEventListener('click',()=>{const t=performance.now();secretTaps=secretTaps.filter(x=>t-x<4500);secretTaps.push(t);if(secretTaps.length>=9){secretTaps=[];debugComplete()}});
  syncFeverArt();
 }
@@ -2719,8 +2652,8 @@ function buildKeyboard(){
    const b=document.createElement('button');b.type='button';b.className='key';b.textContent=ch;b.dataset.key=ch;
    b.dataset.kind=NUM.includes(ch)?'num':LOW.includes(ch)?'lower':UP.includes(ch)?'upper':'symbol';
    b.setAttribute('aria-label','文字 '+ch);b.disabled=false;
-   b.addEventListener('pointerdown',()=>{audio.unlock();pc13HighlightKey(ch);inputChar(ch)},{passive:true});
-   b.addEventListener('click',e=>{if(e.detail===0)inputChar(ch)});row.append(b);
+   b.addEventListener('pointerdown',()=>{audio.unlock();pc13HighlightKey(ch)},{passive:true});
+   b.addEventListener('click',()=>inputChar(ch));row.append(b);
   }
   host.append(row);
  }
@@ -2748,75 +2681,7 @@ addPool(2,'apple peach melon grape lemon tiger panda mario sonic kirby osaka tok
 addPool(4,'secret coffee flower orange banana monkey dragon rabbit summer winter family mother father school friend silver purple golden genius wizard player','words');
 addPool(5,'secret coffee flower orange banana monkey dragon rabbit summer winter family mother father school friend silver purple golden genius wizard player','words');
 
-
-// v26: UI-only improvements, no changes to puzzle data, rewards, or dialogue lines.
-const pc26QueuedKeys=[];
-let pc26LastTransitionAt=0;
-function pc26MayQueueTransition(){return !st.victory&&!st.auto&&st.cleared<MANUAL_TARGETS&&Date.now()-pc26LastTransitionAt<2000;}
-function pc26FlushQueuedKeys(){
- if(st.mode==='transition')return;
- if(st.mode!=='manual'){pc26QueuedKeys.length=0;return;}
- let count=0;
- while(pc26QueuedKeys.length&&st.mode==='manual'&&count++<64)inputChar(pc26QueuedKeys.shift());
- if(st.mode!=='manual'&&st.mode!=='transition')pc26QueuedKeys.length=0;
-}
-function pc26PasswordTab(){
- const host=$('pc26PasswordTab');if(!host)return;
- const complete=totalClears()>=3;
- host.replaceChildren();
- const p=document.createElement('p');p.textContent=complete?'全パスワード図鑑を開けます。解いた文字列はクリア画面の突破一覧にも保存されています。':'パスワード図鑑は3周クリア後に解放。今は各周回の解錠記録をクリア画面で確認できます。';host.append(p);
- if(complete){const b=document.createElement('button');b.type='button';b.className='major-btn';b.textContent='パスワード全パターン図鑑を開く';b.addEventListener('click',openPasswordLibrary);host.append(b)}
-}
-function pc26UpdateContinue(){
- const b=$('startContinue'),note=$('pc26ContinueNote');if(!b||!note)return;
- const available=hasSavedRun();b.disabled=!available;
- note.textContent=available?'進行中の周回から再開できます。':'進行中の周回がありません。最初は「はじめから」を選んでください。';
-}
-function pc26BuildControls(){
- const kb=$('keys');const row=kb?.querySelector('.pc13-keyrow:first-child');
- if(row&&!row.querySelector('.pc26-backspace')){
-  const b=document.createElement('button');b.type='button';b.className='key pc26-backspace';b.dataset.key='Backspace';b.textContent='⌫';b.title='最後の未確定文字を1文字削除';b.setAttribute('aria-label','1文字削除');b.addEventListener('pointerdown',()=>{audio.unlock();pc26DeleteLast()},{passive:true});b.addEventListener('click',e=>{if(e.detail===0)pc26DeleteLast()});row.append(b);
- }
-}
-const pc26PriorBuildKeyboard=buildKeyboard;
-buildKeyboard=function(){pc26PriorBuildKeyboard();pc26BuildControls()};
-const pc26PriorCompleteTarget=completeTarget;
-completeTarget=function(secret){pc26LastTransitionAt=Date.now();pc26PriorCompleteTarget(secret)};
-const pc26PriorRenderCompanion=renderCompanion;
-renderCompanion=function(){
- pc26PriorRenderCompanion();
- const heading=$('assistantDock')?.querySelector('.assistant-heading');
- const status=$('assistantDock')?.querySelector('.pc22-status');
- if(heading&&status&&status.parentNode!==heading)heading.append(status);
-};
-const pc26PriorRestart=restart;
-restart=function(){pc26QueuedKeys.length=0;pc26PriorRestart()};
-const pc26PriorShowVictory=showVictory;
-showVictory=function(){
- pc26PriorShowVictory();
- if(!st.finale?.secret)return;
- let line=$('pc26VictorySecret');
- if(!line){line=document.createElement('div');line.id='pc26VictorySecret';line.className='pc26-victory-secret';$('victorySecret').after(line)}
- line.textContent=st.finale.secret;
- line.setAttribute('aria-label','最終64文字のパスワード全文');
-};
-const pc26PriorRenderFinale=renderFinale;
-renderFinale=function(){pc26PriorRenderFinale();if(st.mode==='epilogue'&&st.finale?.secret){const el=$('pc26FullSecret');if(el)el.textContent=st.finale.key?st.finale.secret:'64文字の暗号を解錠中……'}};
-
-
-function pc26InstallUI(){
- const hint=$('targetHint');if(hint&&!$('pc26HintRemaining')){const div=document.createElement('div');div.id='pc26HintRemaining';div.setAttribute('aria-live','off');hint.after(div)}
- const title=$('startContinue');if(title&&!$('pc26ContinueNote')){const p=document.createElement('p');p.id='pc26ContinueNote';p.className='pc26-explain';title.closest('.title-buttons').after(p)}
- pc26UpdateContinue();
- const titleCore=$('titleScreen')?.querySelector('.title-core');if(titleCore&&!$('pc26PartnerInfo')){const p=document.createElement('p');p.id='pc26PartnerInfo';p.className='pc26-explain';p.textContent='相棒は周回ごとに自動で変わります。3周クリア後は相棒を固定して選択できます。';titleCore.append(p)}
- const finale=$('finalePanel');if(finale&&!$('pc26FullSecret')){const div=document.createElement('div');div.id='pc26FullSecret';div.className='pc26-full-secret';div.setAttribute('aria-label','最終パスワード全文');finale.append(div)}
- const modal=$('companionModal');if(modal&&!$('pc26PasswordTab')){const div=document.createElement('div');div.id='pc26PasswordTab';div.className='pc26-password-tab';modal.querySelector('.companion-tabs').after(div)}
- const mini=$('miniPC');if(mini&&!$('pc26MiniGuide')){const p=document.createElement('p');p.id='pc26MiniGuide';p.className='mini-sub';p.textContent='PCでは物理キーボードで表示された英字を順番に入力してください。';mini.append(p)}
- const opts=$('optionsScreen')?.querySelector('.settings-scroll');if(opts){opts.setAttribute('tabindex','0');opts.setAttribute('aria-label','設定項目。下へスクロールして画面演出も設定できます');}
- const check=$('enterBtn');if(check){check.hidden=true;check.setAttribute('aria-hidden','true');check.tabIndex=-1;}
-}
-
-function init(){installShell();pc26InstallUI();pc13PrepareBoard();pc12Install();installV9();if(st.victory)st.mode='victory';if(st.mode==='mini'){st.mode='mini';prepareMini()}power=derive();document.body.classList.toggle('reduce-motion',!!st.reduce);$('soundBtn').textContent=st.sound?'♪ BGM ON':'♪ BGM OFF';$('motionBtn').textContent=st.reduce?'光量 通常':'光量 軽減';renderAll(true);if(!$('assistantDialogue').dataset.ready){$('assistantDialogue').dataset.ready='1';companionSay('intro','',true)}if(!st.eventHistory.length)log('SYSTEM ONLINE. 4-DIGIT PIN.','');if(st.victory)showVictory();if(st.mode==='epilogue'&&!st.finale)startFinale();if(st.mode==='epilogue'&&st.finale?.key)startFinaleReveal(true);window.addEventListener('pagehide',()=>save(true));document.addEventListener('visibilitychange',()=>{if(document.hidden)save(true)});requestAnimationFrame(loop)}
+function init(){installShell();pc13PrepareBoard();pc12Install();installV9();if(st.victory)st.mode='victory';if(st.mode==='mini'){st.mode='mini';prepareMini()}power=derive();document.body.classList.toggle('reduce-motion',!!st.reduce);$('soundBtn').textContent=st.sound?'♪ BGM ON':'♪ BGM OFF';$('motionBtn').textContent=st.reduce?'光量 通常':'光量 軽減';renderAll(true);if(!$('assistantDialogue').dataset.ready){$('assistantDialogue').dataset.ready='1';companionSay('intro','',true)}if(!st.eventHistory.length)log('SYSTEM ONLINE. 4-DIGIT PIN.','');if(st.victory)showVictory();if(st.mode==='epilogue'&&!st.finale)startFinale();if(st.mode==='epilogue'&&st.finale?.key)startFinaleReveal(true);window.addEventListener('pagehide',()=>save(true));document.addEventListener('visibilitychange',()=>{if(document.hidden)save(true)});requestAnimationFrame(loop)}
 // 限定QAフック。通常プレイでは存在しない。
 if(new URLSearchParams(location.search).get('qa')==='1'){window.__PC_QA_VERSION='23';window.__PC_QA={music:()=>window.__PC20_MUSIC?.(),resolveKey:(ch)=>nearestAllowedKey(ch,st.target),typedKinds:()=>[...inputTargetKinds(st.target)],setTestClass:(chars,secret)=>{st.target.chars=chars||ALL;st.target.secret=secret;st.buffer='';renderAll(true)},setTestFinale:()=>{st.mode='auto';st.auto=true;st.index=TARGETS.length-1;st.cleared=TARGETS.length;startFinale()},getFinale:()=>st.finale&&({...st.finale}),finaleKey:(ch)=>finaleKey(ch),getReview:()=>({stats:reviewStats(),line:finalReviewLine(),detail:reviewDetails()}),setTestAuto:(id)=>{st.mode='auto';st.auto=true;st.companion=id;st.index=12;st.target=makeTarget(12,'');renderAll(true);document.querySelector('.assistant-dock').classList.add('fever-on')},setTestVictory:()=>{st.victory=true;st.mode='victory';st.cleared=TARGETS.length;st.solved=TARGETS.map((t,i)=>({number:i+1,name:t.name,secret:t.code[0][0],characters:t.n,manual:i<9,checks:2}));st.finishedAt=Date.now();renderAll(true);showVictory()},snapshot:()=>JSON.parse(JSON.stringify(st)),companion:()=>({active:st.companion,collection:JSON.parse(JSON.stringify(aiCollection))}),pixel:(id,part)=>{const layer=pixelLayer(id,part);return {width:layer.width,height:layer.height,data:layer.getContext('2d').getImageData(60,65,1,1).data[3]}},choices:()=>FLIRT_CHOICES.length,chat:(id)=>chooseChat(id),library:()=>({clears:totalClears(),available:totalClears()>=3,count:TARGETS.reduce((s,t)=>s+t.code.length,0)}),talk:(kind,text)=>companionSay(kind,text,true),setCompanion:(id)=>{if(!AI_BY_ID[id])throw Error('not found');st.companion=id;renderCompanion();companionSay('intro','',true)},guess:(s)=>{for(const c of s)inputChar(c)},scan:(n)=>scan(BigInt(n)),finishTarget:()=>completeTarget(st.target.secret),finishMini:()=>miniComplete(),getPower:()=>({...power,batch:power.batch.toString(),yield:power.yield.toString()}),fixed:()=>fixedSlots(st.target),candidate:()=>candidateFromBuffer(st.target),targetPoolSizes:()=>TARGETS.map(x=>x.code.length),targets:()=>TARGETS.map(x=>({name:x.name,n:x.n,spots:x.code.filter(v=>v.length===1).length})),invalid:()=>TARGETS.flatMap((t,i)=>t.code.filter(x=>x[0].length!==t.n||[...x[0]].some(c=>!t.chars.includes(c))).map(x=>({i,name:t.name,code:x[0],n:t.n}))),solved:()=>st.solved,clues:()=>cluesFor(st.target),setTries:(n)=>{st.target.tries=n;st.buffer='';renderAll(true)},setUpgrade:(n)=>{st.upgrades=n;power=derive();renderAll(true)},forceSecret:(secret)=>{if(secret.length!==st.target.n||[...secret].some(c=>!st.target.chars.includes(c)))throw Error('invalid test secret');st.target.secret=secret;const max=space(st.target),dist=targetDistance(TARGETS[st.index]),i=encode(st.target,secret);st.target.origin=String((i-dist+max)%max);st.target.cursor='0';st.target.sparse=[];st.target.history=[];st.target.tries=0;st.target.confirmed=Array(st.target.n).fill(null);st.target.lastMatch=null;st.buffer='';renderAll(true)}}}
 /* v15 polish: denser layout, slider-based audio control, richer chatter, stronger fever writing. */
@@ -2841,7 +2706,7 @@ if(new URLSearchParams(location.search).get('qa')==='1'){window.__PC_QA_VERSION=
  #gameApp .mint-panel,.panel.card,.terminal{box-shadow:0 0 0 1px rgba(255,255,255,.03),0 10px 28px rgba(0,0,0,.26)!important}
  `;
  document.head.append(style);
- const brand=document.querySelector('.brand b'); if(brand) brand.textContent='PHYSICAL CRACKER 26';
+ const brand=document.querySelector('.brand b'); if(brand) brand.textContent='PHYSICAL CRACKER 23';
  const version=document.querySelector('.brand small'); if(version) version.textContent='v22 / persona identity + classic + 95 keys';
 
  const clamp=(v,d)=>{v=Number(v);return Number.isFinite(v)?Math.min(1,Math.max(0,v)):d};
@@ -3114,7 +2979,7 @@ function pc22PlaceIdentity(){
  if(!status){status=document.createElement('span');status.className='pc22-status';status.setAttribute('aria-hidden','true');speech.append(status)}
  crest.replaceChildren();const label=document.createElement('b');label.textContent=p.crest;
  const text=document.createElement('span');text.id='pc22Live';text.textContent=p.label;
- crest.append(label,text);status.textContent=p.initial;const head=speech.querySelector('.assistant-heading');if(head&&status.parentNode!==head)head.append(status);
+ crest.append(label,text);status.textContent=p.initial;
 }
 function pc22SetStatus(kind,detail=''){
  const status=$('assistantDock')?.querySelector('.pc22-status');if(!status)return;
