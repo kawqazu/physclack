@@ -2260,15 +2260,25 @@ function completeTarget(secret){if(st.mode==='transition'||st.victory)return;con
 // physical key is remapped to the closest eligible key in the fixed keyboard.
 // Unknown types remain unknown: use the target's publicly available charset,
 // and only narrow to actually used types after the usedKinds upgrade.
-function inputTargetKinds(t){
+// Resolve the next actual open position once, before key redirection.
+// An exhausted buffer is not position zero: the caller must reset or submit it.
+function nextInputPosition(t, typed=st.buffer){
+ const fixed=fixedSlots(t);
+ let pending=typeof typed==='string'?typed.length:0;
+ for(let i=0;i<fixed.length;i++){
+  if(fixed[i]!==null)continue;
+  if(pending===0)return i;
+  pending--;
+ }
+ return null;
+}
+function inputTargetKinds(t, pos=nextInputPosition(t)){
  let kinds=new Set([...t.chars].map(charKind));
  if(power.usedKinds)kinds=new Set([...t.secret].map(charKind));
- if(power.types){
-  const fixed=fixedSlots(t),freeIndex=[];
-  for(let i=0;i<t.n;i++)if(fixed[i]===null)freeIndex.push(i);
-  const pos=freeIndex[st.buffer.length>=freeIndex.length?0:st.buffer.length];
-  if(pos!==undefined&&pos<power.types)kinds=new Set([charKind(t.secret[pos])]);
- }
+ // The types upgrade reveals the kind of a *physical position*, not of a
+ // buffer index. Fixed slots may be interspersed anywhere in the password.
+ if(power.types&&pos!==null&&pos>=0&&pos<t.n&&pos<power.types)
+  kinds=new Set([charKind(t.secret[pos])]);
  return kinds;
 }
 /** Find the closest physically available key; stable order breaks ties. */
@@ -2297,8 +2307,11 @@ function measuredKeyboardCenters(){
  }
  return keyCenters;
 }
-function nearestAllowedKey(ch,t){
- const kinds=inputTargetKinds(t);
+function nearestAllowedKey(ch,t,pos=nextInputPosition(t)){
+ // A correctly typed character must never be redirected. This is especially
+ // important when newly confirmed positions change the set of open slots.
+ if(pos!==null&&pos>=0&&pos<t.n&&ch===t.secret[pos]&&t.chars.includes(ch))return ch;
+ const kinds=inputTargetKinds(t,pos);
  const eligible=[...t.chars].filter(c=>kinds.has(charKind(c)));
  if(!eligible.length)return t.chars.includes(ch)?ch:(t.chars[0]||ch);
  if(eligible.includes(ch))return ch;
@@ -2307,12 +2320,17 @@ function nearestAllowedKey(ch,t){
 function isAllowed(ch){return st.target.chars.includes(ch)}
 function inputChar(ch){
  if(st.mode==='epilogue'){finaleKey(ch);return}if(st.mode!=='manual'||st.victory||ch.length!==1)return;
- const mapped=nearestAllowedKey(ch,st.target);
+ const t=st.target,free=freeCount(t);
+ // The previous candidate may still occupy the buffer during a rapid tap.
+ // Normalize it before resolving both the visible slot and its character kind.
+ if(free>0&&st.buffer.length>=free)st.buffer='';
+ const pos=nextInputPosition(t);
+ const mapped=nearestAllowedKey(ch,t,pos);
  if(!isAllowed(mapped))return;
  audio.unlock();pc13HighlightKey(mapped);st.userChars++;st.actions=(st.actions||0)+1;audio.key();
  ch=mapped;
- const t=st.target,free=freeCount(t);t.sameKey=ch===t.lastKey?(t.sameKey||0)+1:1;t.lastKey=ch;if(t.sameKey>=11&&!t.mashed){t.mashed=true;companionSay('mash','',true)}if(!free){const complete=candidateFromBuffer(t,'');if(complete===t.secret){completeTarget(complete)}else{checkGuess(complete)}return}
- if(st.buffer.length>=free)st.buffer='';let next=st.buffer+ch;
+ t.sameKey=ch===t.lastKey?(t.sameKey||0)+1:1;t.lastKey=ch;if(t.sameKey>=11&&!t.mashed){t.mashed=true;companionSay('mash','',true)}if(!free){const complete=candidateFromBuffer(t,'');if(complete===t.secret){completeTarget(complete)}else{checkGuess(complete)}return}
+ let next=st.buffer+ch;
  if(st.inputStyle==='mash'){
   if(power.any){while(next.length<free)next+=t.chars[rand(t.chars.length)]}
   else{let extra=power[charKind(ch)]||0,allowed=CHARSETS[charKind(ch)];while(extra-->0&&next.length<free)next+=allowed[rand(allowed.length)]}
@@ -3792,8 +3810,12 @@ measuredKeyboardCenters=function(){
  }
  return keyCenters;
 };
-nearestAllowedKey=function(requested,target){
- const kinds=inputTargetKinds(target);
+nearestAllowedKey=function(requested,target,pos=nextInputPosition(target)){
+ // Both JIS and US use the same physical-slot resolution as the input UI.
+ // Do not let a cached/shifted key layout override the valid character at
+ // the actual open password position.
+ if(pos!==null&&pos>=0&&pos<target.n&&requested===target.secret[pos]&&target.chars.includes(requested))return requested;
+ const kinds=inputTargetKinds(target,pos);
  const eligible=[...target.chars].filter(c=>kinds.has(charKind(c)));
  if(!eligible.length)return target.chars.includes(requested)?requested:(target.chars[0]||requested);
  if(eligible.includes(requested))return requested;
