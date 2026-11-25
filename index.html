@@ -1592,7 +1592,7 @@ function renderChatChoices(reason='chat'){
  box.classList.remove('hidden');$('assistantChatBtn').textContent='選択肢を閉じる';
 }
 function hideChatChoices(){const box=$('assistantChoices');box.classList.add('hidden');box.replaceChildren();$('assistantChatBtn').textContent='話しかける'}
-function chooseChat(id){const c=FLIRT_INDEX[id];if(!c)return;recordAiLine(st.companion,'choice:'+id);st.lastChoice={id,text:c[1],reply:c[2+['rin','noa','sui'].indexOf(st.companion)],at:st.cleared||0};hideChatChoices();const idx=['rin','noa','sui'].indexOf(st.companion);const reply=c[2+idx];companionSay('flirt',reply,true);pixelSetMood(c[5],6000);st.chatAnswers=(st.chatAnswers||0)+1;save(true)}
+function chooseChat(id){const c=FLIRT_INDEX[id];if(!c)return;recordAiLine(st.companion,'choice:'+id);hideChatChoices();const idx=['rin','noa','sui'].indexOf(st.companion);const reply=c[2+idx];companionSay('flirt',reply,true);pixelSetMood(c[5],6000);st.chatAnswers=(st.chatAnswers||0)+1;save(true)}
 function maybeInviteChat(){if(st.victory||st.mode==='mini'||st.mode==='auto')return;if(st.cleared===1||st.cleared===3||st.cleared===6||st.cleared===8){renderChatChoices('victory')}}
 function classifyCrack(t){if(t.tries<=7&&Date.now()-t.started<45000)return'fast';if(t.mashed||t.tries>=30)return t.mashed?'mash':'slow';return'success'}
 
@@ -1611,8 +1611,8 @@ function companionSay(kind,extra='',force=false){
  if(kind==='quip'){key='quip:'+String(extra);text=a.lead+' '+extra}
  else if(kind==='flirt'||kind==='analysis'||kind==='epilogue'){key=kind+':'+String(extra);text=String(extra)}
  else if(kind==='intro'){key='intro:0';text=a.intro}
- else{const arr=a.lines[kind]||a.lines.fail,seen=aiCollection.seen[a.id]||[],runSeen=st.runDialogueSeen?.[a.id]||[],available=arr.map((_,i)=>i).filter(i=>!seen.includes(kind+':'+i)&&!runSeen.includes(kind+':'+i));const list=available.length?available:arr.map((_,i)=>i),n=list[rand(list.length)];key=kind+':'+n;text=arr[n]}
- recordAiLine(a.id,key);if(kind==='fast'||kind==='slow'||kind==='mash'){st.runDialogueSeen=st.runDialogueSeen||{};st.runDialogueSeen[a.id]=st.runDialogueSeen[a.id]||[];if(!st.runDialogueSeen[a.id].includes(key))st.runDialogueSeen[a.id].push(key)}pixelSpeechStart(text,kind);$('assistantMeta').textContent=(AI_LABELS[kind]||'会話')+' ・ '+new Date().toLocaleTimeString('ja-JP',{hour:'2-digit',minute:'2-digit'});
+ else{const arr=a.lines[kind]||a.lines.fail,seen=aiCollection.seen[a.id]||[],available=arr.map((_,i)=>i).filter(i=>!seen.includes(kind+':'+i));const list=available.length?available:arr.map((_,i)=>i),n=list[rand(list.length)];key=kind+':'+n;text=arr[n]}
+ recordAiLine(a.id,key);pixelSpeechStart(text,kind);$('assistantMeta').textContent=(AI_LABELS[kind]||'会話')+' ・ '+new Date().toLocaleTimeString('ja-JP',{hour:'2-digit',minute:'2-digit'});
  $('assistantMood').textContent=kind==='fast'?'◆ FAST CLEAR':kind==='slow'?'◈ PERSISTENCE':kind==='mash'?'⚡ BRUTE FORCE':kind==='idle'||kind==='smalltalk'?'☾ CHAT':'● ONLINE';
  const dock=$('assistantDock');dock.classList.remove('speaking');void dock.offsetWidth;dock.classList.add('speaking');
 }
@@ -1684,19 +1684,7 @@ function makeTarget(index,prev){const t=TARGETS[index],pool=t.code.filter(x=>x[0
  const pick=pickedFrom[rand(pickedFrom.length)]||t.code[0];
  if(index<MANUAL_TARGETS){recent[index]=[...blocked.filter(c=>c!==pick[0]),pick[0]].slice(-6);try{localStorage.setItem('pc17_recent_puzzles',JSON.stringify(recent))}catch{}}if(pick[0].length!==t.n||[...pick[0]].some(c=>!t.chars.includes(c)))throw Error('Invalid secret in '+index+': '+pick[0]);const max=space(t),secretIdx=encode(t,pick[0]);const dist=targetDistance(t);return {index,n:t.n,chars:t.chars,name:t.name,secret:pick[0],hints:pick.slice(1,4),category:pick[4]||inferCategory(pick[0]),origin:String((secretIdx-dist+max)%max),cursor:'0',sparse:[],history:[],tries:0,hintSeen:0,seenJokes:[],confirmed:Array(t.n).fill(null),lastMatch:null,started:Date.now()}}
 function fresh(){return {version:18,companion:chooseCompanion(),solved:[],inputStyle:'deduce',index:0,cleared:0,mode:'manual',target:makeTarget(0,''),buffer:'',userChars:0,actions:0,manualChecks:0,manualMistakes:0,deduceChecks:0,mashChecks:0,manualEndedAt:0,finale:null,pc23Memories:[],failures:'0',coins:'0',totalGuesses:'0',upgrades:0,era:0,auto:false,sound:true,reduce:false,started:Date.now(),finishedAt:0,victoryRecorded:false,eventHistory:[],lastWinner:'',lastTarget:'',victory:false}}
-function load(){try{let j=JSON.parse(localStorage.getItem(STORAGE));if(!j||j.version!==18||!Number.isInteger(j.index)||j.index<0||j.index>=TARGETS.length||!j.target||j.target.index!==j.index)return fresh();if(j.mode==='transition'){j.mode=j.cleared===TARGETS.length?(j.auto&&!j.victory?'epilogue':'victory'):j.cleared===MANUAL_TARGETS&&!j.auto?'mini':j.auto?'auto':'manual';if(j.cleared<TARGETS.length&&j.cleared>j.index){j.index=j.cleared;j.target=makeTarget(j.index,j.lastWinner||'')}}if(j.mode==='victory')j.victory=true;const oldSave=false;j.version=18;j.companion=AI_BY_ID[j.companion]?j.companion:chooseCompanion();j.solved=Array.isArray(j.solved)?j.solved:[];j.inputStyle=['deduce','mash'].includes(j.inputStyle)?j.inputStyle:'deduce';j.actions=Number.isFinite(j.actions)?j.actions:(j.userChars||0);j.manualChecks=Number.isFinite(j.manualChecks)?j.manualChecks:0;j.manualMistakes=Number.isFinite(j.manualMistakes)?j.manualMistakes:0;j.deduceChecks=Number.isFinite(j.deduceChecks)?j.deduceChecks:0;j.mashChecks=Number.isFinite(j.mashChecks)?j.mashChecks:0;j.manualEndedAt=j.manualEndedAt||0;j.finale=j.finale||null;j.pc23Memories=normalizeMemories(j.pc23Memories);j.finishedAt=j.finishedAt||0;j.victoryRecorded=!!j.victoryRecorded;j.target.hintSeen=j.target.hintSeen||0;j.target.confirmed=Array.isArray(j.target.confirmed)&&j.target.confirmed.length===j.target.n?j.target.confirmed:Array(j.target.n).fill(null);j.eventHistory=Array.isArray(j.eventHistory)?j.eventHistory.slice(0,16):[];if(oldSave)j.buffer='';if(!Array.isArray(j.target.sparse)||!Array.isArray(j.target.history))return fresh();
- // Recover a checkpoint written after the correct guess but before the delayed transition.
- const alreadySolved=Array.isArray(j.solved)&&j.solved.some(x=>x&&x.number===j.index+1);
- const answerInHistory=Array.isArray(j.target.history)&&j.target.history.some(x=>(typeof x==='string'?x:x?.candidate)===j.target.secret);
- const allConfirmed=Array.isArray(j.target.confirmed)&&j.target.confirmed.length===j.target.n&&j.target.confirmed.every((x,i)=>x===j.target.secret[i]);
- if(!j.victory&&j.mode==='manual'&&(alreadySolved||answerInHistory||allConfirmed)){
-  if(!alreadySolved){j.solved.push({number:j.index+1,name:j.target.name,secret:j.target.secret,characters:j.target.n,manual:true,checks:j.target.tries||0});}
-  j.cleared=Math.max(j.cleared||0,j.index+1);j.buffer='';
-  if(j.cleared>=TARGETS.length){j.mode='epilogue';j.auto=true;j.finale=j.finale||{secret:finalPassword(),key:null,clickedAt:0};}
-  else if(j.cleared===MANUAL_TARGETS&&!j.auto){j.index=j.cleared;j.target=makeTarget(j.index,j.lastWinner||j.target.secret);j.mode='mini';}
-  else{j.index=j.cleared;j.target=makeTarget(j.index,j.target.secret);j.mode=j.auto?'auto':'manual';}
- }
- return j}catch{return fresh()}}
+function load(){try{let j=JSON.parse(localStorage.getItem(STORAGE));if(!j||j.version!==18||!Number.isInteger(j.index)||j.index<0||j.index>=TARGETS.length||!j.target||j.target.index!==j.index)return fresh();if(j.mode==='transition'){j.mode=j.cleared===TARGETS.length?(j.auto&&!j.victory?'epilogue':'victory'):j.cleared===MANUAL_TARGETS&&!j.auto?'mini':j.auto?'auto':'manual';if(j.cleared<TARGETS.length&&j.cleared>j.index){j.index=j.cleared;j.target=makeTarget(j.index,j.lastWinner||'')}}if(j.mode==='victory')j.victory=true;const oldSave=false;j.version=18;j.companion=AI_BY_ID[j.companion]?j.companion:chooseCompanion();j.solved=Array.isArray(j.solved)?j.solved:[];j.inputStyle=['deduce','mash'].includes(j.inputStyle)?j.inputStyle:'deduce';j.actions=Number.isFinite(j.actions)?j.actions:(j.userChars||0);j.manualChecks=Number.isFinite(j.manualChecks)?j.manualChecks:0;j.manualMistakes=Number.isFinite(j.manualMistakes)?j.manualMistakes:0;j.deduceChecks=Number.isFinite(j.deduceChecks)?j.deduceChecks:0;j.mashChecks=Number.isFinite(j.mashChecks)?j.mashChecks:0;j.manualEndedAt=j.manualEndedAt||0;j.finale=j.finale||null;j.pc23Memories=normalizeMemories(j.pc23Memories);j.finishedAt=j.finishedAt||0;j.victoryRecorded=!!j.victoryRecorded;j.target.hintSeen=j.target.hintSeen||0;j.target.confirmed=Array.isArray(j.target.confirmed)&&j.target.confirmed.length===j.target.n?j.target.confirmed:Array(j.target.n).fill(null);j.eventHistory=Array.isArray(j.eventHistory)?j.eventHistory.slice(0,16):[];if(oldSave)j.buffer='';if(!Array.isArray(j.target.sparse)||!Array.isArray(j.target.history))return fresh();return j}catch{return fresh()}}
 let st=load(),power=null,keyGroup='num',lastRender=0,lastSave=0,lastTick=performance.now(),nextUpgradeAt=0,noticeUntil=0,noticeSerial=0,rateStamp=performance.now(),rateSnapshot=BigInt(st.failures),rate=0n,autofrac=0n,toastMap=new Map(),mini={active:false,round:0,input:'',gesture:false,chosen:[],need:4},lastJoyAt=0;
 function derive(){const p={num:0,lower:0,upper:0,sym:0,pinRange:0,prefix:0,probe:0,matchCount:0,composition:0,tail:0,checksum:0,parity:0,batch:1n,yield:MINTS[mintLevel(st.upgrades)].value,types:0,usedKinds:0,charReveal:0,hint:0,any:false};for(let i=0;i<st.upgrades;i++){const u=UPGRADES[i];if(!u)break;const v=u[5];if(u[4]==='yield'||u[4]==='batch')p[u[4]]*=BigInt(v);else if(u[4]==='any')p.any=true;else if(u[4]==='probe')p.probe=Math.max(p.probe,v);else if(u[4]in p)p[u[4]]+=v}return p}
 function save(force=false){const now=Date.now();if(!force&&now-lastSave<900)return;lastSave=now;try{localStorage.setItem(STORAGE,JSON.stringify(st))}catch{}}
@@ -1773,7 +1761,7 @@ function renderTypes(){
  if(showTypes){const names={num:'0–9',lower:'a–z',upper:'A–Z',sym:'記号'};chip('位置の種類：'+Array.from({length:showTypes},(_,i)=>`${i+1}=${names[charKind(t.secret[i])]}`).join(' / '))}
 }
 function renderAttemptLedger(){const box=$('attemptLedger');box.replaceChildren();if(st.mode!=='manual'||!st.target.history.length)return;for(const raw of st.target.history.slice(0,4)){const word=typeof raw==='string'?raw:raw.candidate||'';if(!word)continue;const item=document.createElement('div');item.className='attempt-item';const code=document.createElement('span');code.textContent=word;const score=document.createElement('em');if(power.matchCount){const correct=[...word].reduce((n,ch,i)=>n+(ch===st.target.secret[i]?1:0),0);score.textContent=correct+'/'+st.target.n+' 一致';if(!correct)score.classList.add('bad')}else score.textContent='×';item.append(code,score);box.append(item)}}
-function renderTargets(){const h=$('targets');h.replaceChildren();for(let i=0;i<TARGETS.length;i++){let e=document.createElement('div'),done=i<st.cleared,active=i===(st.mode==='transition'?st.cleared:st.index)&&!st.victory;e.className='target-item '+(done?'done':active?'current':'locked');let main=document.createElement('b');main.textContent=(done?'✓ ':active?'▶ ':'○ ')+String(i+1).padStart(2,'0');let sub=document.createElement('small');sub.textContent=TARGETS[i].n+'桁 '+(done?st.auto?'支援稼働':'突破':active?'解析中':'待機');e.append(main,sub);h.append(e)}}
+function renderTargets(){const h=$('targets');h.replaceChildren();for(let i=0;i<TARGETS.length;i++){let e=document.createElement('div'),done=i<st.cleared,active=i===st.index&&!st.victory;e.className='target-item '+(done?'done':active?'current':'locked');let main=document.createElement('b');main.textContent=(done?'✓ ':active?'▶ ':'○ ')+String(i+1).padStart(2,'0');let sub=document.createElement('small');sub.textContent=TARGETS[i].n+'桁 '+(done?st.auto?'支援稼働':'突破':active?'解析中':'待機');e.append(main,sub);h.append(e)}}
 function renderTrophies(){const icons=['⌘','⌬','✧','✺','☼'],h=$('trophies');h.replaceChildren();icons.forEach((x,i)=>{let div=document.createElement('div');div.className='trophy'+(i<=st.era?' got':'');let b=document.createElement('i');b.textContent=x;let label=document.createElement('small');label.textContent=i>st.era?'？？？':ERAS[i].name;div.append(b,label);h.append(div)});$('trophyCount').textContent=(st.era+1)+' / 5';$('eraTag').textContent=ERAS[st.era].name;$('brandMark').textContent=ERAS[st.era].mark;$('eraDesc').textContent=ERAS[st.era].desc;document.body.dataset.era=st.era}
 function renderStats(){document.body.classList.toggle('auto-phase',st.mode==='auto');const t=st.target,cs=BigInt(st.coins),fail=BigInt(st.failures),covered=BigInt(t.cursor)+BigInt(t.sparse.length),sp=space(t),u=UPGRADES[st.upgrades];$('statFails').textContent=fmt(fail);$('statFails').title=fail.toString();$('statCoins').textContent=fmt(cs);$('statCoins').title=cs.toString();$('statTargets').textContent=st.cleared+' / '+TARGETS.length;$('statRate').textContent='+'+fmt(rate)+'/sec';$('statCoinValue').textContent=MINTS[mintLevel(st.upgrades)].name+' / ×'+fmt(power.yield)+' / 失敗';$('statBatch').textContent=st.mode==='auto'?'PARALLEL '+st.cleared+' NODES' :'×'+fmt(effectiveBatch(t))+'/INPUT';const pr=pinRange(t);$('pinRangeChip').classList.toggle('hidden',!pr);$('pRange').textContent=pr?(pr.level?pr.lo+'〜'+pr.hi:'未解析'):'—';$('pNum').textContent='+'+power.num;$('pLow').textContent='+'+power.lower;$('pUp').textContent='+'+power.upper;$('pSym').textContent='+'+power.sym;$('pBatch').textContent='×'+fmt(effectiveBatch(t));$('pProbe').textContent=power.probe?(power.probe>=99?'全桁':'最大'+power.probe+'桁'):'未解放';$('pMatch').textContent=power.matchCount?'一致数を表示':'未解放';
  const threshold=targetDistance(TARGETS[st.index]),estimated=pct(BigInt(t.cursor),threshold);$('scanFill').style.width=estimated+'%';$('scanText').textContent='候補検証 '+fmt(covered)+' 件 / '+fmt(sp)+' 通り';$('scanPercent').textContent='解析進度 '+estimated.toFixed(1)+'%';$('elapsed').textContent=timeStr();updateSceneHUD();$('upProgress').textContent=st.upgrades+' / '+UPGRADES.length;
@@ -1805,7 +1793,7 @@ function nearbyRespectFixed(t,candidate){
 }
 function checkGuess(candidate){
  if(st.mode!=='manual')return;const t=st.target;let x=encode(t,candidate);if(x===null||candidate.length!==t.n)return;const original=candidate;
- if(candidate!==t.secret&&already(t,x)){let alt=nearbyRespectFixed(t,candidate);if(alt===null){toast('dup','この条件の候補は検証済み',1n,'別の組み合わせを試そう');return}x=alt;candidate=decode(t,x);if(t.tries<10)toast('quip','履歴から候補を自動補正',1n,original+' → '+candidate)}
+ if(already(t,x)){let alt=nearbyRespectFixed(t,candidate);if(alt===null){toast('dup','この条件の候補は検証済み',1n,'別の組み合わせを試そう');return}x=alt;candidate=decode(t,x);if(t.tries<10)toast('quip','履歴から候補を自動補正',1n,original+' → '+candidate)}
  st.buffer='';t.tries++;st.manualChecks=(st.manualChecks||0)+1;if(st.inputStyle==='mash'||t.mashed)st.mashChecks=(st.mashChecks||0)+1;else st.deduceChecks=(st.deduceChecks||0)+1;t.history.unshift(candidate);t.history.length=Math.min(12,t.history.length);const rel=relative(t,x);t.sparse.push(rel.toString());st.userChars=st.userChars||0;
  if(candidate===t.secret){st.totalGuesses=(BigInt(st.totalGuesses)+1n).toString();log('正解 '+candidate+' / '+t.name,'good');completeTarget(candidate);return}
  st.manualMistakes=(st.manualMistakes||0)+1;addFails(1n);
@@ -1915,7 +1903,7 @@ function patternPoint(i){const board=$('patternBoard').getBoundingClientRect(),d
 function drawPatternLine(){const pts=mini.chosen.map(i=>patternPoint(i)).filter(Boolean).map(p=>p.join(',')).join(' ');$('patternLine').setAttribute('points',pts)}
 function drawPatternGuide(){let svg=$('patternSvg'),guide=$('patternGuide');if(!guide){guide=document.createElementNS('http://www.w3.org/2000/svg','polyline');guide.id='patternGuide';guide.setAttribute('fill','none');guide.setAttribute('stroke','#f6cd87');guide.setAttribute('stroke-width','3');guide.setAttribute('stroke-dasharray','6 6');guide.setAttribute('stroke-linecap','round');guide.setAttribute('stroke-linejoin','round');guide.setAttribute('opacity','.7');svg.insertBefore(guide,svg.firstChild)}guide.setAttribute('points',expectedPattern().map(i=>patternPoint(i)).filter(Boolean).map(p=>p.join(',')).join(' '))}
 function addPatternPoint(i){if(!mini.active||mini.chosen.includes(i))return;if(i!==expectedPattern()[mini.chosen.length]){audio.quip();$('miniProgress').textContent='違う結び目。黄色いお手本をもう一度見よう。';return}mini.chosen.push(i);st.actions=(st.actions||0)+1;audio.key();drawMini();if(mini.chosen.length>=mini.need){$('miniProgress').textContent='結び目成立。即座に次の返事へ。';setTimeout(()=>miniRound(),90)}}
-function miniRound(){mini.round++;mini.currentPhrase=mini.phrases?.[mini.round]||'';mini.input='';mini.chosen=[];audio.fanfare('round');if(mini.round<3)companionSay('flirt',['……ありがとう。聞こえたわ。','その言葉、ちゃんと届いたよ。','やっと答えてくれた。'][rand(3)],true);if(mini.round>=3){miniComplete();return}mini.need=expectedPattern().length;$('miniFinish').classList.add('hidden');drawMini();$('miniProgress').textContent='解錠成功！ 次の結界へ。 '+mini.round+' / 3'}
+function miniRound(){mini.round++;mini.input='';mini.chosen=[];audio.fanfare('round');if(mini.round<3)companionSay('flirt',['……ありがとう。聞こえたわ。','その言葉、ちゃんと届いたよ。','やっと答えてくれた。'][rand(3)],true);if(mini.round>=3){miniComplete();return}mini.need=expectedPattern().length;$('miniFinish').classList.add('hidden');drawMini();$('miniProgress').textContent='解錠成功！ 次の結界へ。 '+mini.round+' / 3'}
 function miniComplete(){window.__pc12FeverDialogueUntil=Date.now()+5400;companionSay('flirt',feverEntranceLine(),true);$('miniProgress').textContent='3 / 3 突破！ 全自動化が解放された。';mini.active=false;$('miniModal').classList.remove('show');st.mode='auto';st.auto=true;audio.fanfare('era');toast('successAuto','完全自動化 解放',1n,'指を離しても端末は働き続ける');announce('ABSOLUTE AUTOMATION','全自動演算、成れり','ここから先、入力は不要。すべての端末が勝手に解析する。',2300,'☯');log('完全自動化：人間の労働、ここに終わる。','up');renderAll(true);save(true);setTimeout(()=>{if(st.mode==='auto')companionSay('analysis',feverReflection(st.cleared),true)},5700)}
 
 // Deterministic, offline dialogue memory. Only *actual selected* choices are recorded.
@@ -2152,7 +2140,7 @@ document.addEventListener('click',e=>{const btn=e.target&&e.target.closest?e.tar
 function onKey(e){if(shellOpen){if(e.key==='Escape'&&shellOpen!=='title'){closeShellSubscreen()}return}if($('companionModal').classList.contains('show')||$('passwordLibraryModal').classList.contains('show')){if(e.key==='Escape'){$('companionModal').classList.remove('show');$('passwordLibraryModal').classList.remove('show')}return}if(e.ctrlKey||e.metaKey||e.altKey||e.isComposing)return;if(e.key==='Backspace'||e.key==='Delete'){e.preventDefault();return}if(st.mode==='mini'&&mini.active){if(!$('miniPC').classList.contains('hidden')&&e.key.length===1){e.preventDefault();const seq=loveMessage(Math.min(2,mini.round));if(e.key.toUpperCase()===seq[mini.input.length]){mini.input+=e.key.toUpperCase();st.actions=(st.actions||0)+1;audio.key();drawMini();$('miniProgress').textContent='入力 '+mini.input.length+' / '+seq.length+'文字 ・ '+mini.round+' / 3';if(mini.input.length===seq.length)miniRound()}else{audio.quip();$('miniProgress').textContent='違うキーだ。次は '+seq[mini.input.length]+' 。';}}return}
  if(st.mode==='epilogue'&&!e.repeat&&e.key==='Enter'){e.preventDefault();finaleKey('↵');return}if(st.mode==='epilogue'&&!e.repeat&&e.key.length===1&&e.key.charCodeAt(0)>=33&&e.key.charCodeAt(0)<=126){e.preventDefault();finaleKey(e.key);return}if(st.mode!=='manual'||e.repeat)return;if(e.key==='Enter'){e.preventDefault();if(st.buffer.length===freeCount(st.target))checkGuess(candidateFromBuffer(st.target));return}if(e.key.length===1&&e.key.charCodeAt(0)>=33&&e.key.charCodeAt(0)<=126){if(e.target&&e.target.closest&&e.target.closest('input,textarea,[contenteditable]'))return;e.preventDefault();inputChar(e.key)}}
 document.addEventListener('keydown',onKey);document.querySelectorAll('.kb-tab').forEach(t=>t.addEventListener('click',()=>{keyGroup=t.dataset.group;audio.unlock();buildKeyboard()}));$('inputModeBtn').addEventListener('click',()=>{if(st.mode!=='manual')return;audio.unlock();st.inputStyle=st.inputStyle==='deduce'?'mash':'deduce';st.buffer='';renderAll(true);save(true)});$('enterBtn').addEventListener('click',()=>{audio.unlock();if(st.buffer.length===freeCount(st.target))checkGuess(candidateFromBuffer(st.target))});$('mashBtn').addEventListener('pointerdown',()=>audio.unlock(),{passive:true});$('mashBtn').addEventListener('click',()=>inputChar('1'));$('soundBtn').addEventListener('click',()=>audio.toggle());$('companionBookBtn').addEventListener('click',openCompanionBook);$('assistantChatBtn').addEventListener('click',()=>{audio.unlock();$('assistantChoices').classList.contains('hidden')?renderChatChoices('click'):hideChatChoices()});$('passwordLibraryBtn').addEventListener('click',openPasswordLibrary);$('libraryStage').addEventListener('change',()=>{libraryShown=70;renderPasswordLibrary()});$('libraryQuery').addEventListener('input',()=>{libraryShown=70;renderPasswordLibrary()});$('libraryMore').addEventListener('click',()=>{libraryShown+=70;renderPasswordLibrary()});$('closeLibrary').addEventListener('click',()=>{$('passwordLibraryModal').classList.remove('show');openCompanionBook()});$('closeCompanionBook').addEventListener('click',()=>$('companionModal').classList.remove('show'));$('motionBtn').addEventListener('click',()=>{st.reduce=!st.reduce;document.body.classList.toggle('reduce-motion',st.reduce);$('motionBtn').textContent=st.reduce?'光量 通常':'光量 軽減';save(true)});$('restartBtn').addEventListener('click',()=>{if(window.confirm('進行状況を消去して、初めから遊びますか？'))restart()});$('playAgain').addEventListener('click',()=>{$('victoryModal').classList.remove('show');setShell('title')});$('copyPasswords').addEventListener('click',async()=>{const val=st.solved.map(t=>String(t.number).padStart(2,'0')+' '+t.name+'：'+t.secret).join('\n');try{await navigator.clipboard.writeText(val);$('copyPasswords').textContent='コピーしました'}catch{$('copyPasswords').textContent='コピー不可：一覧を選択してください'}});
-$('miniStart').addEventListener('click',()=>{audio.unlock();mini.active=true;mini.round=0;mini.input='';mini.chosen=[];mini.need=expectedPattern().length;mini.phrases=randomLoveWords();mini.currentPhrase=mini.phrases[mini.round]||'';$('miniStart').classList.add('hidden');$('miniFinish').classList.add('hidden');drawMini();if(!$('miniPC').classList.contains('hidden'))$('miniProgress').textContent='表示された英字を順番に！';else $('miniProgress').textContent='黄色い見本に沿って、順番になぞろう！'});
+$('miniStart').addEventListener('click',()=>{audio.unlock();mini.active=true;mini.round=0;mini.input='';mini.chosen=[];mini.need=expectedPattern().length;mini.phrases=randomLoveWords();$('miniStart').classList.add('hidden');$('miniFinish').classList.add('hidden');drawMini();if(!$('miniPC').classList.contains('hidden'))$('miniProgress').textContent='表示された英字を順番に！';else $('miniProgress').textContent='黄色い見本に沿って、順番になぞろう！'});
 const board=$('patternBoard');function pointerCheck(e){if(!mini.active)return;const rect=board.getBoundingClientRect();const posX=e.clientX,posY=e.clientY;let nearest=-1,min=Infinity;for(let i=0;i<$('dots').children.length;i++){const r=$('dots').children[i].getBoundingClientRect(),x=r.left+r.width/2,y=r.top+r.height/2,d=Math.hypot(x-posX,y-posY);if(d<min){min=d;nearest=i}}if(nearest>=0&&min<Math.min(rect.width/3.2,60))addPatternPoint(nearest)}
 board.addEventListener('pointerdown',e=>{if(!mini.active)return;e.preventDefault();audio.unlock();mini.gesture=true;try{board.setPointerCapture(e.pointerId)}catch{}pointerCheck(e)});board.addEventListener('pointermove',e=>{if(!mini.gesture)return;e.preventDefault();pointerCheck(e)});board.addEventListener('pointerup',e=>{if(!mini.gesture)return;mini.gesture=false;pointerCheck(e);if(mini.chosen.length>=mini.need)miniRound()});board.addEventListener('pointercancel',()=>{mini.gesture=false});$('miniFinish').addEventListener('click',()=>{if(mini.chosen.length>=mini.need){miniRound()}else $('miniProgress').textContent='あと '+(mini.need-mini.chosen.length)+' 点なぞれ'});
 function loop(now){pixelSpeechTick();pixelUpdate(now);renderMachine(now);autoKeyboardPulse(now);const dt=Math.min(220,Math.max(0,now-lastTick));lastTick=now;if(st.mode==='auto')autoTick(dt);if(st.mode==='auto'&&Date.now()-pc17LastFever>10300){pc17LastFever=Date.now();companionSay('fever','',true)}if(st.mode==='manual'&&Date.now()-lastAiTalk>17500){companionSay(st.mode==='auto'?'fever':st.mode==='manual'&&st.target.tries>8?'smalltalk':'idle','',true);if(st.mode==='manual'&&st.target.tries>8&&rand(2)===0)renderChatChoices('smalltalk')}buyUpgrades();if(now-lastRender>130){lastRender=now;renderStats();if(st.mode==='epilogue')renderFinale();if(st.mode==='auto')rerenderSlots();gcToasts();if(now-rateStamp>=980){rate=(BigInt(st.failures)-rateSnapshot)*1000n/BigInt(Math.max(1,Math.floor(now-rateStamp)));rateSnapshot=BigInt(st.failures);rateStamp=now}save()}requestAnimationFrame(loop)}
@@ -3472,7 +3460,7 @@ miniRound=function(){const total=mini.phrases?.length||3;mini.round++;mini.input
 };
 addPatternPoint=function(i){if(!mini.active||mini.chosen.includes(i))return;if(i!==expectedPattern()[mini.chosen.length]){audio.quip();$('miniProgress').textContent='違う結び目。黄色いお手本をもう一度見よう。';save(true);return}mini.chosen.push(i);st.actions=(st.actions||0)+1;audio.key();drawMini();save(true);if(mini.chosen.length>=mini.need){$('miniProgress').textContent='結び目成立。次の返事へ。';setTimeout(()=>miniRound(),90)}};
 
-function pc26RestoreMini(){const m=st.miniState;if(!m||st.mode!=='mini')return;mini={active:!!m.active,round:Math.max(0,Number(m.round)||0),input:String(m.input||''),gesture:false,chosen:Array.isArray(m.chosen)?m.chosen.slice():[],need:Math.max(1,Number(m.need)||3),phrases:Array.isArray(m.phrases)&&m.phrases.length?m.phrases.slice():randomLoveWords()};mini.currentPhrase=mini.phrases[mini.round]||'';$('miniModal').classList.add('show');$('miniStart').classList.toggle('hidden',mini.active);$('miniFinish').classList.toggle('hidden',!mini.active);drawMini();if(mini.active&&mini.chosen.length>=mini.need)setTimeout(()=>miniRound(),120)}
+function pc26RestoreMini(){const m=st.miniState;if(!m||st.mode!=='mini')return;mini={active:!!m.active,round:Math.max(0,Number(m.round)||0),input:String(m.input||''),gesture:false,chosen:Array.isArray(m.chosen)?m.chosen.slice():[],need:Math.max(1,Number(m.need)||3),phrases:Array.isArray(m.phrases)&&m.phrases.length?m.phrases.slice():randomLoveWords()};$('miniModal').classList.add('show');$('miniStart').classList.toggle('hidden',mini.active);$('miniFinish').classList.toggle('hidden',!mini.active);drawMini();if(mini.active&&mini.chosen.length>=mini.need)setTimeout(()=>miniRound(),120)}
 const pc26OldInit=init;
 init=function(){const savedMode=st.mode,savedSpeech=st.speechSnapshot;pc26Restoring=true;if(savedMode==='mini')st.mode='manual';pc26OldInit();st.mode=savedMode;pc26Restoring=false;pc26RestoreMini();if(st.chatChoicesVisible&&!st.victory&&st.mode!=='mini')renderChatChoices('restore');if(savedSpeech?.text){st.speechSnapshot=savedSpeech;const q=savedSpeech;pixelSpeechStart(q.text,q.kind||'idle');speechState.pos=Math.max(0,Math.min(speechState.chars.length,Number(q.pos)||0));speechState.displayed=speechState.pos;$('assistantDialogue').textContent=speechState.chars.slice(0,speechState.pos).join('');speechState.start=Date.now()-speechState.pos*speechState.speed;}if(st.feverPrompt)pc26ShowFeverPrompt();save(true)};
 
@@ -3531,7 +3519,7 @@ renderStats=function(){pc26OldRenderStats();if(st.upgrades>=UPGRADES.length)$('s
 const pc26OldShowVictory=showVictory;
 showVictory=function(){const rec=completionRecords(),secs=Math.max(0,Math.floor(((st.finishedAt||Date.now())-st.started)/1000)),actions=st.actions||st.userChars||0;const newTime=rec.bestTime==null||secs<rec.bestTime,newActions=rec.bestActions==null||actions<rec.bestActions;pc26OldShowVictory();if(!st.recordMilestones)st.recordMilestones={};let msg='';if(newTime&&!st.recordMilestones.fastRecord){st.recordMilestones.fastRecord=true;msg='新記録、最速です。あなたの判断と指の動きを記録しました。'}if(newActions&&!st.recordMilestones.actionRecord){st.recordMilestones.actionRecord=true;msg+=(msg?'\n':'')+'最少手数の新記録。無駄のない攻略でした。'}if(msg)companionSay('milestone',msg,true);if(BigInt(st.overflowScore||'0')>0n)$('victoryStats').textContent+=' ／ MAX後余剰スコア '+fmt(BigInt(st.overflowScore));save(true)};
 const pc26OldFinalReview=finalReviewLine;
-finalReviewLine=function(){const base=pc26OldFinalReview(),arr=(AI_BY_ID[st.companion]?.lines.epilogue)||[],rec=st.dialogueRecent?.[st.companion]||[],pool=arr.map((_,i)=>i).filter(i=>!rec.includes('epilogue:'+i));const line=arr[(pool.length?pool[rand(pool.length)]:rand(Math.max(1,arr.length)))];const choice=st.lastChoice;const echo=choice?({rin:'あなたが選んだ「'+choice.text+'」という言葉も、最後まで覚えています。',noa:'あの時あなたが選んでくださった「'+choice.text+'」も、わたくしの大切な記録ですわ。',sui:'お主が選んだ「'+choice.text+'」という言葉、わしは忘れぬぞ。'}[st.companion]):'';return [base,line,echo].filter(Boolean).join(' ')};
+finalReviewLine=function(){const base=pc26OldFinalReview(),arr=(AI_BY_ID[st.companion]?.lines.epilogue)||[],rec=st.dialogueRecent?.[st.companion]||[],pool=arr.map((_,i)=>i).filter(i=>!rec.includes('epilogue:'+i));const line=arr[(pool.length?pool[rand(pool.length)]:rand(Math.max(1,arr.length)))];return [base,line].filter(Boolean).join(' ')};
 
 // Layout corrections: readable speech, no clipped labels, stable fever stacking.
 {
@@ -3572,70 +3560,6 @@ finalReviewLine=function(){const base=pc26OldFinalReview(),arr=(AI_BY_ID[st.comp
 // Restore the same scene after reload, including mini-event and epilogue state.
 if(st.mode==='mini'&&st.miniState){pc26RestoreMini()}
 if(window.__PC_QA){Object.assign(window.__PC_QA,{pc26:{version:26,runNumber:()=>st.runNumber,companion:()=>st.companion,rotation:()=>pc26ReadInt(PC26_ROTATION_KEY,0),lastChoice:()=>st.lastChoice,mini:()=>({round:mini.round,total:mini.phrases?.length,active:mini.active,phrases:mini.phrases?.slice(),need:mini.need}),setMini:(words=3)=>{st.mode='mini';mini={active:true,round:0,input:'',gesture:false,chosen:[],need:3,phrases:(LOVE_WORDS[st.companion]||LOVE_WORDS.rin).slice(0,words)};mini.need=expectedPattern().length;st.miniState={active:true,round:0,input:'',chosen:[],need:mini.need,phrases:mini.phrases.slice()};$('miniModal').classList.add('show');$('miniStart').classList.add('hidden');drawMini();save(true)},hint:()=>({tier:hintTier(st.target),prefix:visiblePrefix(st.target),clue:cluesFor(st.target)[2]}),final:()=>finalPassword(),save:()=>save(true),setFever:()=>{st.mode='auto';st.auto=true;st.cleared=14;st.feverPrompt={target:14,createdAt:Date.now()};pc26ShowFeverPrompt();save(true)},setAutoCheckpoint:(cleared=14)=>{st.mode='auto';st.auto=true;st.victory=false;st.cleared=cleared-1;st.index=cleared-1;st.target=makeTarget(st.index,'');st.feverMomentsDone=[];st.feverPrompt=null;renderAll(true);save(true)},snapshot:()=>JSON.parse(JSON.stringify(st)),forceCompanion:(id)=>{st.companion=id;renderCompanion();companionSay('intro','',true)},resolveFever:(c='A')=>pc26ResolveFever(c),physicalKey:(key,shift=false)=>document.dispatchEvent(new KeyboardEvent('keydown',{key,shiftKey:shift,bubbles:true,cancelable:true})),finishMini:()=>miniComplete(),runNew:()=>{gameOpenedThisSession=true;restart();setShell(null)},setRunNumber:(n)=>{st.runNumber=Math.max(1,Number(n)||1);save(true)},setBuffer:(v)=>{st.buffer=String(v||'');rerenderSlots();save(true)},openGame:()=>{shellOpen=null;gameOpenedThisSession=true},showOptions:()=>setShell('options'),storageKeys:()=>({main:localStorage.getItem(STORAGE),backup:localStorage.getItem(PC26_BACKUP_KEY)})}})}
-
-
-// v27 reliability, layout, dialogue and isolated URL diagnostics.
-const PC27_PARAMS=new URLSearchParams(location.search);
-const PC27_DEBUG=PC27_PARAMS.get('debug')==='1';
-const PC27_VALID_PARTNERS=['rin','noa','sui'];
-if(PC27_DEBUG){
- document.body.dataset.pcDebug='1';
- const mark=document.createElement('div');mark.id='pc27DebugMark';mark.textContent='DEBUG';document.body.append(mark);
- // Debug sessions are deliberately ephemeral: no run, companion rotation, or record writes.
- save=function(){};
- saveAiCollection=function(){};
- const dbgPartner=PC27_PARAMS.get('partner');
- st=fresh();
- st.runDialogueSeen={};
- if(PC27_VALID_PARTNERS.includes(dbgPartner))st.companion=dbgPartner;
- const dbgCoins=PC27_PARAMS.get('coins');
- if(dbgCoins!==null&&/^\d+$/.test(dbgCoins))st.coins=BigInt(dbgCoins).toString();
- if(PC27_PARAMS.get('upgrades')==='all')st.upgrades=UPGRADES.length;
- const dbgTarget=Number(PC27_PARAMS.get('target'));
- if(Number.isInteger(dbgTarget)&&dbgTarget>=1&&dbgTarget<=TARGETS.length){
-  st.index=dbgTarget-1;st.cleared=dbgTarget-1;st.target=makeTarget(st.index,'');st.mode='manual';st.auto=false;
- }
- if(PC27_PARAMS.get('fever')==='1'){
-  st.index=MANUAL_TARGETS;st.cleared=MANUAL_TARGETS;st.target=makeTarget(st.index,'');st.mode='auto';st.auto=true;st.upgrades=Math.max(st.upgrades,UPGRADES.length);
-  mini.active=false;
- }
- if(PC27_PARAMS.get('final')==='1'){
-  st.index=TARGETS.length-1;st.cleared=TARGETS.length;st.mode='epilogue';st.auto=true;st.upgrades=UPGRADES.length;
-  st.finale={secret:finalPassword(),key:null,clickedAt:0};
- }
- power=derive();
- // Guard every persistent store used by the game while this diagnostic session is active.
- const pc27SetItem=Storage.prototype.setItem,pc27RemoveItem=Storage.prototype.removeItem;
- Storage.prototype.setItem=function(k,v){if([STORAGE,COMPANION_STORAGE,RECORDS_KEY,PC26_ROTATION_KEY,PC26_BACKUP_KEY].includes(String(k)))return;return pc27SetItem.call(this,k,v)};
- Storage.prototype.removeItem=function(k){if([STORAGE,COMPANION_STORAGE,RECORDS_KEY,PC26_ROTATION_KEY,PC26_BACKUP_KEY].includes(String(k)))return;return pc27RemoveItem.call(this,k)};
-}
-// Idempotent transition recovery: never leave a solved target on screen if a timer was lost.
-const pc27OriginalCompleteTarget=completeTarget;
-let pc27TransitionToken=0;
-completeTarget=function(secret){
- if(st.mode==='transition'||st.victory)return;
- const token=++pc27TransitionToken;
- pc27OriginalCompleteTarget(secret);
- if(st.mode!=='transition')return;
- const advance=()=>{
-  if(token!==pc27TransitionToken||st.mode!=='transition')return;
-  const done=st.cleared;
-  if(done>=TARGETS.length){startFinale();save(true);return}
-  if(done===MANUAL_TARGETS&&!st.auto){
-   st.index=done;st.target=makeTarget(done,st.lastWinner||secret);st.buffer='';st.mode='mini';prepareMini();renderAll(true);save(true);return;
-  }
-  st.index=done;st.target=makeTarget(done,st.lastWinner||secret);st.buffer='';st.inputStyle=done<MANUAL_TARGETS?'deduce':'mash';st.mode=st.auto?'auto':'manual';
-  $('quip').classList.add('hidden');renderAll(true);save(true);
- };
- // The original animation delay is retained; this watchdog is a single authoritative fallback.
- setTimeout(advance,Math.max(2200,st.auto?1700:2250));
-};
-// Keep the current ritual word immutable for the whole round.
-const pc27LoveMessage=loveMessage;
-loveMessage=function(round){if(round===mini.round&&mini.currentPhrase)return mini.currentPhrase;if(Number.isInteger(round)&&mini.phrases?.[round])return mini.phrases[round];return pc27LoveMessage(round)};
-// Synchronize the target counter after automatic scans and every render.
-const pc27RenderAll=renderAll;
-renderAll=function(full=false){pc27RenderAll(full);const label=$('terminalLabel');if(label&&st.mode!=='epilogue')label.textContent='TARGET '+String(Math.min(TARGETS.length,st.mode==='transition'?st.cleared+1:st.index+1)).padStart(2,'0')+' / '+TARGETS.length+' // '+(st.mode==='auto'?'AUTO ANALYSIS':'AUTHORIZATION');};
 
 init();
 })();
@@ -3690,36 +3614,6 @@ requestAnimationFrame(tick);
 window.__PC20_REFERENCES={frames:6,size:SIZE,source:'original-gif-effects-over-static-character-indexed-png',ids:Object.keys(FRAME_PNG)};
 })();
 </script>
-
-
-<style id="pc27-layout">
-#pc27DebugMark{display:none}
-body[data-pc-debug="1"] #pc27DebugMark{display:block;position:fixed;right:8px;bottom:7px;z-index:9999;padding:3px 6px;border:1px solid #f5c879;border-radius:4px;background:#111b;color:#f5c879;font:800 9px ui-monospace,monospace;letter-spacing:.12em;pointer-events:none}
-#pc26FeverPrompt{z-index:250!important;pointer-events:auto!important;isolation:isolate}
-#pc26FeverPrompt .pc26-fever-keys{position:relative;z-index:2;pointer-events:auto}
-#pc26FeverPrompt button{position:relative;z-index:3;pointer-events:auto;touch-action:manipulation;min-width:64px;min-height:54px}
-#gameApp .stage-col .terminal{min-height:0;overflow:visible;overscroll-behavior:contain}
-#gameApp .stage-col .terminal .type-strip{flex:0 0 auto;min-height:0;max-height:none;overflow:visible;margin:4px 0;gap:4px}
-#gameApp .stage-col .terminal .type-pill{flex:0 1 auto;white-space:normal;overflow-wrap:anywhere}
-#gameApp .stage-col .terminal .term-hint{flex:0 0 auto;max-height:none;overflow:visible;line-height:1.28!important;margin:3px 0 5px}
-#gameApp .stage-col .terminal .slots{flex:0 0 auto}
-#gameApp .stage-col .terminal .puzzle-feedback{flex:0 0 auto;max-height:none;overflow:visible}
-#gameApp .stage-col .terminal .attempt-ledger{flex:0 0 auto;max-height:none;overflow:visible}
-#gameApp .system-col .panel.card{min-height:0;height:auto;overflow:visible}
-#gameApp .system-col .upgrade-desc,#gameApp .system-col .storytext{min-height:0;max-height:none;overflow:visible;overflow-wrap:anywhere}
-#gameApp .companion-col .assistant-dock{z-index:2}
-@media(min-width:821px){
- #gameApp .game-board{grid-template-columns:minmax(340px,1.22fr) minmax(300px,.98fr) minmax(290px,.9fr)}
- #gameApp .stage-col .terminal{padding-bottom:10px}
-}
-@media(max-width:820px){
- html,body{height:auto;min-height:100%;overflow:auto}
- #gameApp{height:auto;min-height:100dvh;overflow:visible}
- #gameApp .game-board{overflow:visible;display:flex;flex-direction:column}
- #gameApp .game-column{overflow:visible}
- #gameApp .stage-col .terminal{overflow:visible}
-}
-</style>
 
 </body>
 </html>
