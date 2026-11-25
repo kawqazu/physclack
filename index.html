@@ -3409,6 +3409,7 @@ if(new URLSearchParams(location.search).get('qa')==='1'){window.__PC_QA_VERSION=
    if(i%2===0)add(ending,b,m+19,1.8,.10,'strings');});
   return {title,rin,noa,sui,ending};
  })();
+ window.__PC_CLASSIC_SCORES=CLASSIC_SCORES;
  audio.classicalScoreName=()=>st.victory?'ending':shellOpen?'title':(st.companion in CLASSIC_SCORES?st.companion:'rin');
  audio.classicalNote=function(midi,time,dur,vel,voice){
   if(!st.sound||!this.ctx||this.ctx.state!=='running')return;
@@ -4529,7 +4530,7 @@ function pcInstallCampaignMusic(){
   sui:{melody:[[0,76,2],[2,79,1],[3,78,2],[5,74,1],[6,73,2],[8,71,1],[9,74,2],[11,76,1],[12,79,2],[14,78,1],[15,74,2],[17,73,1],[18,71,3],[21,69,2]],counter:[[0,48,3],[3,55,3],[6,52,3],[9,57,3],[12,50,3],[15,55,3],[18,43,4]]}
  };
  for(const id of ['rin','noa','sui']){
-  const base=CLASSIC_SCORES[id];if(!base)continue;
+  const base=window.__PC_CLASSIC_SCORES[id];if(!base)continue;
   const spec=arrangements[id],events=base.events.map(e=>e.slice());
   // A genuinely composed second section: new melody, independent counterline,
   // and a fresh bass ostinato with changing voicing, not shifted source events.
@@ -4540,13 +4541,13 @@ function pcInstallCampaignMusic(){
    const t=base.length+i*3;
    events.push([t,root,2.7,.23,'soft'],[t+.75,root+7,.65,.16,'keys'],[t+1.5,root+12,1.2,.19,'strings']);
   });
-  CLASSIC_SCORES[id+'Second']={bpm:Math.max(42,Math.round(base.bpm*(id==='noa'?.94:id==='sui'?.90:.92))),length:base.length*2,events};
+  window.__PC_CLASSIC_SCORES[id+'Second']={bpm:Math.max(42,Math.round(base.bpm*(id==='noa'?.94:id==='sui'?.90:.92))),length:base.length*2,events};
  }
  const previous=audio.classicalScoreName;
  audio.classicalScoreName=function(){
   if(shellOpen==='title')return 'title';
   if(st?.victory&&Number(st.campaignRun)>=2)return st.companion+'Second';
-  if(Number(st?.campaignRun)>=2&&st.companion in CLASSIC_SCORES)return st.companion+'Second';
+  if(Number(st?.campaignRun)>=2&&st.companion in window.__PC_CLASSIC_SCORES)return st.companion+'Second';
   return previous();
  };
 }
