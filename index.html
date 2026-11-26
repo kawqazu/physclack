@@ -4711,6 +4711,187 @@ pcInstallCampaignMusic();
 pcInstallTrackLabel();
 
 
+// === ROUND 6 QUALITY PATCH: additive wrappers; core puzzle tables/input mapping stay untouched. ===
+const pc26Style=document.createElement('style');
+pc26Style.textContent=`
+#pc26Next{display:flex;align-items:center;gap:7px;margin-top:5px;min-width:0;font:9px ui-monospace,monospace;color:#9fb7c4}
+#pc26NextName{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:48%}
+#pc26NextTrack{height:4px;flex:1;min-width:24px;border-radius:9px;background:#07131d;border:1px solid #355064;overflow:hidden}
+#pc26NextFill{height:100%;width:0;background:linear-gradient(90deg,#6689bc,var(--accent));transition:width .2s}
+#pc26NextPct{width:29px;text-align:right;color:var(--accent)}
+.pc26-highlight{outline:2px solid var(--gold)!important;box-shadow:0 0 18px #f5c87988!important;transition:outline .2s}
+.pc26-scan{animation:pc26scan .75s ease-out}
+@keyframes pc26scan{0%{filter:brightness(1)}25%{filter:brightness(1.8) saturate(1.5)}100%{filter:none}}
+#pc26Sync{position:fixed;z-index:34;left:50%;bottom:20px;transform:translateX(-50%);display:none;padding:9px 18px;border:1px solid var(--accent);border-radius:9px;background:#071a25ed;color:var(--accent);font:900 12px ui-monospace,monospace;box-shadow:0 0 22px rgba(var(--accent-rgb),.4);pointer-events:none}
+#pc26Sync.on{display:block;animation:pc26pulse .6s ease-in-out infinite alternate}
+@keyframes pc26pulse{to{box-shadow:0 0 30px rgba(var(--accent-rgb),.8);filter:brightness(1.4)}}
+@media(max-width:900px){#pc26Next{gap:5px;font-size:8px}#pc26NextName{max-width:43%}}
+@media(max-width:650px){#pc26Sync{bottom:10px;font-size:10px;padding:7px 12px}}
+`;
+document.head.append(pc26Style);
+function pc26Highlight(el){if(!el)return;el.classList.remove('pc26-highlight');void el.offsetWidth;el.classList.add('pc26-highlight');setTimeout(()=>el.classList.remove('pc26-highlight'),2100)}
+function pc26GuideEligible(){return !qaSandbox&&st.mode!=='mini'&&!st.victory&&st.index===0&&st.cleared===0&&Number(st.campaignRun||1)===1}
+function pc26GuideKey(){return 'physical_cracker_pc26_guide_'+st.companion}
+function pc26GuideStarted(){return !!(st.pc26GuideStarted?.[st.companion]||(!qaSandbox&&localStorage.getItem(pc26GuideKey())==='1'))}
+function pc26StartGuide(){
+ if(!pc26GuideEligible()||pc26GuideStarted())return;
+ st.pc26GuideStarted=st.pc26GuideStarted||{};st.pc26GuideStarted[st.companion]=true;
+ if(!qaSandbox)try{localStorage.setItem(pc26GuideKey(),'1')}catch{}
+ companionSay('analysis','戻せないけど大丈夫。まずは打ってみて。合った桁はそのまま固定されるよ。',true);
+ pc26Highlight($('slots'));save(true);
+}
+function pc26GuideLine(which,force=false){
+ if((!force&&!pc26GuideEligible())||!pc26GuideStarted()||st.pc26GuideSteps?.[st.companion]?.[which])return;
+ st.pc26GuideSteps=st.pc26GuideSteps||{};st.pc26GuideSteps[st.companion]=st.pc26GuideSteps[st.companion]||{};st.pc26GuideSteps[st.companion][which]=true;
+ const lines={
+  denied:'一致した桁は（あれば）固定されて、失敗分のコインも増えたよ。戻せない仕組みだけど、ちゃんと前進してる。',
+  clear:'初めての端末突破、おめでとう。固定した桁と積み上げたコインが、次の鍵につながるよ。'
+ };
+ companionSay('analysis',lines[which],true);pc26Highlight(which==='denied'?$('slots'):$('targetTitle'));save(true);
+}
+function pc26InstallNextProgress(){
+ const coin=$('statCoins')?.parentElement;if(!coin||$('pc26Next'))return;
+ const row=document.createElement('div');row.id='pc26Next';row.innerHTML='<span id="pc26NextName">NEXT —</span><span id="pc26NextTrack"><span id="pc26NextFill"></span></span><span id="pc26NextPct">0%</span>';
+ coin.append(row);
+}
+let pc26NextLastRender=0;
+function pc26UpdateNextProgress(force=false){
+ const now=Date.now();if(!force&&now-pc26NextLastRender<180)return;pc26NextLastRender=now;
+ const name=$('pc26NextName');if(!name)return;
+ const u=UPGRADES[st.upgrades];
+ if(!u){name.textContent='NEXT — MAX';$('pc26NextFill').style.width='100%';$('pc26NextPct').textContent='100%';return}
+ const cost=upgradeCost(st.upgrades),coins=BigInt(st.coins||0),pct=Number(cost>0n?(coins*10000n/cost>10000n?10000n:coins*10000n/cost):10000n)/100;
+ name.textContent='NEXT '+u[0];$('pc26NextFill').style.width=pct+'%';$('pc26NextPct').textContent=Math.floor(pct)+'%';
+}
+pc26InstallNextProgress();
+const pc26Sync=document.createElement('div');pc26Sync.id='pc26Sync';pc26Sync.textContent='✦ SYNC WINDOW — 任意のキー / タップ';document.body.append(pc26Sync);
+let pc26SyncNext=Date.now()+18000,pc26SyncUntil=0,pc26OverUntil=0,pc26LastInput=Date.now(),pc26LastNod=0;
+function pc26SyncAllowed(){return st.mode==='auto'&&st.index>=MANUAL_TARGETS&&st.index<TARGETS.length-1&&!st.victory}
+function pc26TryOverclock(){
+ if(!pc26SyncAllowed()||Date.now()>pc26SyncUntil||Date.now()<pc26OverUntil)return false;
+ pc26OverUntil=Date.now()+7000;pc26SyncUntil=0;pc26Sync.classList.remove('on');
+ pc26Sync.textContent='⚡ OVERCLOCK — ANALYSIS ×1.7 / COINS ×1.5';
+ pc26Sync.classList.add('on');setTimeout(()=>{pc26Sync.classList.remove('on');pc26Sync.textContent='✦ SYNC WINDOW — 任意のキー / タップ'},7000);
+ companionSay('fever','今だ、同調した！ 演算を一気に引き上げるよ！',true);audio.upgrade();sparks(18);return true;
+}
+document.addEventListener('keydown',e=>{if(e.repeat)return;pc26LastInput=Date.now();pc26TryOverclock()},true);
+document.addEventListener('pointerdown',e=>{if(e.target.closest('button,.key,.mash,.stage-col,.game-board')){pc26LastInput=Date.now();pc26TryOverclock()}},true);
+// Conversation choices use one explicit open/closed flag and reject stale/double clicks.
+let pc26ChoicesOpen=false,pc26ChoiceBusy=false;
+function pc26DeliverChatQuip(targetIndex,delay=1800){
+ setTimeout(()=>{if(st.index===targetIndex&&st.mode==='manual'&&st.pc26NextQuip){const q=st.pc26NextQuip;st.pc26NextQuip='';companionSay('analysis',q,true);save(true)}},delay);
+}
+const pc26RenderChatChoices=renderChatChoices,pc26HideChatChoices=hideChatChoices,pc26ChooseChat=chooseChat;
+renderChatChoices=function(reason='chat'){
+ if(pc26ChoicesOpen||pc26ChoiceBusy||st.victory||st.mode==='mini')return;
+ pc26ChoicesOpen=true;pc26RenderChatChoices(reason);
+ $('assistantChoices').querySelectorAll('.chat-answer').forEach(b=>{b.dataset.pc26Choice='1';b.addEventListener('click',e=>{if(pc26ChoiceBusy||!pc26ChoicesOpen){e.stopImmediatePropagation();e.preventDefault()}},{capture:true})});
+};
+hideChatChoices=function(){pc26ChoicesOpen=false;pc26ChoiceBusy=false;pc26HideChatChoices()};
+chooseChat=function(id){
+ if(!pc26ChoicesOpen||pc26ChoiceBusy)return;pc26ChoiceBusy=true;
+ pc26ChooseChat(id);pc26ChoicesOpen=false;pc26ChoiceBusy=false;
+ // One subsequent terminal only: multiplier is applied to its existing fail-yield path.
+ st.pc26ChatBoost={target:st.index+(st.mode==='transition'?1:0),untilClear:true,mult:115};st.pc26NextQuip='会話のおかげで、次の端末は少しだけコインが増えるよ。';
+ if(st.mode==='transition')pc26DeliverChatQuip(st.index+1,1800);
+ save(true);
+};
+const pc26OldAddFails=addFails;
+addFails=function(count){
+ const boosted=!!(st.pc26ChatBoost?.untilClear&&st.pc26ChatBoost.target===st.index);
+ const before=BigInt(st.coins||0);pc26OldAddFails(count);
+ if(boosted){
+  const gain=BigInt(st.coins||0)-before,scaled=gain*15n+BigInt(st.pc26BoostRemainder||0);
+  const extra=scaled/100n;st.pc26BoostRemainder=(scaled%100n).toString();
+  if(extra>0n){st.coins=(BigInt(st.coins)+extra).toString();coinBurst(extra)}
+ }
+};
+const pc26OldComplete=completeTarget;
+completeTarget=function(secret){
+ const target=st.target,firstRead=st.mode==='manual'&&target.tries===1&&!target.pc26RevealOpened;
+ const guideClear=pc26GuideEligible()&&pc26GuideStarted();
+ pc26OldComplete(secret);
+ if(firstRead){
+  const extra=upgradeCost(st.upgrades)/2n;
+  if(extra>0n){st.coins=(BigInt(st.coins)+extra).toString();toast('smart','先読みクラック',extra,'開示前の1打目で突破：推理成功ボーナスに上乗せ');}
+  companionSay('fast','一打で見抜いたの？ 先読みクラック、見事だよ！',true);audio.fanfare('target');
+ }
+ if(guideClear)pc26GuideLine('clear',true);
+ if(st.pc26ChatBoost?.target===st.index){pc26DeliverChatQuip(st.index+1,1800);st.pc26ChatBoost=null;st.pc26BoostRemainder='0'}
+};
+const pc26OldCheckGuess=checkGuess;
+checkGuess=function(candidate){
+ const t=st.target,wasFirst=(t.tries||0)===0,preFixed=fixedSlots(t).filter(x=>x!==null).length;
+ const solved=candidate===t.secret;
+ pc26OldCheckGuess(candidate);
+ if(wasFirst&&st.target===t&&t.tries>0){
+  t.pc26RevealOpened=true;
+  const terminal=document.querySelector('#gameApp .stage-col .terminal');terminal?.classList.add('pc26-scan');setTimeout(()=>terminal?.classList.remove('pc26-scan'),850);
+  audio.upgrade();sparks(8);renderTypes();renderHint();save(true);
+  if(!solved)pc26GuideLine('denied');
+ }
+ if(!solved&&st.target===t&&t.tries>0){
+  const after=fixedSlots(t).filter(x=>x!==null).length;
+  if(after-preFixed>=2&&Date.now()-pc26LastNod>9000){pc26LastNod=Date.now();companionSay('smalltalk','二桁も固定できた。ちゃんと進んでいるよ。',true)}
+ }
+};
+const pc26OldRenderStats=renderStats;
+renderStats=function(){pc26OldRenderStats();if(st.mode==='manual'&&(st.target.tries||0)===0)$('pinRangeChip')?.classList.add('hidden')};
+const pc26OldRenderTypes=renderTypes,pc26OldRenderHint=renderHint,pc26OldRerenderSlots=rerenderSlots;
+rerenderSlots=function(){
+ const t=st.target,hide=st.mode==='manual'&&(t.tries||0)===0;
+ if(!hide)return pc26OldRerenderSlots();
+ const keys=['prefix','tail'],saved={};for(const k of keys){saved[k]=power[k];power[k]=0}
+ const confirmed=t.confirmed;t.confirmed=[];
+ try{return pc26OldRerenderSlots()}finally{t.confirmed=confirmed;for(const k of keys)power[k]=saved[k]}
+};
+renderTypes=function(){
+ const t=st.target,hide=st.mode==='manual'&&(t.tries||0)===0;
+ if(!hide)return pc26OldRenderTypes();
+ const keys=['usedKinds','charReveal','composition','types','tail','prefix','checksum','parity','pinRange'],saved={};
+ for(const k of keys){saved[k]=power[k];power[k]=0}
+ const confirmed=t.confirmed;t.confirmed=[];
+ try{pc26OldRenderTypes()}finally{t.confirmed=confirmed;for(const k of keys)power[k]=saved[k]}
+};
+renderHint=function(){
+ const t=st.target,hide=st.mode==='manual'&&(t.tries||0)===0,old=power.hint;
+ if(hide)power.hint=0;
+ try{return pc26OldRenderHint()}finally{power.hint=old}
+};
+const pc26OldBuy=buyUpgrades;
+buyUpgrades=function(){
+ const before=st.upgrades;pc26OldBuy();if(st.upgrades===before+1){
+  const u=UPGRADES[before],milestone=['lower','upper','sym','num','any','batch'].includes(u?.[4])&&(u?.[4]==='any'||u?.[4]==='batch'&&u?.[5]>=1000||u?.[4]!=='batch'&&st.upgrades>=19);
+  if(milestone){toast('up','重要強化を獲得',1n,u[0]);audio.fanfare('era');companionSay('upgrade',u[0]+'まで到達したね。入力と解析の景色が変わるよ。',true)}
+ }
+ pc26UpdateNextProgress();
+};
+const pc26OldAutoTick=autoTick;
+autoTick=function(ms){
+ const active=Date.now()<pc26OverUntil&&pc26SyncAllowed();
+ const old=power.yield;if(active)power.yield=old*3n/2n;
+ try{return pc26OldAutoTick(active?ms*1.7:ms)}finally{power.yield=old}
+};
+const pc26OldLoop=loop;
+loop=function(now){
+ if(pc26SyncAllowed()){
+  const current=Date.now();
+  if(current>=pc26SyncNext&&current>pc26OverUntil){pc26SyncUntil=current+4200;pc26SyncNext=current+22000;pc26Sync.classList.add('on');companionSay('fever','同調ウィンドウ！ 今ならキーか画面タップで加速できるよ。',true);audio.upgrade()}
+  if(pc26SyncUntil&&current>pc26SyncUntil){pc26SyncUntil=0;pc26Sync.classList.remove('on')}
+ }else{pc26SyncUntil=0;pc26Sync.classList.remove('on')}
+ if(st.mode==='manual'&&Date.now()-pc26LastInput>5200&&Date.now()-pc26LastNod>16000){
+  pc26LastNod=Date.now();companionSay('smalltalk','少し考える時間も大事。焦らず、次の一打を選ぼう。',true)
+ }
+ pc26OldLoop(now);pc26UpdateNextProgress();
+};
+// First-target guide starts only after the player enters the game, not on the title screen.
+document.addEventListener('click',e=>{
+ const b=e.target.closest('#startNew,#startContinue');if(!b)return;
+ setTimeout(()=>{if(shellOpen!=='title')pc26StartGuide()},80);
+},true);
+const pc26OldInit=init;
+init=function(){pc26OldInit();pc26UpdateNextProgress(true);if(shellOpen!=='title')pc26StartGuide()};
+
 init();
 })();
 
