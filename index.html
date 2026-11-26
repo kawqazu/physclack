@@ -5068,119 +5068,155 @@ window.__PC20_REFERENCES={frames:6,size:SIZE,source:'original-gif-effects-over-s
 </script>
 
 <style id="pc27-industrial-matte-theme">
-/* PC27 — Tactical Field Decoder. Presentation-only override; preserve geometry and behavior. */
+/* PC27 — cascade-authoritative matte hardware layer. Presentation only. */
 :root{
-  color-scheme:dark;
-  --bg:#18191B;--bg2:#101113;--panel:#222428;--edge:#35383F;
-  --ink:#E6E4DF;--muted:#8A8E96;--gold:#D4A44C;--danger:#D64D52;--ok:#4FA872;
-  --key-alpha:#2C2F35;--key-mod:#1F2126;--key-ink-on-accent:#101113;--edge-strong:#4A4E58;
-  --r-frame:2px;--r-btn:3px;--r-key:4px;
-  font-family:'Noto Sans JP','Hiragino Sans','Yu Gothic UI',sans-serif;
+ color-scheme:dark;
+ --bg:#18191B;--bg2:#101113;--panel:#222428;--edge:#35383F;
+ --ink:#E6E4DF;--muted:#8A8E96;--gold:#D4A44C;--danger:#D64D52;--ok:#4FA872;
+ --key-alpha:#2C2F35;--key-mod:#1F2126;--key-ink-on-accent:#101113;--edge-strong:#4A4E58;
+ --r-frame:2px;--r-btn:3px;--r-key:4px;
+ font-family:'IBM Plex Sans','BIZ UDPGothic','Hiragino Kaku Gothic ProN','Noto Sans JP',sans-serif!important;
 }
-body,body[data-era],body[data-companion]{
-  --bg:#18191B!important;--bg2:#101113!important;--panel:#222428!important;--edge:#35383F!important;
-  --ink:#E6E4DF!important;--muted:#8A8E96!important;--gold:#D4A44C!important;--danger:#D64D52!important;--ok:#4FA872!important;
+/* Explicitly defeat every legacy era/companion variable declaration. */
+body,body[data-era],body[data-companion],
+body[data-era="0"],body[data-era="1"],body[data-era="2"],body[data-era="3"],body[data-era="4"],
+body[data-companion='rin'],body[data-companion='noa'],body[data-companion='sui'],
+body[data-companion='rin'][data-era],body[data-companion='noa'][data-era],body[data-companion='sui'][data-era],
+body[data-companion='rin'][data-era="0"],body[data-companion='rin'][data-era="1"],body[data-companion='rin'][data-era="2"],body[data-companion='rin'][data-era="3"],body[data-companion='rin'][data-era="4"],
+body[data-companion='noa'][data-era="0"],body[data-companion='noa'][data-era="1"],body[data-companion='noa'][data-era="2"],body[data-companion='noa'][data-era="3"],body[data-companion='noa'][data-era="4"],
+body[data-companion='sui'][data-era="0"],body[data-companion='sui'][data-era="1"],body[data-companion='sui'][data-era="2"],body[data-companion='sui'][data-era="3"],body[data-companion='sui'][data-era="4"]{
+ --bg:#18191B!important;--bg2:#101113!important;--panel:#222428!important;--edge:#35383F!important;
+ --ink:#E6E4DF!important;--muted:#8A8E96!important;--gold:#D4A44C!important;--danger:#D64D52!important;--ok:#4FA872!important;
 }
-body{--accent:#3FB0AC;--accent-rgb:63,176,172;background:#18191B!important;color:var(--ink)!important;font-family:'Noto Sans JP','Hiragino Sans','Yu Gothic UI',sans-serif!important}
-body[data-era="1"]{--accent:#9B82D6;--accent-rgb:155,130,214}
-body[data-era="2"]{--accent:#D47A92;--accent-rgb:212,122,146}
-body[data-era="3"],body[data-era="4"]{--accent:#D9843B;--accent-rgb:217,132,59}
-body[data-companion="noa"][data-era="0"],body[data-companion="noa"][data-era="2"]{--accent:#D47A92!important;--accent-rgb:212,122,146!important}
-body[data-companion="noa"][data-era="1"]{--accent:#9B82D6!important;--accent-rgb:155,130,214!important}
-body[data-companion="noa"][data-era="3"],body[data-companion="noa"][data-era="4"]{--accent:#D9843B!important;--accent-rgb:217,132,59!important}
-body[data-companion="sui"][data-era="0"],body[data-companion="sui"][data-era="1"],body[data-companion="sui"][data-era="2"]{--accent:#54A86E!important;--accent-rgb:84,168,110!important}
-body[data-companion="sui"][data-era="3"],body[data-companion="sui"][data-era="4"]{--accent:#D9843B!important;--accent-rgb:217,132,59!important}
+/* Base / era fallback pigment; companion identity wins over era. */
+body{--accent:#3FB0AC!important;--accent-rgb:63,176,172!important}
+body[data-era="1"]{--accent:#9B82D6!important;--accent-rgb:155,130,214!important}
+body[data-era="2"]{--accent:#D47A92!important;--accent-rgb:212,122,146!important}
+body[data-era="3"],body[data-era="4"]{--accent:#D9843B!important;--accent-rgb:217,132,59!important}
+body[data-companion='rin']{--accent:#3FB0AC!important;--accent-rgb:63,176,172!important}
+body[data-companion='noa']{--accent:#D47A92!important;--accent-rgb:212,122,146!important}
+body[data-companion='noa'][data-era="0"],body[data-companion='noa'][data-era="2"]{--accent:#D47A92!important;--accent-rgb:212,122,146!important}
+body[data-companion='noa'][data-era="1"]{--accent:#9B82D6!important;--accent-rgb:155,130,214!important}
+body[data-companion='noa'][data-era="3"],body[data-companion='noa'][data-era="4"]{--accent:#D9843B!important;--accent-rgb:217,132,59!important}
+body[data-companion='sui']{--accent:#54A86E!important;--accent-rgb:84,168,110!important}
+body[data-companion='sui'][data-era="0"],body[data-companion='sui'][data-era="1"],body[data-companion='sui'][data-era="2"]{--accent:#54A86E!important;--accent-rgb:84,168,110!important}
+body[data-companion='sui'][data-era="3"],body[data-companion='sui'][data-era="4"]{--accent:#D9843B!important;--accent-rgb:217,132,59!important}
 
-/* Strip atmospheric AI-dashboard treatments; no geometry changes. */
-html,body{background:#18191B!important}
-body:before,body:after,.ambient,.orbit,.orbit:before,.orbit:after{display:none!important;content:none!important;background-image:none!important;box-shadow:none!important}
-#gameApp,#titleScreen,.modal,.modal-box,.panel,.card,.terminal,.spectacle,.assistant-dock,
-#keyboardPanel,.keyboard,.companion-book,.library-box,.announcement,.toast,.mint-panel,
-.crt-auth,.pattern-board,.win-data,.password-history,.target-item,.stat,.result-grid>div{
-  background-image:none!important;backdrop-filter:none!important;-webkit-backdrop-filter:none!important;
-  box-shadow:none!important;
+/* Matte chassis: remove ambient layers, gradients, blur and glow. */
+html,html body,body,#gameApp,#titleScreen{background:#18191B!important;background-image:none!important;color:var(--ink)!important}
+body:before,body:after,#gameApp:before,#gameApp:after,.ambient,.orbit,.orbit:before,.orbit:after,.title-gridlines{display:none!important;content:none!important;background-image:none!important;box-shadow:none!important}
+#gameApp,#gameApp * ,#titleScreen,#titleScreen *{text-shadow:none!important}
+#gameApp .panel,#gameApp .card,#gameApp .game-board .panel,#gameApp .terminal,#gameApp .spectacle,
+#gameApp .mint-panel,#gameApp .assistant-dock,#gameApp .stat,#gameApp .target-item,
+#gameApp .companion-option,#gameApp .reaction-row,#gameApp .attempt-item,#gameApp .chip,
+#gameApp .tag,#gameApp .type-pill,#gameApp .toast,#gameApp .announcement,
+#gameApp .modal-box,#gameApp .password-history,#gameApp .pattern-board,#gameApp .win-data,
+#titleScreen .sub-screen,#titleScreen .title-monitor-glass,#titleScreen .screen-text{
+ background-color:#222428!important;background-image:none!important;backdrop-filter:none!important;-webkit-backdrop-filter:none!important;
+ border-color:#35383F!important;border-radius:2px!important;box-shadow:none!important
 }
-#gameApp{background:#18191B!important;color:var(--ink)!important}
-#gameApp .panel,#gameApp .card{background:#222428!important;border:1px solid var(--edge)!important;border-radius:var(--r-frame)!important}
-#gameApp .stage-col .terminal,#gameApp .crt-auth,#gameApp .spectacle,#keyboardPanel,.keyboard{
-  background:#101113!important;border:1px solid var(--edge)!important;border-radius:var(--r-frame)!important;
-  box-shadow:inset 0 2px 5px rgba(0,0,0,.65),0 1px 0 rgba(255,255,255,.04)!important;
+#gameApp .terminal,#gameApp .stage-col .terminal,#gameApp #keyboardPanel,#gameApp .keyboard,
+#gameApp .spectacle,#gameApp .assistant-avatar,#gameApp .password-history,#gameApp .pattern-board{
+ background:#101113!important;box-shadow:inset 0 2px 5px rgba(0,0,0,.65),0 1px 0 rgba(255,255,255,.04)!important
 }
-#gameApp .stage-col .terminal:before{display:none!important}
-#gameApp .spectacle{border-color:#35383F!important}
-#gameApp .spectacle canvas{filter:none!important}
+#gameApp .terminal:before,#gameApp .stage-col .terminal:before{display:none!important;content:none!important}
 #gameApp .spectacle-vignette{background:none!important}
-#gameApp .spectacle-caption b,#gameApp .spectacle-caption small{text-shadow:none!important}
-#gameApp .term-title,#gameApp #headline,#gameApp #sceneTitle{font-family:'IBM Plex Sans','BIZ UDPGothic','Hiragino Kaku Gothic ProN','Noto Sans JP',sans-serif!important;letter-spacing:normal!important}
-#gameApp h1,#gameApp h2,#gameApp h3,.panel-heading b,.section-kicker,.brand small,.brand b,
-.term-title,.spectacle-caption b,.sc-kicker,.assistant-heading strong,.panel-heading small{
-  font-family:'IBM Plex Sans','BIZ UDPGothic','Hiragino Kaku Gothic ProN','Noto Sans JP',sans-serif!important;
-}
-#gameApp .section-kicker,#gameApp .panel-heading small,#gameApp .sc-kicker,#gameApp .brand small{
-  text-transform:uppercase;letter-spacing:.08em!important
+#gameApp .spectacle canvas{filter:none!important}
+#gameApp .spectacle-caption b,#gameApp .spectacle-caption small{ text-shadow:none!important }
+#gameApp h1,#gameApp h2,#gameApp h3,#gameApp .panel-heading b,#gameApp .section-kicker,
+#gameApp .brand small,#gameApp .brand b,#gameApp .term-title,#gameApp .spectacle-caption b,
+#gameApp .sc-kicker,#gameApp .assistant-heading strong,#gameApp .panel-heading small,
+#gameApp #headline,#gameApp #sceneTitle{
+ font-family:'IBM Plex Sans','BIZ UDPGothic','Hiragino Kaku Gothic ProN','Noto Sans JP',sans-serif!important;
 }
 #gameApp p,#gameApp .term-hint,#gameApp .assistant-speech p,#gameApp .storytext{
-  font-family:'Noto Sans JP','Hiragino Sans','Yu Gothic UI',sans-serif!important;
-  font-weight:400!important;line-height:1.55!important;letter-spacing:.02em!important
+ font-family:'Noto Sans JP','Hiragino Sans','Yu Gothic UI',sans-serif!important;font-weight:400!important;line-height:1.55!important;letter-spacing:.02em!important
 }
-#gameApp .mono,#gameApp .value,#gameApp .slot,#gameApp .key,#gameApp .log,
-#gameApp .target-meta,#gameApp .stat .value,#gameApp .password-line strong,
-#gameApp .crt-auth-slots,#pc26Next,#pc26Sync{
-  font-family:'IBM Plex Mono','JetBrains Mono','SFMono-Regular',Consolas,monospace!important;
-  font-variant-numeric:tabular-nums!important;
+#gameApp .mono,#gameApp .value,#gameApp .slot,#gameApp .key,#gameApp .log,#gameApp .target-meta,
+#gameApp .password-line strong,#gameApp .crt-auth-slots,#pc26Next,#pc26Sync{
+ font-family:'IBM Plex Mono','JetBrains Mono','SFMono-Regular',Consolas,monospace!important;font-variant-numeric:tabular-nums!important
 }
-#gameApp *{text-shadow:none}
-#gameApp .panel,#gameApp .card,#gameApp .terminal,#gameApp .announcement,
-#gameApp .modal-box,#gameApp .toast,#gameApp .mint-panel,#gameApp .chip,
-#gameApp .tag,#gameApp .type-pill,#gameApp .slot,#gameApp .target-item,
-#gameApp .attempt-item,#gameApp .companion-option,#gameApp .reaction-row,
-#gameApp .mini-letter,#gameApp .pattern-board,#gameApp .win-data,
+#gameApp .panel,#gameApp .card,#gameApp .terminal,#gameApp .announcement,#gameApp .modal-box,
+#gameApp .toast,#gameApp .mint-panel,#gameApp .chip,#gameApp .tag,#gameApp .type-pill,
+#gameApp .slot,#gameApp .target-item,#gameApp .attempt-item,#gameApp .companion-option,
+#gameApp .reaction-row,#gameApp .mini-letter,#gameApp .pattern-board,#gameApp .win-data,
 #gameApp .password-history{border-radius:2px!important}
-#gameApp button,#gameApp .button,#gameApp .chat-trigger,#gameApp .chat-answer,
-#gameApp .mode-btn,#gameApp .action-btn,#gameApp .major-btn,#gameApp .icon-btn,
-#gameApp .kb-tab{border-radius:3px!important}
+#gameApp button,#gameApp .button,#gameApp .chat-trigger,#gameApp .chat-answer,#gameApp .mode-btn,
+#gameApp .action-btn,#gameApp .major-btn,#gameApp .icon-btn,#gameApp .kb-tab{border-radius:3px!important}
 #gameApp .key{border-radius:4px!important}
 
-/* Hardware keyboard: unchanged key dimensions and grid. */
-#gameApp #keyboardPanel,#gameApp .keyboard{background:#101113!important;border-top:1px solid #2C2F35!important}
-#gameApp #keys .key,#gameApp .key{
-  color:#E6E4DF!important;background:linear-gradient(180deg,rgba(255,255,255,.03),rgba(0,0,0,.05)),#2C2F35!important;
-  border:1px solid #3C4049!important;
-  box-shadow:0 3px 0 #090A0C,inset 0 1px 0 rgba(255,255,255,.08)!important;
-  transition:transform 40ms linear!important;
+/* Physical keycaps — selector specificity deliberately matches/exceeds PC13. */
+#gameApp #keyboardPanel .pc13-keyrow>.key,
+#gameApp #keyboardPanel .pc13-keyrow>.key:enabled,
+#gameApp #keyboardPanel .pc13-keyrow>.key:not(:disabled){
+ color:#E6E4DF!important;background:linear-gradient(180deg,rgba(255,255,255,.03),rgba(0,0,0,.05)),#2C2F35!important;
+ border:1px solid #3C4049!important;border-radius:4px!important;
+ box-shadow:0 3px 0 #090A0C,inset 0 1px 0 rgba(255,255,255,.08)!important;
+ text-shadow:none!important;filter:none!important;transition:transform 40ms linear!important
 }
-#gameApp #keys .key:active,#gameApp .key:active{
-  transform:translateY(2px)!important;filter:none!important;
-  box-shadow:0 1px 0 #090A0C,inset 0 1px 2px rgba(0,0,0,.45)!important
+#gameApp #keyboardPanel .pc13-keyrow>.key:active,
+#gameApp #keyboardPanel .pc13-keyrow>.key.pc13-pressed,
+#gameApp #keyboardPanel .pc13-keyrow>.key.pc13-pressed:active{
+ opacity:1!important;color:#101113!important;background:#D8D9D5!important;
+ border:1px solid #E6E4DF!important;border-radius:4px!important;
+ box-shadow:0 1px 0 #090A0C,inset 0 1px 2px rgba(0,0,0,.45)!important;
+ transform:translateY(2px)!important;filter:none!important
 }
-#gameApp #keys .key[disabled],#gameApp #keys .key:disabled{background:#191B1E!important;color:#4A4E57!important;opacity:1!important}
-#gameApp .kb-tab,#gameApp .mode-btn,#gameApp .icon-btn,#gameApp .chat-trigger,
-#gameApp .chat-answer,#gameApp .companion-option{
-  background:#25282D!important;color:var(--ink)!important;border:1px solid #454954!important;
-  box-shadow:0 2px 0 rgba(0,0,0,.6)!important
+#gameApp #keyboardPanel .pc13-keyrow>.key.pc13-auto,
+#gameApp #keyboardPanel .pc13-keyrow>.key.pc13-auto:disabled,
+#gameApp #keyboardPanel .pc13-keyrow>.key.pc13-auto:not(:active){
+ opacity:1!important;color:#E6E4DF!important;background:#30343B!important;
+ border:1px solid var(--accent)!important;border-bottom:2px solid var(--accent)!important;
+ box-shadow:0 3px 0 #090A0C,inset 0 1px 0 rgba(255,255,255,.08)!important;filter:none!important
+}
+#gameApp #keyboardPanel .pc13-keyrow>.key:disabled:not(.pc13-auto){
+ opacity:.65!important;color:#4A4E57!important;background:#191B1E!important;border:1px solid #2B2E35!important;
+ box-shadow:0 2px 0 #090A0C!important
+}
+#gameApp #keyboardPanel .pc13-keyrow>.key.is-excluded,
+#gameApp #keyboardPanel .pc13-keyrow>.key.excluded{background:#191B1E!important;color:#4A4E57!important}
+#gameApp #keyboardPanel .pc13-keyrow>.key.candidate,
+#gameApp #keyboardPanel .pc13-keyrow>.key.suggested{border:1px solid var(--accent)!important}
+#gameApp #keyboardPanel .pc13-keyrow>.pc13-enter,
+#gameApp #keyboardPanel .pc13-keyrow>.pc13-enter:enabled{background:var(--accent)!important;color:#101113!important;border-color:var(--accent)!important}
+#gameApp #keys .key,#gameApp .key{background:#2C2F35!important;color:#E6E4DF!important;border:1px solid #3C4049!important;border-radius:4px!important;box-shadow:0 3px 0 #090A0C,inset 0 1px 0 rgba(255,255,255,.08)!important}
+#gameApp #keys .key:active,#gameApp .key:active{transform:translateY(2px)!important;box-shadow:0 1px 0 #090A0C,inset 0 1px 2px rgba(0,0,0,.45)!important}
+#gameApp #keys .key:disabled,#gameApp .key:disabled{background:#191B1E!important;color:#4A4E57!important;opacity:1!important}
+
+/* Title and all action controls. */
+#titleScreen .title-buttons .title-play,#titleScreen .title-buttons button.title-play,
+#titleScreen .title-play,#gameApp .title-buttons .title-play{
+ background:var(--accent)!important;background-image:none!important;color:#101113!important;
+ border:1px solid var(--accent)!important;border-radius:3px!important;box-shadow:0 2px 0 rgba(0,0,0,.6)!important
+}
+#titleScreen .title-buttons button:not(.title-play),#titleScreen .title-buttons button{
+ background:#25282D!important;background-image:none!important;color:var(--ink)!important;
+ border:1px solid #454954!important;border-radius:3px!important;box-shadow:0 2px 0 rgba(0,0,0,.6)!important
+}
+#gameApp .kb-tab,#gameApp .mode-btn,#gameApp .icon-btn,#gameApp .chat-trigger,#gameApp .chat-answer,
+#gameApp .companion-option,#gameApp button.secondary{
+ background:#25282D!important;background-image:none!important;color:var(--ink)!important;border:1px solid #454954!important;box-shadow:0 2px 0 rgba(0,0,0,.6)!important
 }
 #gameApp .kb-tab.current,#gameApp .companion-option.current{border-color:var(--accent)!important;color:var(--accent)!important}
 #gameApp .action-btn,#gameApp .major-btn{
-  background:var(--accent)!important;color:#101113!important;border:1px solid var(--accent)!important;
-  font-weight:700!important;border-radius:3px!important;box-shadow:0 2px 0 rgba(0,0,0,.6)!important
+ background:var(--accent)!important;background-image:none!important;color:#101113!important;border:1px solid var(--accent)!important;
+ font-weight:700!important;border-radius:3px!important;box-shadow:0 2px 0 rgba(0,0,0,.6)!important
 }
-#gameApp button:active{transform:translateY(1px)}
-#gameApp .key.is-excluded,#gameApp .key.excluded{background:#191B1E!important;color:#4A4E57!important}
-#gameApp .key.candidate,#gameApp .key.suggested{border:1px solid var(--accent)!important}
+#gameApp button:active,#titleScreen button:active{transform:translateY(1px)}
 
-/* Instrument readout, slots and progress meters. */
-#gameApp .slot{
-  background:#0D0E10!important;color:var(--ink)!important;border:1px solid #2D3038!important;
-  border-radius:2px!important;box-shadow:inset 0 2px 4px rgba(0,0,0,.8)!important;
+/* Slots, progress and instrument readouts. */
+#gameApp .slot,#gameApp .stage-col .terminal .slot{
+ background:#0D0E10!important;color:var(--ink)!important;border:1px solid #2D3038!important;border-radius:2px!important;
+ box-shadow:inset 0 2px 4px rgba(0,0,0,.8)!important
 }
 #gameApp .slot.filled{background:#17191C!important;border-color:#525763!important;color:var(--ink)!important}
 #gameApp .slot.next{border:1px solid var(--accent)!important;border-bottom:3px solid var(--accent)!important;box-shadow:none!important}
 #gameApp .slot.auto{color:var(--accent)!important}
-#gameApp .slot.confirmed,#gameApp .slot.hit{background:rgba(79,168,114,.14)!important;border:1px solid var(--ok)!important;border-bottom:3px solid var(--ok)!important;color:#E6E4DF!important;box-shadow:none!important}
+#gameApp .slot.confirmed,#gameApp .slot.hit{background:rgba(79,168,114,.14)!important;border:1px solid var(--ok)!important;border-bottom:3px solid var(--ok)!important;color:var(--ink)!important;box-shadow:none!important}
 #gameApp .slot.hint-locked,#gameApp .slot.blow{background:rgba(212,164,76,.14)!important;border:1px solid var(--gold)!important;border-bottom:3px solid var(--gold)!important;color:var(--ink)!important}
 #gameApp .slot.miss{background:#141518!important;border:1px solid #262930!important;color:#5C606B!important;box-shadow:none!important}
 #gameApp .slot.confirmed:after{color:var(--ok)!important}
-#gameApp .fill,#gameApp .bar-fill,#gameApp #pc26NextFill{background:var(--accent)!important;box-shadow:none!important;border-radius:0!important}
+#gameApp .fill,#gameApp .bar-fill,#gameApp #pc26NextFill{background:var(--accent)!important;background-image:none!important;box-shadow:none!important;border-radius:0!important}
 #gameApp .target-track,#gameApp .bar,#gameApp #pc26NextTrack{background:#101113!important;border:1px solid #35383F!important;border-radius:1px!important;box-shadow:inset 0 2px 4px rgba(0,0,0,.7)!important}
 #gameApp .target-track,#gameApp #pc26NextTrack{height:5px!important}
 #gameApp .stat{background:#1D1F23!important;border:1px solid var(--edge)!important;border-radius:2px!important}
@@ -5191,55 +5227,53 @@ body:before,body:after,.ambient,.orbit,.orbit:before,.orbit:after{display:none!i
 #gameApp .target-item.done{background:#1D2922!important;border-color:var(--ok)!important}
 #gameApp .target-item.current b{color:var(--accent)!important}
 
-/* Companion module: opaque neutral window, pigment stripe only. */
-#gameApp .assistant-dock{background:#222428!important;border:1px solid var(--edge)!important;border-left:3px solid var(--accent)!important;border-radius:2px!important;box-shadow:none!important}
-#gameApp .assistant-avatar{background:#101113!important;border-right:1px solid var(--edge)!important}
+/* Companion module, chips and banners. */
+#gameApp .assistant-dock{background:#222428!important;background-image:none!important;border:1px solid var(--edge)!important;border-left:3px solid var(--accent)!important;border-radius:2px!important;box-shadow:none!important}
+#gameApp .assistant-avatar{background:#101113!important;background-image:none!important;border-right:1px solid var(--edge)!important}
 #gameApp .assistant-avatar img,#gameApp .assistant-avatar canvas.pixel-portrait{filter:none!important}
 #gameApp .ai-indicator{background:#17191C!important;color:var(--accent)!important;border:1px solid #454954!important;border-radius:2px!important}
 #gameApp .assistant-heading span{color:var(--ok)!important}
 #gameApp .companion-option img,#gameApp .companion-option canvas.pixel-gallery{background:#101113!important;border-radius:2px!important}
 #gameApp .assistant-dock.speaking .assistant-avatar{animation:none!important}
-#gameApp .assistant-choices{gap:5px}
-#gameApp .chat-answer{background:#1A1C20!important;border:1px solid #35383F!important;border-left:2px solid #4A4E58!important;color:var(--ink)!important;text-align:left!important;border-radius:2px!important;box-shadow:none!important}
+#gameApp .chat-answer{background:#1A1C20!important;background-image:none!important;border:1px solid #35383F!important;border-left:2px solid #4A4E58!important;color:var(--ink)!important;text-align:left!important;border-radius:2px!important;box-shadow:none!important}
 #gameApp .chat-answer:hover,#gameApp .chat-answer:focus{border-color:var(--accent)!important;background:#1A1C20!important}
 #gameApp .chip,#gameApp .tag,#gameApp .type-pill,#gameApp .hint-badge{
-  background:#17191C!important;border:1px solid #383C44!important;color:var(--muted)!important;
-  border-radius:2px!important;font:10px 'IBM Plex Mono','JetBrains Mono','SFMono-Regular',Consolas,monospace!important;
-  padding:2px 6px!important;box-shadow:none!important
+ background:#17191C!important;background-image:none!important;border:1px solid #383C44!important;color:var(--muted)!important;
+ border-radius:2px!important;font:10px 'IBM Plex Mono','JetBrains Mono','SFMono-Regular',Consolas,monospace!important;
+ padding:2px 6px!important;box-shadow:none!important
 }
 #gameApp .chip strong,#gameApp .type-pill.known{color:var(--accent)!important}
 #gameApp .mint-panel{background:#222428!important;border:1px solid var(--edge)!important;border-radius:2px!important}
 #gameApp .mint-step{border-radius:2px!important;box-shadow:none!important;transform:none!important}
 #gameApp .mint-face{box-shadow:none!important;border-radius:50%!important}
 
-/* Notifications, SYNC WINDOW and OVERCLOCK hardware annunciators. */
+/* pc26 overlays are fixed-position elements outside #gameApp. */
 #pc26Sync{
-  background:#16181B!important;border:0!important;border-top:2px solid var(--accent)!important;border-bottom:2px solid var(--accent)!important;
-  border-radius:2px!important;color:var(--accent)!important;box-shadow:none!important;letter-spacing:.08em!important;
+ background:#16181B!important;background-image:none!important;border:0!important;border-top:2px solid var(--accent)!important;border-bottom:2px solid var(--accent)!important;
+ border-radius:2px!important;color:var(--accent)!important;box-shadow:none!important;letter-spacing:.08em!important
 }
 #pc26Sync.on{animation:none!important}
-#pc26Next{color:var(--muted)!important}
+#pc26Next{color:var(--muted)!important;font-family:'IBM Plex Mono','JetBrains Mono','SFMono-Regular',Consolas,monospace!important}
 #pc26NextTrack{background:#101113!important;border:1px solid #35383F!important;border-radius:1px!important}
-#pc26NextFill{background:var(--accent)!important}
+#pc26NextFill{background:var(--accent)!important;box-shadow:none!important}
 #gameApp .toast{background:#24272C!important;border:1px solid #4A4E58!important;border-left:4px solid var(--accent)!important;border-radius:2px!important;box-shadow:0 6px 18px rgba(0,0,0,.7)!important}
 #gameApp .toast strong,#gameApp .toast .mult{color:var(--ink)!important}
 #gameApp .toast.up{border-left-color:var(--gold)!important}
 #gameApp .toast.good{border-left-color:var(--ok)!important}
 #gameApp .toast:not(.up):not(.good){border-left-color:var(--danger)!important}
-#gameApp .announcement{background:#222428!important;border:1px solid var(--edge)!important;border-radius:2px!important;box-shadow:0 16px 36px rgba(0,0,0,.78)!important}
-#gameApp .announcement.unlock-celebration,#gameApp .announcement.upgrade-notice{background:#222428!important;border:1px solid var(--edge)!important;box-shadow:0 16px 36px rgba(0,0,0,.78)!important}
+#gameApp .announcement{background:#222428!important;background-image:none!important;border:1px solid var(--edge)!important;border-radius:2px!important;box-shadow:0 16px 36px rgba(0,0,0,.78)!important}
+#gameApp .announcement.unlock-celebration,#gameApp .announcement.upgrade-notice{background:#222428!important;background-image:none!important;border:1px solid var(--edge)!important;box-shadow:0 16px 36px rgba(0,0,0,.78)!important}
 #gameApp .announcement h2{color:var(--ink)!important;text-shadow:none!important}
+#gameApp .modal{background:rgba(10,11,13,.84)!important;backdrop-filter:none!important}
 .modal{background:rgba(10,11,13,.84)!important;backdrop-filter:none!important}
-.modal-box{background:#222428!important;border:1px solid #4A4E58!important;border-radius:2px!important;box-shadow:0 16px 36px rgba(0,0,0,.78)!important}
+#gameApp .modal-box,#gameApp .modal .modal-box{background:#222428!important;background-image:none!important;border:1px solid #4A4E58!important;border-radius:2px!important;box-shadow:0 16px 36px rgba(0,0,0,.78)!important}
 #gameApp .modal-box h2{color:var(--ink)!important}
 #gameApp .modal-box .over{color:var(--gold)!important}
 #gameApp .modal-box p{color:#B9BBC1!important}
 #gameApp .major-btn{background:var(--accent)!important;color:#101113!important}
 #gameApp #victoryModal .modal-box{border-top:3px solid var(--gold)!important}
 #gameApp .shutdown,#gameApp #shutdownModal .modal-box{background:#0E0F11!important;border:2px solid var(--danger)!important}
-#gameApp .shutdown .modal-header,#gameApp #shutdownModal .modal-header{
- background:repeating-linear-gradient(-45deg,transparent 0 6px,rgba(214,77,82,.14) 6px 12px),#17191C!important
-}
+#gameApp .shutdown .modal-header,#gameApp #shutdownModal .modal-header{background:repeating-linear-gradient(-45deg,transparent 0 6px,rgba(214,77,82,.14) 6px 12px),#17191C!important}
 #gameApp .password-history{background:#101113!important;border:1px solid var(--edge)!important}
 #gameApp .win-data{background:#17191C!important;border:1px solid var(--edge)!important;color:var(--ink)!important}
 #gameApp .result-grid>div{background:#1A1C20!important;border:1px solid var(--edge)!important}
@@ -5262,9 +5296,7 @@ body:before,body:after,.ambient,.orbit,.orbit:before,.orbit:after{display:none!i
 #gameApp .era-notice.on:before{display:none!important}
 #gameApp .spark-particle,#gameApp .coin-piece,#gameApp .coin-credit{filter:none!important;text-shadow:none!important}
 #gameApp .terminal-cracked{animation:none!important}
-@media(prefers-reduced-motion:no-preference){
- #gameApp .key{transition:transform 40ms linear!important}
-}
+@media(prefers-reduced-motion:no-preference){#gameApp #keyboardPanel .pc13-keyrow>.key{transition:transform 40ms linear!important}}
 </style>
 
 </body>
