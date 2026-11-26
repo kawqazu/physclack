@@ -5476,6 +5476,56 @@ body[data-companion='sui'] #gameApp .assistant-dock::after{
  box-shadow:none!important;
 }
 
+
+
+/* PC27 shell-screen finish — preserve the already-correct #titleScreen. */
+/* Flatten only the Help / Options / Records shells; do not touch #titleScreen. */
+.shell-screen:not(#titleScreen),
+#helpScreen.shell-screen,
+#optionsScreen.shell-screen,
+#recordsScreen.shell-screen{
+ background:#101113!important;
+ background-image:none!important;
+}
+/* Sub-screen surface: mirror the higher-specificity Records override. */
+.sub-screen,
+#recordsScreen .sub-screen{
+ background:#222428!important;
+ background-image:none!important;
+ color:var(--ink)!important;
+ border:1px solid #35383F!important;
+ border-radius:2px!important;
+ box-shadow:0 16px 36px rgba(0,0,0,.78)!important;
+}
+/* Records cards and their text: matte surfaces, no decorative glow. */
+#recordsScreen .record-card{
+ background:#17191C!important;
+ background-image:none!important;
+ border-radius:2px!important;
+ box-shadow:none!important;
+}
+#recordsScreen .record-card h3{
+ color:var(--gold)!important;
+ text-shadow:none!important;
+}
+#recordsScreen .record-card strong{
+ color:var(--accent)!important;
+ text-shadow:none!important;
+}
+/* Shell navigation buttons only; #titleScreen's existing start-button rule is untouched. */
+.shell-screen:not(#titleScreen) .title-play,
+#helpScreen .title-play,
+#optionsScreen .title-play,
+#recordsScreen .title-play{
+ background:var(--accent)!important;
+ background-image:none!important;
+ color:#101113!important;
+ border:1px solid var(--accent)!important;
+ border-radius:3px!important;
+ box-shadow:none!important;
+ text-shadow:none!important;
+}
+
 </style>
 
 </body>
