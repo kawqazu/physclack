@@ -4722,7 +4722,7 @@ pc26Style.textContent=`
 .pc26-highlight{outline:2px solid var(--gold)!important;box-shadow:0 0 18px #f5c87988!important;transition:outline .2s}
 .pc26-scan{animation:pc26scan .75s ease-out}
 @keyframes pc26scan{0%{filter:brightness(1)}25%{filter:brightness(1.8) saturate(1.5)}100%{filter:none}}
-#pc26Sync{position:fixed;z-index:34;left:50%;bottom:20px;transform:translateX(-50%);display:none;padding:9px 18px;border:1px solid var(--accent);border-radius:9px;background:#071a25ed;color:var(--accent);font:900 12px ui-monospace,monospace;box-shadow:0 0 22px rgba(var(--accent-rgb),.4);pointer-events:none}
+#pc26Sync{position:fixed;z-index:120;left:50%;bottom:20px;transform:translateX(-50%);display:none;padding:9px 18px;border:1px solid var(--accent);border-radius:9px;background:#071a25ed;color:var(--accent);font:900 12px ui-monospace,monospace;box-shadow:0 0 22px rgba(var(--accent-rgb),.4);pointer-events:none}
 #pc26Sync.on{display:block;animation:pc26pulse .6s ease-in-out infinite alternate}
 @keyframes pc26pulse{to{box-shadow:0 0 30px rgba(var(--accent-rgb),.8);filter:brightness(1.4)}}
 @media(max-width:900px){#pc26Next{gap:5px;font-size:8px}#pc26NextName{max-width:43%}}
@@ -4764,22 +4764,35 @@ function pc26UpdateNextProgress(force=false){
  name.textContent='NEXT '+u[0];$('pc26NextFill').style.width=pct+'%';$('pc26NextPct').textContent=Math.floor(pct)+'%';
 }
 pc26InstallNextProgress();
-const pc26Sync=document.createElement('div');pc26Sync.id='pc26Sync';pc26Sync.textContent='✦ SYNC WINDOW — 任意のキー / タップ';document.body.append(pc26Sync);
+const pc26Sync=document.createElement('div');pc26Sync.id='pc26Sync';pc26Sync.textContent='✦ SYNC WINDOW — 相棒と同調！ 任意のキー / タップ';document.body.append(pc26Sync);
 let pc26SyncNext=Date.now()+18000,pc26SyncUntil=0,pc26OverUntil=0,pc26LastInput=Date.now(),pc26LastNod=0;
 function pc26SyncAllowed(){return st.mode==='auto'&&st.index>=MANUAL_TARGETS&&st.index<TARGETS.length-1&&!st.victory}
 function pc26TryOverclock(){
  if(!pc26SyncAllowed()||Date.now()>pc26SyncUntil||Date.now()<pc26OverUntil)return false;
  pc26OverUntil=Date.now()+7000;pc26SyncUntil=0;pc26Sync.classList.remove('on');
  pc26Sync.textContent='⚡ OVERCLOCK — ANALYSIS ×1.7 / COINS ×1.5';
- pc26Sync.classList.add('on');setTimeout(()=>{pc26Sync.classList.remove('on');pc26Sync.textContent='✦ SYNC WINDOW — 任意のキー / タップ'},7000);
+ pc26Sync.classList.add('on');
  companionSay('fever','今だ、同調した！ 演算を一気に引き上げるよ！',true);audio.upgrade();sparks(18);return true;
 }
 document.addEventListener('keydown',e=>{if(e.repeat)return;pc26LastInput=Date.now();pc26TryOverclock()},true);
 document.addEventListener('pointerdown',e=>{if(e.target.closest('button,.key,.mash,.stage-col,.game-board')){pc26LastInput=Date.now();pc26TryOverclock()}},true);
 // Conversation choices use one explicit open/closed flag and reject stale/double clicks.
 let pc26ChoicesOpen=false,pc26ChoiceBusy=false;
-function pc26DeliverChatQuip(targetIndex,delay=1800){
- setTimeout(()=>{if(st.index===targetIndex&&st.mode==='manual'&&st.pc26NextQuip){const q=st.pc26NextQuip;st.pc26NextQuip='';companionSay('analysis',q,true);save(true)}},delay);
+function pc26DeliverChatQuip(targetIndex){
+ // Delivery is tied to the initialized manual target, not a guessed transition delay.
+ if(!Number.isInteger(targetIndex)||targetIndex<0)return;
+ st.pc26ChatQuipTarget=targetIndex;
+}
+function pc26TryDeliverChatQuip(){
+ const targetIndex=Number(st.pc26ChatQuipTarget);
+ if(!st.pc26NextQuip||!Number.isInteger(targetIndex))return;
+ if(st.index>targetIndex||st.victory||st.mode==='mini'||st.mode==='auto'||st.mode==='epilogue'){
+  st.pc26NextQuip='';delete st.pc26ChatQuipTarget;save(true);return;
+ }
+ if(st.index!==targetIndex||st.mode!=='manual')return;
+ const q=st.pc26NextQuip;
+ st.pc26NextQuip='';delete st.pc26ChatQuipTarget;
+ companionSay('analysis',q,true);save(true);
 }
 const pc26RenderChatChoices=renderChatChoices,pc26HideChatChoices=hideChatChoices,pc26ChooseChat=chooseChat;
 renderChatChoices=function(reason='chat'){
@@ -4791,9 +4804,11 @@ hideChatChoices=function(){pc26ChoicesOpen=false;pc26ChoiceBusy=false;pc26HideCh
 chooseChat=function(id){
  if(!pc26ChoicesOpen||pc26ChoiceBusy)return;pc26ChoiceBusy=true;
  pc26ChooseChat(id);pc26ChoicesOpen=false;pc26ChoiceBusy=false;
- // One subsequent terminal only: multiplier is applied to its existing fail-yield path.
- st.pc26ChatBoost={target:st.index+(st.mode==='transition'?1:0),untilClear:true,mult:115};st.pc26NextQuip='会話のおかげで、次の端末は少しだけコインが増えるよ。';
- if(st.mode==='transition')pc26DeliverChatQuip(st.index+1,1800);
+ // The benefit belongs to the next manual terminal, regardless of how this one completes.
+ const nextManual=st.index+1;
+ st.pc26ChatBoost=nextManual<MANUAL_TARGETS?{target:nextManual,untilClear:true,mult:115}:null;
+ st.pc26NextQuip=nextManual<MANUAL_TARGETS?'会話のおかげで、次の端末は少しだけコインが増えるよ。':'';
+ if(st.pc26NextQuip)pc26DeliverChatQuip(nextManual);
  save(true);
 };
 const pc26OldAddFails=addFails;
@@ -4817,7 +4832,7 @@ completeTarget=function(secret){
   companionSay('fast','一打で見抜いたの？ 先読みクラック、見事だよ！',true);audio.fanfare('target');
  }
  if(guideClear)pc26GuideLine('clear',true);
- if(st.pc26ChatBoost?.target===st.index){pc26DeliverChatQuip(st.index+1,1800);st.pc26ChatBoost=null;st.pc26BoostRemainder='0'}
+ if(st.pc26ChatBoost?.target===st.index){st.pc26ChatBoost=null;st.pc26BoostRemainder='0'}
 };
 const pc26OldCheckGuess=checkGuess;
 checkGuess=function(candidate){
@@ -4868,17 +4883,19 @@ buyUpgrades=function(){
 };
 const pc26OldAutoTick=autoTick;
 autoTick=function(ms){
- const active=Date.now()<pc26OverUntil&&pc26SyncAllowed();
+ const active=Date.now()<pc26OverUntil;
  const old=power.yield;if(active)power.yield=old*3n/2n;
  try{return pc26OldAutoTick(active?ms*1.7:ms)}finally{power.yield=old}
 };
 const pc26OldLoop=loop;
 loop=function(now){
+ const current=Date.now();
  if(pc26SyncAllowed()){
-  const current=Date.now();
-  if(current>=pc26SyncNext&&current>pc26OverUntil){pc26SyncUntil=current+4200;pc26SyncNext=current+22000;pc26Sync.classList.add('on');companionSay('fever','同調ウィンドウ！ 今ならキーか画面タップで加速できるよ。',true);audio.upgrade()}
-  if(pc26SyncUntil&&current>pc26SyncUntil){pc26SyncUntil=0;pc26Sync.classList.remove('on')}
- }else{pc26SyncUntil=0;pc26Sync.classList.remove('on')}
+  if(current>=pc26SyncNext&&current>pc26OverUntil){pc26SyncUntil=current+4200;pc26SyncNext=current+22000;pc26Sync.textContent='✦ SYNC WINDOW — 相棒と同調！ 任意のキー / タップ';pc26Sync.classList.add('on');companionSay('fever','同調ウィンドウ！ 今ならキーか画面タップで加速できるよ。',true);audio.upgrade()}
+  if(pc26SyncUntil&&current>pc26SyncUntil){pc26SyncUntil=0;if(current>=pc26OverUntil)pc26Sync.classList.remove('on')}
+ }else{pc26SyncUntil=0;if(current>=pc26OverUntil)pc26Sync.classList.remove('on')}
+ if(pc26OverUntil&&current>=pc26OverUntil){pc26OverUntil=0;pc26Sync.classList.remove('on');pc26Sync.textContent='✦ SYNC WINDOW — 相棒と同調！ 任意のキー / タップ'}
+ pc26TryDeliverChatQuip();
  if(st.mode==='manual'&&Date.now()-pc26LastInput>5200&&Date.now()-pc26LastNod>16000){
   pc26LastNod=Date.now();companionSay('smalltalk','少し考える時間も大事。焦らず、次の一打を選ぼう。',true)
  }
