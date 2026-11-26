@@ -5297,6 +5297,147 @@ body:before,body:after,#gameApp:before,#gameApp:after,.ambient,.orbit,.orbit:bef
 #gameApp .spark-particle,#gameApp .coin-piece,#gameApp .coin-credit{filter:none!important;text-shadow:none!important}
 #gameApp .terminal-cracked{animation:none!important}
 @media(prefers-reduced-motion:no-preference){#gameApp #keyboardPanel .pc13-keyrow>.key{transition:transform 40ms linear!important}}
+
+/* PC27 cascade repair — mirror measured legacy winners; presentation only. */
+/* Companion-specific legacy panel/dock backgrounds, borders and corner radii. */
+body[data-companion='rin'] #gameApp .panel,
+body[data-companion='rin'] #gameApp .assistant-dock,
+body[data-companion='noa'] #gameApp .panel,
+body[data-companion='noa'] #gameApp .assistant-dock,
+body[data-companion='sui'] #gameApp .panel,
+body[data-companion='sui'] #gameApp .assistant-dock{
+ background:#222428!important;background-image:none!important;
+ border:1px solid #35383F!important;border-radius:2px!important;
+ box-shadow:none!important;clip-path:none!important;outline:0!important;
+}
+/* Later Rin / Noa / Sui dock variants use the same winning selector. */
+body[data-companion='rin'] #gameApp .assistant-dock,
+body[data-companion='noa'] #gameApp .assistant-dock,
+body[data-companion='sui'] #gameApp .assistant-dock{
+ background:#222428!important;background-image:none!important;
+ border:1px solid #35383F!important;border-left:3px solid var(--accent)!important;
+ border-radius:2px!important;box-shadow:none!important;clip-path:none!important;outline:0!important;
+}
+/* Companion era rules and the high-specificity companion-column dock rule. */
+body[data-era="2"] .assistant-dock,
+body[data-era="3"] .assistant-dock,
+body[data-era="4"] .assistant-dock,
+#gameApp .companion-col .assistant-dock{
+ background:#222428!important;background-image:none!important;
+ border:1px solid #35383F!important;border-left:3px solid var(--accent)!important;
+ border-radius:2px!important;box-shadow:none!important;clip-path:none!important;outline:0!important;
+}
+body[data-companion='rin'] #gameApp .assistant-dock::before,
+body[data-companion='noa'] #gameApp .assistant-dock::before,
+body[data-companion='sui'] #gameApp .assistant-dock::before{
+ background:none!important;background-image:none!important;box-shadow:none!important;
+ border:0!important;content:none!important;display:none!important;
+}
+body[data-companion='rin'] #gameApp .assistant-dock::after,
+body[data-companion='noa'] #gameApp .assistant-dock::after,
+body[data-companion='sui'] #gameApp .assistant-dock::after{
+ background:none!important;background-image:none!important;box-shadow:none!important;
+ border:0!important;content:none!important;display:none!important;
+}
+/* The CRT slots are descendants of #slots, not .terminal. Mirror the measured winner. */
+#gameApp .stage-col .spectacle #slots .slot{
+ background:#0D0E10!important;color:#E6E4DF!important;
+ border:1px solid #35383F!important;border-radius:2px!important;
+ box-shadow:inset 0 2px 4px rgba(0,0,0,.8)!important;
+}
+#gameApp .stage-col .spectacle #slots .slot.filled{
+ background:#17191C!important;color:#E6E4DF!important;border:1px solid #525763!important;
+ box-shadow:inset 0 2px 4px rgba(0,0,0,.8)!important;
+}
+#gameApp .stage-col .spectacle #slots .slot.confirmed,
+#gameApp .stage-col .spectacle #slots .slot.hit{
+ background:rgba(79,168,114,.14)!important;color:#E6E4DF!important;
+ border:1px solid #4FA872!important;border-bottom:3px solid #4FA872!important;box-shadow:none!important;
+}
+#gameApp .stage-col .spectacle #slots .slot.hint-locked,
+#gameApp .stage-col .spectacle #slots .slot.blow{
+ background:rgba(212,164,76,.14)!important;color:#E6E4DF!important;
+ border:1px solid #D4A44C!important;border-bottom:3px solid #D4A44C!important;box-shadow:none!important;
+}
+#gameApp .stage-col .spectacle #slots .slot.miss{
+ background:#141518!important;color:#777B84!important;border:1px solid #262930!important;box-shadow:none!important;
+}
+#gameApp .stage-col .spectacle #slots .slot.ghost{
+ background:#25282D!important;color:#A7AAB1!important;border:1px dashed #686D77!important;
+ opacity:.78!important;box-shadow:none!important;
+}
+#gameApp .stage-col .spectacle #slots .slot.next{
+ background:#0D0E10!important;color:#E6E4DF!important;border:1px solid var(--accent)!important;
+ border-bottom:3px solid var(--accent)!important;box-shadow:none!important;
+}
+#gameApp .stage-col .spectacle #slots .slot.auto,
+#gameApp .stage-col .spectacle #slots .slot.known,
+#gameApp .stage-col .spectacle #slots .slot.crack-revealed,
+#gameApp .stage-col .spectacle #slots .slot.pc-relic-match{
+ background:#17191C!important;color:var(--accent)!important;border:1px solid #525763!important;box-shadow:none!important;
+}
+#gameApp .stage-col .spectacle #slots .slot.confirmed:after{color:#4FA872!important;text-shadow:none!important}
+/* Modal overlays are direct body children, outside #gameApp. */
+.modal{background:rgba(10,11,13,.84)!important;background-image:none!important;backdrop-filter:none!important;-webkit-backdrop-filter:none!important}
+#miniModal.modal,#companionModal.modal,#passwordLibraryModal.modal,#victoryModal.modal{
+ background:rgba(10,11,13,.84)!important;background-image:none!important;backdrop-filter:none!important;-webkit-backdrop-filter:none!important;
+}
+.modal-box,
+#miniModal .modal-box,
+#companionModal .modal-box,
+#passwordLibraryModal .modal-box,
+#victoryModal .modal-box{
+ background:#222428!important;background-image:none!important;
+ border:1px solid #4A4E58!important;border-radius:2px!important;
+ box-shadow:0 16px 36px rgba(0,0,0,.78)!important;
+}
+#victoryModal.show .modal-box{background:#222428!important;background-image:none!important;border:1px solid #4A4E58!important;border-radius:2px!important;box-shadow:0 16px 36px rgba(0,0,0,.78)!important;animation:none!important}
+#miniModal .modal-box h2,#companionModal .modal-box h2,#passwordLibraryModal .modal-box h2,#victoryModal .modal-box h2{color:#E6E4DF!important;text-shadow:none!important}
+#miniModal .modal-box p,#companionModal .modal-box p,#passwordLibraryModal .modal-box p,#victoryModal .modal-box p{color:#B9BBC1!important;text-shadow:none!important}
+/* Buttons within each modal, including the observed "戻る" actions. */
+#miniModal .modal-box button,
+#companionModal .modal-box button,
+#passwordLibraryModal .modal-box button,
+#victoryModal .modal-box button,
+#victoryModal .victory-nav button{
+ background:#25282D!important;background-image:none!important;color:#E6E4DF!important;
+ border:1px solid #454954!important;border-radius:3px!important;
+ box-shadow:0 2px 0 rgba(0,0,0,.6)!important;text-shadow:none!important;filter:none!important;
+}
+#miniModal .modal-box button.major-btn,
+#companionModal .modal-box button.major-btn,
+#passwordLibraryModal .modal-box button.major-btn,
+#victoryModal .modal-box button.major-btn{
+ background:#3FB0AC!important;background-image:none!important;color:#101113!important;
+ border:1px solid #3FB0AC!important;border-radius:3px!important;box-shadow:0 2px 0 rgba(0,0,0,.6)!important;
+}
+#miniModal #miniFinish{background:#3FB0AC!important;background-image:none!important;color:#101113!important;box-shadow:0 2px 0 rgba(0,0,0,.6)!important}
+#victoryModal .victory-nav button.current{background:#25282D!important;background-image:none!important;color:#E6E4DF!important;border-color:#4A4E58!important;box-shadow:0 2px 0 rgba(0,0,0,.6)!important}
+#passwordLibraryModal .library-category-tabs button.active,
+#companionModal .companion-tabs button.active{background:#25282D!important;background-image:none!important;color:var(--accent)!important;border-color:var(--accent)!important;box-shadow:none!important}
+/* Remove victory portrait's decorative gold halo while retaining the artwork itself. */
+#victoryModal .victory-art:after{content:none!important;display:none!important;box-shadow:none!important}
+/* Title screen is also outside #gameApp. Flatten its outer shell and portrait frame. */
+#titleScreen{
+ background:#18191B!important;background-image:none!important;color:#E6E4DF!important;
+}
+#titleScreen .title-core:before,#titleScreen .title-core:after{
+ background:none!important;background-image:none!important;border:0!important;box-shadow:none!important;outline:0!important;content:none!important;display:none!important;
+}
+#titleScreen .title-art{
+ background:#18191B!important;background-image:none!important;box-shadow:none!important;filter:none!important;
+}
+#titleScreen #titlePixelArt{
+ background:#222428!important;background-image:none!important;
+ border:2px solid #4A4E58!important;border-radius:3px!important;
+ box-shadow:none!important;filter:none!important;outline:0!important;
+}
+#titleScreen #titleEnergyCanvas{display:none!important;filter:none!important;mix-blend-mode:normal!important;opacity:0!important}
+#titleScreen .title-casing,#titleScreen .title-monitor-glass,#titleScreen .screen-text{
+ background:#222428!important;background-image:none!important;border-color:#4A4E58!important;
+ border-radius:2px!important;box-shadow:none!important;filter:none!important;
+}
+
 </style>
 
 </body>
