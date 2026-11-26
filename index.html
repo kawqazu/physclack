@@ -4893,7 +4893,13 @@ loop=function(now){
  if(pc26SyncAllowed()){
   if(current>=pc26SyncNext&&current>pc26OverUntil){pc26SyncUntil=current+4200;pc26SyncNext=current+22000;pc26Sync.textContent='✦ SYNC WINDOW — 相棒と同調！ 任意のキー / タップ';pc26Sync.classList.add('on');companionSay('fever','同調ウィンドウ！ 今ならキーか画面タップで加速できるよ。',true);audio.upgrade()}
   if(pc26SyncUntil&&current>pc26SyncUntil){pc26SyncUntil=0;if(current>=pc26OverUntil)pc26Sync.classList.remove('on')}
- }else{pc26SyncUntil=0;if(current>=pc26OverUntil)pc26Sync.classList.remove('on')}
+ }else{
+  pc26SyncUntil=0;
+  if(pc26OverUntil&&current<pc26OverUntil){
+   pc26Sync.textContent='⚡ OVERCLOCK — ANALYSIS ×1.7 / COINS ×1.5';
+   pc26Sync.classList.add('on');
+  }else pc26Sync.classList.remove('on');
+ }
  if(pc26OverUntil&&current>=pc26OverUntil){pc26OverUntil=0;pc26Sync.classList.remove('on');pc26Sync.textContent='✦ SYNC WINDOW — 相棒と同調！ 任意のキー / タップ'}
  pc26TryDeliverChatQuip();
  if(st.mode==='manual'&&Date.now()-pc26LastInput>5200&&Date.now()-pc26LastNod>16000){
