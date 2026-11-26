@@ -5438,6 +5438,44 @@ body[data-companion='sui'] #gameApp .assistant-dock::after{
  border-radius:2px!important;box-shadow:none!important;filter:none!important;
 }
 
+
+
+/* PC27 final touch — three measured legacy remnants only. */
+/* Full-screen portrait launch: retain visibility, geometry and positioning. */
+#pc12PortraitLaunch{
+ background:#222428!important;
+ color:var(--ink)!important;
+ border:1px solid #4A4E58!important;
+ border-radius:3px!important;
+ box-shadow:none!important;
+}
+/* Progress fill: remove the legacy gradient and glow, including scoped variant. */
+.fill{
+ background:var(--accent)!important;
+ background-image:none!important;
+ box-shadow:none!important;
+}
+#gameApp .fill{
+ background:var(--accent)!important;
+ background-image:none!important;
+ box-shadow:none!important;
+}
+/* Type pills: mirror the measured winning radius selector and flatten known state. */
+#gameApp .stage-col .terminal .type-pill{
+ border-radius:2px!important;
+ color:var(--ink)!important;
+}
+#gameApp .type-pill{
+ color:var(--ink)!important;
+}
+#gameApp .type-pill.known,
+#gameApp .stage-col .terminal .type-pill.known{
+ background:rgba(var(--accent-rgb),.14)!important;
+ background-image:none!important;
+ color:var(--ink)!important;
+ box-shadow:none!important;
+}
+
 </style>
 
 </body>
